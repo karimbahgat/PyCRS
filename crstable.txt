@@ -1,0 +1,1 @@
+codetype	code	proj4	ogcwkt	esriwkt
