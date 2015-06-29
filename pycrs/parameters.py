@@ -22,6 +22,8 @@
 
 # +unit and +to_metre are what makes up 'UNIT["Meter",1.0]'
 
+from . import directions
+
 
 
 ##+a         Semimajor radius of the ellipsoid axis
@@ -39,15 +41,6 @@ class Azimuth:
     def __init__(self, value):
         pass
 
-##+axis      Axis orientation (new in 4.8.0)
-class AxisOrientation:
-    proj4 = "+axis"
-    esri_wkt = None
-    ogc_wkt = "AXIS"
-    geotiff = None
-    def __init__(self, value):
-        pass
-
 ##+b         Semiminor radius of the ellipsoid axis
 class SemiMinorRadius:
     proj4 = "+b"
@@ -55,15 +48,22 @@ class SemiMinorRadius:
         pass
     
 ##+datum     Datum name (see `proj -ld`)
-class DatumName:
-    def __init__(self, value):
-        self.value = value
+class Datum:
+    def __init__(self, name, ellipsoid):
+        """
+        Arguments:
+
+        - **name**: Specific datum name instance.
+        - **ellipsoid**: Ellipsoid parameter instance. 
+        """
+        self.name = name
+        self.ellips = ellipsoid
 
     def to_proj4(self):
-        return "+datum=%s" %self.value
+        return "+datum=%s %s" % (self.name.proj4, self.ellips.to_proj4())
 
     def to_ogc_wkt(self):
-        return 'DATUM[%s]' %self.value
+        return 'DATUM["%s", %s]' % (self.name.ogc_wkt, self.ellips.to_ogc_wkt())
 
     def to_esri_wkt(self):
         return self.to_ogc_wkt()
@@ -73,22 +73,96 @@ class DatumName:
         #return "GeogGeodeticDatum" 
     
 ##+ellps     Ellipsoid name (see `proj -le`)
-class EllipsoidName:
-    def __init__(self, value):
-        self.value = value
+class Ellipsoid:
+    def __init__(self, name, semimaj_ax=None, inv_flat=None):
+        """
+        Arguments:
+
+        - **name**: Specific ellipsoid name instance. 
+        """
+        self.name = name
+        
+        # get default values if not specified
+        if semimaj_ax == None:
+            semimaj_ax = self.name.semimaj_ax
+        if inv_flat == None:
+            inv_flat = self.name.inv_flat
+                
+        self.semimaj_ax = semimaj_ax
+        self.inv_flat = inv_flat
 
     def to_proj4(self):
-        return "+ellps=%s" %self.value
+        return "+ellps=%s +a=%s +f=%s" % (self.name.proj4, self.semimaj_ax, self.inv_flat)
 
     def to_ogc_wkt(self):
-        return 'SPHEROID[%s]' %self.value
-
+        return 'SPHEROID["%s", %s, %s]' % (self.name.ogc_wkt, self.semimaj_ax, self.inv_flat)
+    
     def to_esri_wkt(self):
         return self.to_ogc_wkt()
 
     def to_geotiff(self):
         pass
-        #return "GeogEllipsoid" 
+        #return "GeogEllipsoid"
+
+#GEOGCS
+class GeogCS:
+    def __init__(self, name, datum, prime_mer, angunit, twin_ax=None):
+        """
+        Arguments:
+
+        - **name**: Arbitrary name. 
+        """
+        self.name = name
+        self.datum = datum
+        self.prime_mer = prime_mer
+        self.angunit = angunit
+        if twin_ax == None:
+            # default axes
+            twin_ax = directions.East(), directions.North()
+        self.twin_ax = twin_ax
+
+    def to_proj4(self):
+        # axis excluded because not sure if should be set from geogcs or projcs
+        return "%s %s %s" % (self.datum.to_proj4(), self.prime_mer.to_proj4(), self.angunit.to_proj4() ) #+axis= AND #, self.twin_ax[0].proj4, self.twin_ax[1].proj4 )
+
+    def to_ogc_wkt(self):
+        return 'GEOGCS["%s", %s, %s, %s, AXIS["Lon", %s], AXIS["Lat", %s]]' % (self.name, self.datum.to_ogc_wkt(), self.prime_mer.to_ogc_wkt(), self.angunit.to_ogc_wkt(), self.twin_ax[0].ogc_wkt, self.twin_ax[1].ogc_wkt )
+    
+    def to_esri_wkt(self):
+        return self.to_ogc_wkt()
+
+#PROJCS
+class ProjCS:
+    def __init__(self, name, geogcs, proj, params, unit, twin_ax=None):
+        """
+        Arguments:
+
+        - **name**: Arbitrary name. 
+        """
+        self.name = name
+        self.geogcs = geogcs
+        self.proj = proj
+        self.params = params
+        if twin_ax == None:
+            # default axes
+            twin_ax = directions.East(), directions.North()
+        self.twin_ax = twin_ax
+
+    def to_proj4(self):
+        string = "%s %s " % (self.proj.to_proj4(), self.geogcs.to_proj4())
+        string += " ".join(param.to_proj4() for param in self.params)
+        # axis excluded because not sure if should be set from geogcs or projcs
+        #string += " +axis=" + self.twin_ax[0].proj4 + self.twin_ax[1].proj4 + "u" # up set as default because only proj4 can set it I think...
+        return string
+
+    def to_ogc_wkt(self):
+        string = 'PROJCS["%s", %s, %s, ' % (self.name, self.geogcs.to_ogc_wkt(), self.proj.to_ogc_wkt() )
+        string += ", ".join(param.to_ogc_wkt() for param in self.params)
+        string += ', AXIS["X", %s], AXIS["Y", %s]]' % (self.twin_ax[0].ogc_wkt, self.twin_ax[1].ogc_wkt )
+        return string
+    
+    def to_esri_wkt(self):
+        return self.to_ogc_wkt()
 
 
 ##+k         Scaling factor (old name)
@@ -190,6 +264,11 @@ class LongitudeSpecial:
 ##+pm        Alternate prime meridian (typically a city name, see below)
 class PrimeMeridian:
     def __init__(self, value):
+        """
+        Arguments:
+
+        - **value**: Longitude value relative to Greenwich. 
+        """
         self.value = value
 
     def to_proj4(self):
@@ -202,15 +281,15 @@ class PrimeMeridian:
         return self.to_ogc_wkt()
 
 ##+proj      Projection name (see `proj -l`)
-class ProjectionName:
+class Projection:
     def __init__(self, value):
         self.value = value
 
     def to_proj4(self):
-        return "+proj=%s" %self.value
+        return "+proj=%s" %self.value.proj4
 
     def to_ogc_wkt(self):
-        return 'PROJECTION["%s"]' %self.value
+        return 'PROJECTION["%s"]' %self.value.ogc_wkt
 
     def to_esri_wkt(self):
         return self.to_ogc_wkt()
@@ -250,14 +329,19 @@ class MeterMultiplier:
 ##+units     meters, US survey feet, etc.
 class UnitType:
     def __init__(self, value):
+        """
+        Arguments:
+
+        - **value**: A specific unit type instance, eg Meter(). 
+        """
         self.value = value
 
     def to_proj4(self):
-        return "+units=%s" %self.value
+        return "+units=%s" %self.value.proj4
 
     def to_ogc_wkt(self):
         # the stuff that comes after UNITS[... # must be combined with metermultiplier in a unit class to make wkt
-        return str(self.value)
+        return str(self.value.ogc_wkt)
 
     def to_esri_wkt(self):
         return self.to_ogc_wkt()
@@ -269,7 +353,23 @@ class Unit:
         self.metermultiplier = metermultiplier
 
     def to_proj4(self):
-        return "+%s +%s" %(self.unittype, self.metermultiplier)
+        return "%s %s" %(self.unittype.to_proj4(), self.metermultiplier.to_proj4())
+
+    def to_ogc_wkt(self):
+        return 'UNIT["%s", %s]' %(self.unittype.to_ogc_wkt(), self.metermultiplier.to_ogc_wkt())
+
+    def to_esri_wkt(self):
+        return self.to_ogc_wkt()
+
+# angular unit
+class AngularUnit:
+    def __init__(self, unittype, metermultiplier):
+        self.unittype = unittype
+        self.metermultiplier = metermultiplier
+
+    def to_proj4(self):
+        # cannot be specified in proj4, so just return nothing
+        return ""
 
     def to_ogc_wkt(self):
         return 'UNIT["%s", %s]' %(self.unittype.to_ogc_wkt(), self.metermultiplier.to_ogc_wkt())
@@ -283,23 +383,55 @@ class FalseEasting:
     esri_wkt = "False_Easting"
     ogc_wkt = "false_easting"
     geotiff = "FalseEasting"
+    
     def __init__(self, value):
-        pass
+        self.value = value
+
+    def to_proj4(self):
+        return "+x_0=%s" %self.value
+
+    def to_ogc_wkt(self):
+        # the stuff that comes after UNITS[... # must be combined with metermultiplier in a unit class to make wkt
+        return 'PARAMETER["false_easting", %s]' % self.value
+
+    def to_esri_wkt(self):
+        return self.to_ogc_wkt()
     
 ##+y_0       False northing
-class FalseEasting:
+class FalseNorthing:
     proj4 = "+y_0"
     esri_wkt = "False_Northing"
     ogc_wkt = "false_northing"
     geotiff = "FalseNorthing"
+    
     def __init__(self, value):
-        pass
+        self.value = value
+
+    def to_proj4(self):
+        return "+y_0=%s" %self.value
+
+    def to_ogc_wkt(self):
+        # the stuff that comes after UNITS[... # must be combined with metermultiplier in a unit class to make wkt
+        return 'PARAMETER["false_northing", %s]' % self.value
+
+    def to_esri_wkt(self):
+        return self.to_ogc_wkt()
 
 
 # then the final CRS object which is instantiated with all of these?
 # remember to use +no_defs when outputting to proj4
 # ...
+class CRS:
+    def __init__(self, toplevel):
+        self.toplevel = toplevel
+        
+    def to_proj4(self):
+        return "%s +no_defs" % self.toplevel.to_proj4()
 
+    def to_ogc_wkt(self):
+        return "%s" % self.toplevel.to_ogc_wkt()
 
+    def to_esri_wkt(self):
+        return self.to_ogc_wkt()
 
 
