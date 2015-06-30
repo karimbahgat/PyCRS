@@ -71,7 +71,7 @@ def crsstring_to_string(string, newformat):
     return result
     
 
-if __name__ == "__main__":
-    build_crs_table("crstable.txt")
+##if __name__ == "__main__":
+##    build_crs_table("crstable.txt")
 
 

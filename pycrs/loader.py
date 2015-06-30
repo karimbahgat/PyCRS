@@ -1,5 +1,7 @@
 
 import json
+import urllib2
+from . import parser
 
 
 #################
@@ -10,37 +12,43 @@ import json
 
 def from_url(url, format=None):
     # first get string from url
-    # ...
+    string = urllib2.urlopen(url).read()
+
+    # then determine parser
+    if format:
+        # user specified format
+        format = format.lower().replace(" ", "_")
+        func = parser.__getattr__("from_%s" % format)
+    else:
+        # unknown format
+        func = parser.from_unknown_text
 
     # then load
-    if format:
-        # load string using specified format
-        pass
-    else:
-        from_unknown_text(string)
+    crs = func(string)
+    return crs
 
 def from_file(filepath):
     if filepath.endswith(".prj"):
         string = open(filepath, "r").read()
-        from_esri_wkt(string)
+        return parser.from_esri_wkt(string)
     
     elif filepath.endswith((".geojson",".json")):
         crsinfo = json.load(filepath)["crs"]
         
         if crsinfo["type"] == "name":
             string = crsinfo["properties"]["name"]
-            from_unknown_text(string)
+            return parser.from_unknown_text(string)
             
         elif crsinfo["type"] == "link":
             url = crsinfo["properties"]["name"]
             type = crsinfo["properties"].get("type")
-            from_url(url, format=type)
+            return from_url(url, format=type)
             
         else: raise Exception("invalid geojson crs type: must be either name or link")
 
-    elif filepath.endswith((".tif",".tiff",".geotiff")):
-        pass
-        # ...
+##    elif filepath.endswith((".tif",".tiff",".geotiff")):
+##        pass
+##        # ...
 
 
 
