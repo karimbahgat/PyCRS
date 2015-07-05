@@ -444,7 +444,6 @@ class FalseEasting:
         return "+x_0=%s" %self.value
 
     def to_ogc_wkt(self):
-        # the stuff that comes after UNITS[... # must be combined with metermultiplier in a unit class to make wkt
         return 'PARAMETER["false_easting", %s]' % self.value
 
     def to_esri_wkt(self):
@@ -464,11 +463,39 @@ class FalseNorthing:
         return "+y_0=%s" %self.value
 
     def to_ogc_wkt(self):
-        # the stuff that comes after UNITS[... # must be combined with metermultiplier in a unit class to make wkt
         return 'PARAMETER["false_northing", %s]' % self.value
 
     def to_esri_wkt(self):
         return self.to_ogc_wkt()
+
+##+h       Satellite height
+class SatelliteHeight:
+    def __init__(self, value):
+        self.value = value
+
+    def to_proj4(self):
+        return "+h=%s" %self.value
+
+    def to_ogc_wkt(self):
+        return 'PARAMETER["satellite_height", %s]' % self.value
+
+    def to_esri_wkt(self):
+        return self.to_ogc_wkt()
+
+##+tilt     Tilt angle
+class TiltAngle:
+    def __init__(self, value):
+        self.value = value
+
+    def to_proj4(self):
+        return "+tilt=%s" %self.value
+
+    def to_ogc_wkt(self):
+        raise Exception("Paramater not supported by OGC WKT")
+
+    def to_esri_wkt(self):
+        raise Exception("Paramater not supported by ESRI WKT")
+
     
 # then the final CRS object which is instantiated with all of these?
 # remember to use +no_defs when outputting to proj4

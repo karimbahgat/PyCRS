@@ -3,6 +3,7 @@
 # possible use module: https://github.com/rockdoc/grabbag/wiki/CRS-WKT-Parser
 # also note some paramter descriptions: http://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html
 # and see gdal source code: http://gis.stackexchange.com/questions/129764/how-are-esri-wkt-projections-different-from-ogc-wkt-projections
+# especially: http://fossies.org/windows/misc/saga_2.1.4_x64.zip/saga_2.1.4_x64/saga_prj.dic
 
 from . import datums
 from . import ellipsoids
@@ -36,12 +37,133 @@ def from_sr_code(code):
 ##    # parse arguments into components
 ##    # use args to create crs
 ##    pass
-##        
-##def from_ogc_wkt(string):
-##    # parse arguments into components
-##    # use args to create crs
-##    pass
-##
+        
+def from_ogc_wkt(string):
+    # remove newlines and multi spaces
+    string = " ".join(string.split())
+    
+    # parse arguments into components
+    def _consume_bracket(chars, char):
+        "char must be the opening bracket"
+        consumed = ""
+        depth = 1
+        while char and depth > 0:
+            consumed += char
+            char = next(chars, None)
+            # update depth level
+            if char == "[":
+                depth += 1
+            elif char == "]":
+                depth -= 1
+        consumed += char # consume the last closing char too
+        return consumed
+    
+    def _consume_quote(chars, char, quotechar):
+        "char and quotechar must be the opening quote char"
+        consumed = ""
+        # consume the first opening char
+        consumed += char 
+        char = next(chars, None)
+        # consume inside
+        while char and char != quotechar:
+            consumed += char
+            char = next(chars, None)
+        # consume the last closing char too
+        consumed += char 
+        return consumed
+    
+    def _next_elem(chars, char):
+        "char can be any char"
+        header = ""
+        # skip until next header
+        while not char.isalpha():
+            char = next(chars, None)
+        # first consume the element text header
+        while char.isalpha():
+            header += char
+            char = next(chars, None)
+        # skip until next brackets (in case of spaces)
+        while char != "[":
+            char = next(chars, None)
+        # then consume the element bracket contents
+        if char == "[":
+            content = _consume_bracket(chars, char)
+        char = next(chars, None)
+        # split content into args list
+        content = content[1:-1] # remove enclosing brackets
+        content = _split_except(content)
+        # recursively load all subelems
+        for i,item in enumerate(content):
+            if isinstance(item, str) and "[" in item:
+                chars = (char for char in item)
+                char = next(chars)
+                item = _next_elem(chars, char)
+                content[i] = item
+        return header, content
+    
+    def _clean_value(string):
+        string = string.strip()
+        try: string = float(string)
+        except: pass
+        return string
+    
+    def _split_except(string):
+        chars = (char for char in string)
+        char = next(chars)
+        items = []
+        consumed = ""
+        while char:
+            # dont split on quotes, just consume it
+            if char in ("'", '"'):
+                consumed += _consume_quote(chars, char, char)
+            # dont split inside brackets, just consume it
+            elif char == "[":
+                consumed += _consume_bracket(chars, char)
+            # make new splititem
+            elif char == ",":
+                consumed = _clean_value(consumed)
+                items.append(consumed)
+                consumed = ""
+            # consume normal char
+            elif char:
+                consumed += char
+            # next
+            char = next(chars, None)
+        # append last item too
+        consumed = _clean_value(consumed)
+        items.append(consumed)
+        return items
+
+    # load into nested tuples and arglists
+    crstuples = []
+    chars = (char for char in string)
+    char = next(chars)
+    while char:
+        header,content = _next_elem(chars, char)
+        crstuples.append((header, content))
+        char = next(chars, None)
+
+    # parse into actual crs objects
+    for header, content in crstuples:
+        # toplevel collection
+        if header.upper() == "PROJCS":
+            # find name
+            # find geogcs elem
+            # find projection elem
+            # find params
+            # find unit
+            pass
+            #projcs = parameters.ProjCS("Unknown", geogcs, proj, params, unit)
+
+        elif header.upper() == "GEOGCS":
+            pass
+
+            
+
+        
+    # use args to create crs
+    return crstuples
+
 ##def from_unknown_wkt(string):
 ##    # detect if ogc wkt or esri wkt
 ##    # TIPS: esri wkt datums all use "D_" before the datum name
@@ -61,6 +183,13 @@ def from_proj4(string):
 
     # INIT CODES...?
     # eg, +init=epsg code...?
+    if "+init" in partdict:
+
+        codetype, code = partdict["+init"].split(":")
+        if codetype == "EPSG":
+            crs = from_epsg_code(code)
+            # need to get individual elements from crs
+            # maybe from web...
 
     # DATUM
 
@@ -68,11 +197,15 @@ def from_proj4(string):
     if "+datum" in partdict:
         
         # get predefined datum def
-        if partdict["+datum"] == "WGS84":
-            datumdef = datums.WGS84()
-
-        elif partdict["+datum"] == "NAD83":
-            datumdef = datums.NAD83()
+        for itemname in dir(datums):
+            item = getattr(datums, itemname)
+            try:
+                item = item()
+                if hasattr(item, "proj4") and partdict["+datum"] == item.proj4:
+                    datumdef = item
+                    break
+            except:
+                pass
 
         else:
             datumdef = datums.Unknown()
@@ -86,17 +219,15 @@ def from_proj4(string):
     if "+ellps" in partdict:
 
         # get predefined ellips def
-        if partdict["+ellps"] == "WGS84":
-            ellipsdef = ellipsoids.WGS84()
-
-        elif partdict["+ellps"] == "WGS72":
-            ellipsdef = ellipsoids.WGS72()
-
-        elif partdict["+ellps"] == "intl":
-            ellipsdef = ellipsoids.International()
-
-        elif partdict["+ellps"] == "GRS80":
-            ellipsdef = ellipsoids.GRS80()
+        for itemname in dir(ellipsoids):
+            item = getattr(ellipsoids, itemname)
+            try:
+                item = item()
+                if hasattr(item, "proj4") and partdict["+ellps"] == item.proj4:
+                    ellipsdef = item
+                    break
+            except:
+                pass
 
     else:
         raise Exception("Could not find required +ellps element")
@@ -163,22 +294,15 @@ def from_proj4(string):
     if "+proj" in partdict:
 
         # get predefined proj def
-        if partdict["+proj"] == "robin":
-            projdef = projections.Robinson()
-
-        elif partdict["+proj"] == "omerc":
-            projdef = projections.ObliqueMercator()
-
-        elif partdict["+proj"] == "longlat":
-            projdef = None
-            # set geogcs axis in correct order
-
-        elif partdict["+proj"] == "latlong":
-            projdef = None
-            # set geogcs axis in correct order
-
-            # ALSO SHOULDNT EXCLUDE +proj, NEED WAY TO INCLUDE IT...
-            # ...
+        for itemname in dir(projections):
+            item = getattr(projections, itemname)
+            try:
+                item = item()
+                if hasattr(item, "proj4") and partdict["+proj"] == item.proj4:
+                    projdef = item
+                    break
+            except:
+                pass
 
         else:
             projdef = None
@@ -277,6 +401,12 @@ def from_proj4(string):
 
         ## create unitobj
         unit = parameters.Unit(unittype, metmulti)
+
+        # SATELLITE HEIGHT
+        if "+h" in partdict:
+            val = partdict["+h"]
+            obj = parameters.SatelliteHeight(val)
+            params.append(obj)
 
         # PROJCS
 

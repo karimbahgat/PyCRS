@@ -23,6 +23,13 @@ class NAD83:
     ellipsdef = "" # ellipsoids.WGS72()
     to_wgs84 = None
 
+class NAD27:
+    proj4 = "NAD27"
+    ogc_wkt = "D_North_American_1927"
+    esri_wkt = "D_North_American_1927"
+    
+    ellipsdef = "" # ellipsoids...
+    to_wgs84 = None
 
 class Unknown:
     proj4 = "unknown" # no datum name, just ellips + towgs84 params...
