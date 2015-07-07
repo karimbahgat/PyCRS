@@ -163,6 +163,7 @@ class ProjCS:
         self.geogcs = geogcs
         self.proj = proj
         self.params = params
+        self.unit = unit
         if twin_ax == None:
             # default axes
             twin_ax = directions.East(), directions.North()
@@ -171,6 +172,7 @@ class ProjCS:
     def to_proj4(self):
         string = "%s %s " % (self.proj.to_proj4(), self.geogcs.to_proj4())
         string += " ".join(param.to_proj4() for param in self.params)
+        string += " %s" % self.unit.to_proj4()
         # in proj4, axis only applies to the cs, ie the projcs (not the geogcs, where wkt can specify with axis)
         string += " +axis=" + self.twin_ax[0].proj4 + self.twin_ax[1].proj4 + "u" # up set as default because only proj4 can set it I think...
         return string
@@ -178,6 +180,7 @@ class ProjCS:
     def to_ogc_wkt(self):
         string = 'PROJCS["%s", %s, %s, ' % (self.name, self.geogcs.to_ogc_wkt(), self.proj.to_ogc_wkt() )
         string += ", ".join(param.to_ogc_wkt() for param in self.params)
+        string += ', %s' % self.unit.to_ogc_wkt()
         string += ', AXIS["X", %s], AXIS["Y", %s]]' % (self.twin_ax[0].ogc_wkt, self.twin_ax[1].ogc_wkt )
         return string
     
@@ -356,10 +359,10 @@ class DatumShift:
         self.value = value
 
     def to_proj4(self):
-        return "+towgs84=%s" %",".join((str(val) for val in self.value))
+        return "+towgs84=%s" %",".join((bytes(val) for val in self.value))
 
     def to_ogc_wkt(self):
-        return "TOWGS84[%s]" %",".join((str(val) for val in self.value))
+        return "TOWGS84[%s]" %",".join((bytes(val) for val in self.value))
 
     def to_esri_wkt(self):
         raise Exception("Paramater not supported by ESRI WKT")
@@ -374,7 +377,7 @@ class MeterMultiplier:
 
     def to_ogc_wkt(self):
         # the stuff that comes after UNITS["meter", ... # must be combined with unittype in a unit class to make wkt
-        return str(self.value)
+        return bytes(self.value)
 
     def to_esri_wkt(self):
         return self.to_ogc_wkt()
@@ -394,7 +397,7 @@ class UnitType:
 
     def to_ogc_wkt(self):
         # the stuff that comes after UNITS[... # must be combined with metermultiplier in a unit class to make wkt
-        return str(self.value.ogc_wkt)
+        return bytes(self.value.ogc_wkt)
 
     def to_esri_wkt(self):
         return self.to_ogc_wkt()

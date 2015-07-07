@@ -73,7 +73,7 @@ def from_ogc_wkt(string):
         return consumed
     
     def _next_elem(chars, char):
-        "char can be any char"
+        "char must be the first char of the text that precedes brackets"
         header = ""
         # skip until next header
         while not char.isalpha():
@@ -144,25 +144,150 @@ def from_ogc_wkt(string):
         char = next(chars, None)
 
     # parse into actual crs objects
-    for header, content in crstuples:
-        # toplevel collection
+    def _parse(header, content):
         if header.upper() == "PROJCS":
             # find name
-            # find geogcs elem
+            name = content[0].strip('"')
+            # find geogcs elem (by running parse again)
+            subheader, subcontent = content[1]
+            geogcs = _parse(subheader, subcontent)
             # find projection elem
+            subheader, subcontent = content[2]
+            for itemname in dir(projections):
+                item = getattr(projections, itemname)
+                try:
+                    item = item()
+                    if hasattr(item, "ogc_wkt") and subcontent[0].strip('"') == item.ogc_wkt:
+                        projdef = item
+                        break
+                except:
+                    pass
+            else:
+                projdef = None
+            proj = parameters.Projection(projdef)
             # find params
+            params = []
+            for part in content:
+                if isinstance(part, tuple):
+                    subheader,subcontent = part
+                    if subheader == "PARAMETER":
+                        if subcontent[0] == '"Azimuth"':
+                            item = parameters.Azimuth(subcontent[1])
+                            params.append(item)
+                        elif subcontent[0] == '"scale_factor"':
+                            item = parameters.ScalingFactor(subcontent[1])
+                            params.append(item)
+                        elif subcontent[0] == '"latitude_of_origin"':
+                            item = parameters.LatitudeOrigin(subcontent[1])
+                            params.append(item)
+                        elif subcontent[0] == '"standard_parallel_1"':
+                            item = parameters.LatitudeFirstStndParallel(subcontent[1])
+                            params.append(item)
+                        elif subcontent[0] == '"standard_parallel_2"':
+                            item = parameters.LatitudeSecondStndParallel(subcontent[1])
+                            params.append(item)
+                        elif subcontent[0] == '"Standard_Parallel_1"':
+                            item = parameters.LatitudeTrueScale(subcontent[1])
+                            params.append(item)
+                        elif subcontent[0] == '"Central_Meridian"':
+                            item = parameters.CentralMeridian(subcontent[1])
+                            params.append(item)
+                        elif subcontent[0] == '"Longitude_Of_Center"':
+                            item = parameters.LongitudeCenter(subcontent[1])
+                            params.append(item)
+                        elif subcontent[0] == '"false_easting"':
+                            item = parameters.FalseEasting(subcontent[1])
+                            params.append(item)
+                        elif subcontent[0] == '"false_northing"':
+                            item = parameters.FalseNorthing(subcontent[1])
+                            params.append(item)
+                        elif subcontent[0] == '"satellite_height"':
+                            item = parameters.SatelliteHeight(subcontent[1])
+                            params.append(item)
             # find unit
-            pass
-            #projcs = parameters.ProjCS("Unknown", geogcs, proj, params, unit)
+            for part in content:
+                if isinstance(part, tuple):
+                    subheader,subcontent = part
+                    if subheader == "UNIT":
+                        break
+            if subcontent[0].strip('"') == "Meters":
+                unittype = parameters.UnitType(units.Meter())
+            elif subcontent[0].strip('"') == "degree":
+                unittype = parameters.UnitType(units.Degree())
+            metmult = parameters.MeterMultiplier(subcontent[1])
+            unit = parameters.Unit(unittype, metmult)
+            # find twin axis maybe
+##            if len(content) >= 6:
+##                twinax = (parameters.Axis(
+##            else:
+##                twinax = None
+            # put it all together
+            projcs = parameters.ProjCS("Unknown", geogcs, proj, params, unit) #, twinax)
+            return projcs
 
         elif header.upper() == "GEOGCS":
-            pass
+            # name
+            name = content[0]
+            # datum
+            subheader, subcontent = content[1]
+            ## datum name
+            for itemname in dir(datums):
+                item = getattr(datums, itemname)
+                try:
+                    item = item()
+                    if hasattr(item, "ogc_wkt") and subcontent[0].strip('"') == item.ogc_wkt:
+                        datumdef = item
+                        break
+                except:
+                    pass
+            else:
+                datumdef = datums.Unknown()
+            ## datum ellipsoid
+            subsubheader, subsubcontent = subcontent[1]
+            for itemname in dir(ellipsoids):
+                item = getattr(ellipsoids, itemname)
+                try:
+                    item = item()
+                    if hasattr(item, "ogc_wkt") and subsubcontent[0].strip('"') == item.ogc_wkt:
+                        ellipsdef = item
+                        break
+                except:
+                    pass
+            else:
+                ellipsdef = None
+            ellipsoid = parameters.Ellipsoid(ellipsdef, subsubcontent[1], subsubcontent[2])
+            ## datum shift
+            if len(subcontent) >= 3:
+                subsubheader, subsubcontent = subcontent[2]
+                datumshift = parameters.DatumShift(subsubcontent)
+            else:
+                datumshift = None
+            ## put it all togehter
+            datum = parameters.Datum(datumdef, ellipsoid, datumshift)
+            # prime mer
+            subheader, subcontent = content[2]
+            prime_mer = parameters.PrimeMeridian(subcontent[1])
+            # angunit
+            subheader, subcontent = content[3]
+            if subcontent[0].strip('"') == "Meters":
+                unittype = parameters.UnitType(units.Meter())
+            elif subcontent[0].strip('"') == "degree":
+                unittype = parameters.UnitType(units.Degree())
+            metmult = parameters.MeterMultiplier(subcontent[1])
+            angunit = parameters.AngularUnit(unittype, metmult)
+            # twin axis
+            # ...
+            # put it all together
+            geogcs = parameters.GeogCS(name, datum, prime_mer, angunit, twin_ax=None)
+            return geogcs
 
-            
-
+    # toplevel collection
+    header, content in crstuples[0]
+    toplevel = _parse(header, content)
+    crs = parameters.CRS(toplevel)
         
     # use args to create crs
-    return crstuples
+    return crs
 
 ##def from_unknown_wkt(string):
 ##    # detect if ogc wkt or esri wkt
@@ -406,6 +531,12 @@ def from_proj4(string):
         if "+h" in partdict:
             val = partdict["+h"]
             obj = parameters.SatelliteHeight(val)
+            params.append(obj)
+
+        # TILT ANGLE
+        if "+tilt" in partdict:
+            val = partdict["+tilt"]
+            obj = parameters.TiltAngle(val)
             params.append(obj)
 
         # PROJCS

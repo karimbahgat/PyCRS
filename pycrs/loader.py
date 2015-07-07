@@ -33,18 +33,25 @@ def from_file(filepath):
         return parser.from_esri_wkt(string)
     
     elif filepath.endswith((".geojson",".json")):
-        crsinfo = json.load(filepath)["crs"]
-        
-        if crsinfo["type"] == "name":
-            string = crsinfo["properties"]["name"]
-            return parser.from_unknown_text(string)
+        raw = open(filepath).read()
+        geoj = json.loads(raw)
+        if "crs" in geoj:
+            crsinfo = geoj["crs"]
             
-        elif crsinfo["type"] == "link":
-            url = crsinfo["properties"]["name"]
-            type = crsinfo["properties"].get("type")
-            return from_url(url, format=type)
-            
-        else: raise Exception("invalid geojson crs type: must be either name or link")
+            if crsinfo["type"] == "name":
+                string = crsinfo["properties"]["name"]
+                return parser.from_unknown_text(string)
+                
+            elif crsinfo["type"] == "link":
+                url = crsinfo["properties"]["name"]
+                type = crsinfo["properties"].get("type")
+                return loader.from_url(url, format=type)
+                
+            else: raise Exception("invalid geojson crs type: must be either name or link")
+
+        else:
+            # assume default wgs84 as per the spec
+            return parser.from_epsg_code("4326")
 
 ##    elif filepath.endswith((".tif",".tiff",".geotiff")):
 ##        pass
