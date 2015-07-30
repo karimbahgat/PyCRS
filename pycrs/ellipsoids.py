@@ -1,5 +1,27 @@
 
 
+def find(ellipsname, crstype, strict=False):
+    if not strict:
+        ellipsname = ellipsname.lower()
+    for itemname,item in globals().items():
+        if itemname.startswith("_"):
+            continue
+        try:
+            if hasattr(item, crstype):
+                itemname = getattr(item, crstype)
+                if not strict:
+                    itemname = itemname.lower()
+                if ellipsname == itemname:
+                    return item
+        except:
+            pass
+    else:
+        return None
+
+
+
+
+
 class WGS84:
     proj4 = "WGS84"
     ogc_wkt = "WGS_1984"
@@ -48,6 +70,21 @@ class Airy1830:
 
     semimaj_ax = 6377563.396
     inv_flat = 299.3249646
+
+class SphereArcInfo:
+    proj4 = "" # no name
+    ogc_wkt = "Sphere_ARC_INFO"
+    esri_wkt = "Sphere_ARC_INFO"
+
+    semimaj_ax = 6370997.0
+    inv_flat = 0.0
+
+
+
+
+
+
+
 
 
     

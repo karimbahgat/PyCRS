@@ -1,4 +1,26 @@
 
+
+def find(datumname, crstype, strict=False):
+    if not strict:
+        datumname = datumname.lower()
+    for itemname,item in globals().items():
+        if itemname.startswith("_"):
+            continue
+        try:
+            if hasattr(item, crstype):
+                itemname = getattr(item, crstype)
+                if not strict:
+                    itemname = itemname.lower()
+                if datumname == itemname:
+                    return item
+        except:
+            pass
+    else:
+        return None
+
+    
+
+
 class WGS84:
     proj4 = "WGS84"
     ogc_wkt = "WGS_1984"
@@ -30,6 +52,14 @@ class NAD27:
     
     ellipsdef = "" # ellipsoids...
     to_wgs84 = None
+
+class SphereArcInfo:
+    proj4 = "" # no name
+    ogc_wkt = "D_Sphere_ARC_INFO" # confirmed but odd that uses D_
+    esri_wkt = "D_Sphere_ARC_INFO"
+
+    semimaj_ax = 6370997.0
+    inv_flat = 0.0
 
 class Unknown:
     proj4 = "unknown" # no datum name, just ellips + towgs84 params...
