@@ -321,7 +321,7 @@ def _from_wkt(string, wkttype, strict=False):
 ##    # then load with appropriate function
 ##    pass
 
-def from_proj4(string):
+def from_proj4(string, strict=False):
     # parse arguments into components
     # use args to create crs
 
@@ -360,17 +360,9 @@ def from_proj4(string):
     if "+datum" in partdict:
         
         # get predefined datum def
-        for itemname in dir(datums):
-            item = getattr(datums, itemname)
-            try:
-                item = item()
-                if hasattr(item, "proj4") and partdict["+datum"] == item.proj4:
-                    datumdef = item
-                    break
-            except:
-                pass
-
-        else:
+        datumname = partdict["+datum"]
+        datumdef = datums.find(datumname, "proj4", strict)()
+        if not datumdef:
             datumdef = datums.Unknown()
 
     else:
@@ -382,15 +374,10 @@ def from_proj4(string):
     if "+ellps" in partdict:
 
         # get predefined ellips def
-        for itemname in dir(ellipsoids):
-            item = getattr(ellipsoids, itemname)
-            try:
-                item = item()
-                if hasattr(item, "proj4") and partdict["+ellps"] == item.proj4:
-                    ellipsdef = item
-                    break
-            except:
-                pass
+        ellipsname = partdict["+ellps"]
+        ellipsdef = ellipsoids.find(ellipsname, "proj4", strict)()
+        if not ellipsdef:
+            raise Exception("The ellipsoid name did not match any definitions")
 
     else:
         raise Exception("Could not find required +ellps element")
@@ -457,18 +444,8 @@ def from_proj4(string):
     if "+proj" in partdict:
 
         # get predefined proj def
-        for itemname in dir(projections):
-            item = getattr(projections, itemname)
-            try:
-                item = item()
-                if hasattr(item, "proj4") and partdict["+proj"] == item.proj4:
-                    projdef = item
-                    break
-            except:
-                pass
-
-        else:
-            projdef = None
+        projname = partdict["+proj"]
+        projdef = projections.find(projname, "proj4", strict)()
 
     else:
         raise Exception("Could not find required +proj element")
@@ -477,6 +454,13 @@ def from_proj4(string):
 
         # create proj param obj
         proj = parameters.Projection(projdef)
+
+##        # collect param objects
+##        for key,val in partdict.items():
+##            objclass = parameters.find(key, "proj4", strict)
+##            if objclass:
+##                obj = objclass(val)
+##                params.append(obj)
 
         # CENTRAL MERIDIAN
 
@@ -549,22 +533,6 @@ def from_proj4(string):
             obj = parameters.LatitudeSecondStndParallel(val)
             params.append(obj)
 
-        # UNIT
-
-        ## set default
-        metmulti = parameters.MeterMultiplier(1.0)
-        unittype = parameters.UnitType(units.Meter())
-
-        ## override with user input
-        if "+to_meter" in partdict:
-            metmulti = parameters.MeterMultiplier(partdict["+to_meter"])
-        if "+units" in partdict:
-            if partdict["+units"] == "m":
-                unittype = parameters.UnitType(units.Meter())
-
-        ## create unitobj
-        unit = parameters.Unit(unittype, metmulti)
-
         # SATELLITE HEIGHT
         if "+h" in partdict:
             val = partdict["+h"]
@@ -576,6 +544,24 @@ def from_proj4(string):
             val = partdict["+tilt"]
             obj = parameters.TiltAngle(val)
             params.append(obj)
+
+        # UNIT
+
+        ## set default
+        metmulti = parameters.MeterMultiplier(1.0)
+        unittype = parameters.UnitType(units.Meter())
+
+        ## override with user input
+        if "+to_meter" in partdict:
+            metmulti = parameters.MeterMultiplier(partdict["+to_meter"])
+        if "+units" in partdict:
+            unitname = partdict["+units"]
+            unit = units.find(unitname, "proj4", strict)()
+            if unit:
+                unittype = parameters.UnitType(unit)
+
+        ## create unitobj
+        unit = parameters.Unit(unittype, metmulti)
 
         # PROJCS
 
@@ -591,6 +577,7 @@ def from_proj4(string):
     # FINISHED
 
     return crs
+
 
 ##def from_ogc_urn(string):
 ##    # hmmm, seems like ogc urn could be anything incl online link, epsg, etc...
@@ -616,6 +603,7 @@ def from_proj4(string):
 ##
 ##    pass
 
+
 def from_unknown_text(text):
     """Detect type and load with appropriate function"""
     
@@ -639,5 +627,9 @@ def from_unknown_text(text):
 
     else: raise Exception("Could not detect which type of crs")
 
+
 ##def from_geotiff_parameters(**params):
 ##    pass
+
+
+
