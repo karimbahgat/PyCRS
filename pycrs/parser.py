@@ -4,6 +4,7 @@
 # also note some paramter descriptions: http://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html
 # and see gdal source code: http://gis.stackexchange.com/questions/129764/how-are-esri-wkt-projections-different-from-ogc-wkt-projections
 # especially: http://fossies.org/windows/misc/saga_2.1.4_x64.zip/saga_2.1.4_x64/saga_prj.dic
+# also: http://saga.sourcearchive.com/documentation/2.0.7plus-pdfsg-2/crs__base_8cpp_source.html
 
 from . import datums
 from . import ellipsoids
@@ -33,12 +34,27 @@ def from_sr_code(code):
     crs = from_proj4(proj4)
     return crs
 
-##def from_esri_wkt(string):
-##    # parse arguments into components
-##    # use args to create crs
-##    pass
+def from_ogc_wkt(string, strict=False):
+    # parse arguments into components
+    # use args to create crs
+    return _from_wkt(string, "ogc", strict)
+
+def from_esri_wkt(string, strict=False):
+    # parse arguments into components
+    # use args to create crs
+    return _from_wkt(string, "esri", strict)
         
-def from_ogc_wkt(string):
+def _from_wkt(string, wkttype, strict=False):
+    # TODO
+    # - Make try except search loops into a reusable function
+    # - Make function for finding next elemt by name, instead of knowing its arg index position
+    # - Maybe verify elem arg name
+    # - Convert all param and name values to lowercase so not so strict...
+
+    # make sure valid wkttype
+    wkttype = wkttype.lower()
+    assert wkttype in ("ogc","esri")
+    
     # remove newlines and multi spaces
     string = " ".join(string.split())
     
@@ -108,6 +124,7 @@ def from_ogc_wkt(string):
         return string
     
     def _split_except(string):
+        "split the string on every comma, except not while inside quotes or square brackets"
         chars = (char for char in string)
         char = next(chars)
         items = []
@@ -119,7 +136,7 @@ def from_ogc_wkt(string):
             # dont split inside brackets, just consume it
             elif char == "[":
                 consumed += _consume_bracket(chars, char)
-            # make new splititem
+            # new splitchar found, add what has been consumed so far as an item, reset, and start consuming until next splitchar
             elif char == ",":
                 consumed = _clean_value(consumed)
                 items.append(consumed)
@@ -144,146 +161,155 @@ def from_ogc_wkt(string):
         char = next(chars, None)
 
     # parse into actual crs objects
-    def _parse(header, content):
+    def _parse_top(header, content):
         if header.upper() == "PROJCS":
+            
             # find name
             name = content[0].strip('"')
+            
             # find geogcs elem (by running parse again)
             subheader, subcontent = content[1]
-            geogcs = _parse(subheader, subcontent)
+            geogcs = _parse_top(subheader, subcontent)
+            
             # find projection elem
             subheader, subcontent = content[2]
-            for itemname in dir(projections):
-                item = getattr(projections, itemname)
-                try:
-                    item = item()
-                    if hasattr(item, "ogc_wkt") and subcontent[0].strip('"') == item.ogc_wkt:
-                        projdef = item
-                        break
-                except:
-                    pass
-            else:
-                projdef = None
+            projname = subcontent[0].strip('"')
+            projdef = projections.find(projname, "%s_wkt" % wkttype, strict)()
             proj = parameters.Projection(projdef)
+            
             # find params
             params = []
             for part in content:
                 if isinstance(part, tuple):
                     subheader,subcontent = part
                     if subheader == "PARAMETER":
-                        if subcontent[0] == '"Azimuth"':
-                            item = parameters.Azimuth(subcontent[1])
+                        name, value = subcontent[0].strip('"'), subcontent[1]
+                        itemclass = parameters.find(name, "%s_wkt" % wkttype, strict)
+                        if itemclass:
+                            item = itemclass(value)
                             params.append(item)
-                        elif subcontent[0] == '"scale_factor"':
-                            item = parameters.ScalingFactor(subcontent[1])
-                            params.append(item)
-                        elif subcontent[0] == '"latitude_of_origin"':
-                            item = parameters.LatitudeOrigin(subcontent[1])
-                            params.append(item)
-                        elif subcontent[0] == '"standard_parallel_1"':
-                            item = parameters.LatitudeFirstStndParallel(subcontent[1])
-                            params.append(item)
-                        elif subcontent[0] == '"standard_parallel_2"':
-                            item = parameters.LatitudeSecondStndParallel(subcontent[1])
-                            params.append(item)
-                        elif subcontent[0] == '"Standard_Parallel_1"':
-                            item = parameters.LatitudeTrueScale(subcontent[1])
-                            params.append(item)
-                        elif subcontent[0] == '"Central_Meridian"':
-                            item = parameters.CentralMeridian(subcontent[1])
-                            params.append(item)
-                        elif subcontent[0] == '"Longitude_Of_Center"':
-                            item = parameters.LongitudeCenter(subcontent[1])
-                            params.append(item)
-                        elif subcontent[0] == '"false_easting"':
-                            item = parameters.FalseEasting(subcontent[1])
-                            params.append(item)
-                        elif subcontent[0] == '"false_northing"':
-                            item = parameters.FalseNorthing(subcontent[1])
-                            params.append(item)
-                        elif subcontent[0] == '"satellite_height"':
-                            item = parameters.SatelliteHeight(subcontent[1])
-                            params.append(item)
+                            
+##                        if subcontent[0] == '"Azimuth"':
+##                            item = parameters.Azimuth(subcontent[1])
+##                            params.append(item)
+##                        elif subcontent[0] == '"scale_factor"':
+##                            item = parameters.ScalingFactor(subcontent[1])
+##                            params.append(item)
+##                        elif subcontent[0] == '"latitude_of_origin"':
+##                            item = parameters.LatitudeOrigin(subcontent[1])
+##                            params.append(item)
+##                        elif subcontent[0] == '"standard_parallel_1"':
+##                            item = parameters.LatitudeFirstStndParallel(subcontent[1])
+##                            params.append(item)
+##                        elif subcontent[0] == '"standard_parallel_2"':
+##                            item = parameters.LatitudeSecondStndParallel(subcontent[1])
+##                            params.append(item)
+##                        elif subcontent[0] == '"Standard_Parallel_1"':
+##                            item = parameters.LatitudeTrueScale(subcontent[1])
+##                            params.append(item)
+##                        elif subcontent[0] == '"Central_Meridian"':
+##                            item = parameters.CentralMeridian(subcontent[1])
+##                            params.append(item)
+##                        elif subcontent[0] == '"Longitude_Of_Center"':
+##                            item = parameters.LongitudeCenter(subcontent[1])
+##                            params.append(item)
+##                        elif subcontent[0] == '"false_easting"':
+##                            item = parameters.FalseEasting(subcontent[1])
+##                            params.append(item)
+##                        elif subcontent[0] == '"false_northing"':
+##                            item = parameters.FalseNorthing(subcontent[1])
+##                            params.append(item)
+##                        elif subcontent[0] == '"satellite_height"':
+##                            item = parameters.SatelliteHeight(subcontent[1])
+##                            params.append(item)
+                            
             # find unit
             for part in content:
                 if isinstance(part, tuple):
                     subheader,subcontent = part
                     if subheader == "UNIT":
                         break
-            if subcontent[0].strip('"') == "Meters":
-                unittype = parameters.UnitType(units.Meter())
-            elif subcontent[0].strip('"') == "degree":
-                unittype = parameters.UnitType(units.Degree())
-            metmult = parameters.MeterMultiplier(subcontent[1])
-            unit = parameters.Unit(unittype, metmult)
+            unitname,value = subcontent[0].strip('"'), subcontent[1]
+            unit = units.find(unitname, "%s_wkt" % wkttype, strict)()
+            if unit:
+                unittype = parameters.UnitType(unit)
+##            if subcontent[0].strip('"') == "Meters":
+##                unittype = parameters.UnitType(units.Meter())
+##            elif subcontent[0].strip('"') == "degree":
+##                unittype = parameters.UnitType(units.Degree())
+            metmult = parameters.MeterMultiplier(value)
+            linunit = parameters.Unit(unittype, metmult)
+            
             # find twin axis maybe
 ##            if len(content) >= 6:
 ##                twinax = (parameters.Axis(
 ##            else:
 ##                twinax = None
+            
             # put it all together
-            projcs = parameters.ProjCS("Unknown", geogcs, proj, params, unit) #, twinax)
+            projcs = parameters.ProjCS("Unknown", geogcs, proj, params, linunit) #, twinax)
             return projcs
 
         elif header.upper() == "GEOGCS":
             # name
-            name = content[0]
+            name = content[0].strip('"')
+            
             # datum
             subheader, subcontent = content[1]
+            
             ## datum name
-            for itemname in dir(datums):
-                item = getattr(datums, itemname)
-                try:
-                    item = item()
-                    if hasattr(item, "ogc_wkt") and subcontent[0].strip('"') == item.ogc_wkt:
-                        datumdef = item
-                        break
-                except:
-                    pass
-            else:
+            datumname = subcontent[0].strip('"')
+            datumdef = datums.find(datumname, "%s_wkt" % wkttype, strict)()
+            if not datumdef:
                 datumdef = datums.Unknown()
+                
             ## datum ellipsoid
             subsubheader, subsubcontent = subcontent[1]
-            for itemname in dir(ellipsoids):
-                item = getattr(ellipsoids, itemname)
-                try:
-                    item = item()
-                    if hasattr(item, "ogc_wkt") and subsubcontent[0].strip('"') == item.ogc_wkt:
-                        ellipsdef = item
-                        break
-                except:
-                    pass
-            else:
-                ellipsdef = None
+            ellipsname = subsubcontent[0].strip('"')
+            ellipsdef = ellipsoids.find(ellipsname, "%s_wkt" % wkttype, strict)()
             ellipsoid = parameters.Ellipsoid(ellipsdef, subsubcontent[1], subsubcontent[2])
+
             ## datum shift
-            if len(subcontent) >= 3:
-                subsubheader, subsubcontent = subcontent[2]
-                datumshift = parameters.DatumShift(subsubcontent)
-            else:
+            if wkttype == "ogc":
+                if len(subcontent) >= 3:
+                    subsubheader, subsubcontent = subcontent[2]
+                    datumshift = parameters.DatumShift(subsubcontent)
+                else:
+                    datumshift = None
+            elif wkttype == "esri":
+                # not used in esri wkt
                 datumshift = None
+                
             ## put it all togehter
             datum = parameters.Datum(datumdef, ellipsoid, datumshift)
+            
             # prime mer
             subheader, subcontent = content[2]
             prime_mer = parameters.PrimeMeridian(subcontent[1])
+            
             # angunit
             subheader, subcontent = content[3]
-            if subcontent[0].strip('"') == "Meters":
-                unittype = parameters.UnitType(units.Meter())
-            elif subcontent[0].strip('"') == "degree":
-                unittype = parameters.UnitType(units.Degree())
-            metmult = parameters.MeterMultiplier(subcontent[1])
+            unitname,value = subcontent[0].strip('"'), subcontent[1]
+            unit = units.find(unitname, "%s_wkt" % wkttype, strict)()
+            if unit:
+                unittype = parameters.UnitType(unit)
+##            if subcontent[0].strip('"') == "Meters":
+##                unittype = parameters.UnitType(units.Meter())
+##            elif subcontent[0].strip('"') == "degree":
+##                unittype = parameters.UnitType(units.Degree())
+            metmult = parameters.MeterMultiplier(value)
             angunit = parameters.AngularUnit(unittype, metmult)
+            
             # twin axis
             # ...
+            
             # put it all together
             geogcs = parameters.GeogCS(name, datum, prime_mer, angunit, twin_ax=None)
             return geogcs
 
     # toplevel collection
-    header, content in crstuples[0]
-    toplevel = _parse(header, content)
+    header, content = crstuples[0]
+    toplevel = _parse_top(header, content)
     crs = parameters.CRS(toplevel)
         
     # use args to create crs
@@ -302,19 +328,31 @@ def from_proj4(string):
     # SLIGTHLY MESSY STILL, CLEANUP..
 
     params = []
-    
     partdict = dict([part.split("=") for part in string.split()
-                     if not part.startswith("+no_defs")])
+                     if len(part.split("=")) == 2 ])
 
-    # INIT CODES...?
-    # eg, +init=epsg code...?
+    # INIT CODES
+    # eg, +init=EPSG:1234
     if "+init" in partdict:
 
+        # first, get the default proj4 string of the +init code
         codetype, code = partdict["+init"].split(":")
         if codetype == "EPSG":
-            crs = from_epsg_code(code)
-            # need to get individual elements from crs
-            # maybe from web...
+            initproj4 = webscrape.crscode_to_string("epsg", code, "proj4")
+        elif codetype == "ESRI":
+            initproj4 = webscrape.crscode_to_string("esri", code, "proj4")
+
+        # make the default into param dict
+        initpartdict = dict([part.split("=") for part in initproj4.split()
+                             if len(part.split("=")) == 2 ])
+
+        # override the default with any custom params specified along with the +init code
+        initpartdict.update(partdict)
+
+        # rerun from_proj4() again on the derived proj4 params as if it was not made with the +init code
+        del initpartdict["+init"]
+        string = " ".join("%s=%s" % (key,val) for key,val in initpartdict.items())
+        return from_proj4(string)
 
     # DATUM
 
