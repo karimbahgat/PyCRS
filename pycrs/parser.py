@@ -445,7 +445,14 @@ def from_proj4(string, strict=False):
 
         # get predefined proj def
         projname = partdict["+proj"]
-        projdef = projections.find(projname, "proj4", strict)()
+        projclass = projections.find(projname, "proj4", strict)
+        if projclass:
+            projdef = projclass()
+        elif projname == "longlat":
+            # proj4 special case, longlat as projection name means unprojected geogcs
+            projdef = None
+        else:
+            raise Exception("The specified +proj name could not be found")
 
     else:
         raise Exception("Could not find required +proj element")
@@ -572,6 +579,7 @@ def from_proj4(string, strict=False):
         crs = parameters.CRS(projcs)
 
     else:
+        # means projdef was None, ie unprojected longlat geogcs
         crs = parameters.CRS(geogcs)
 
     # FINISHED

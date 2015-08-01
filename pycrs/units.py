@@ -15,7 +15,7 @@ def find(unitname, crstype, strict=False):
                 if unitname == itemname:
                     return item
                 # special handling of wkt meters which has multiple possibilities
-                elif isinstance(itemname, Meter) and crstype.endswith("wkt") and not strict and unitname in ("meters","meter","metre"):
+                elif isinstance(item(), Meter) and crstype.endswith("wkt") and not strict and unitname in ("meters","meter","metre"):
                     return item
         except:
             pass

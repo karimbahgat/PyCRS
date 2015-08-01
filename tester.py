@@ -64,53 +64,73 @@ def render_world(crs):
 
 
 
-###########################
-# OGC WKT
-print("--------")
-print("testing ogc wkt")
-print("")
-#crs = pycrs.parser.from_sr_code(54030)
+# Source string generator
+def sourcestrings(format):
+    # TODO: now bunch of randoms, instead add only most commonly used ones
+    yield pycrs.webscrape.crscode_to_string("esri", 54030, format)
+    yield pycrs.webscrape.crscode_to_string("sr-org", 7898, format)
+    yield pycrs.webscrape.crscode_to_string("sr-org", 6978, format)
+    yield pycrs.webscrape.crscode_to_string("epsg", 4324, format)
+    yield pycrs.webscrape.crscode_to_string("sr-org", 6618, format)
+    yield pycrs.webscrape.crscode_to_string("sr-org", 22, format)
+    yield pycrs.webscrape.crscode_to_string("esri", 54031, format)
+    # add more...
+
+
+
+
+
+# Testing format outputs
+def testoutputs(crs):
+    print("To:\n")
+    try: result = crs.to_ogc_wkt()
+    except: result = "Fail"
+    print("ogc_wkt: %s \n" % result)
+
+    try: result = crs.to_esri_wkt()
+    except: result = "Fail"
+    print("esri_wkt: %s \n" % result)
+          
+    try: result = crs.to_proj4()
+    except: result = "Fail"
+    print("proj4: %s \n" % result)
+
+
+
+
+# Misc crs for testing
+#crs = pycrs.webscrape.crscode_to_string("esri", 54030, "proj4")
+#crs = pycrs.webscrape.crscode_to_string("sr-org", 6978, "proj4")
+#crs = pycrs.parser.from_sr_code(7898)
+#crs = pycrs.parser.from_epsg_code(4324)
+#crs = pycrs.parser.from_sr_code(6618)
 #crs = pycrs.parser.from_sr_code(22)
 #crs = pycrs.parser.from_esri_code(54031)
-crs = pycrs.parser.from_sr_code(6978)
-wkt = crs.to_ogc_wkt()
-
-print("Original:", wkt)
-print("")
-
-crs = pycrs.parser.from_ogc_wkt(wkt)
-
-print("Reconstructed:", crs.to_ogc_wkt())
-print("")
-
-#render_world(crs)
-
-
-
-
-###########################
-# PROJ4
-print("--------")
-print("testing proj4")
-print("")
-proj4 = "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
 #proj4 = "+proj=longlat +ellps=WGS84 +datum=WGS84"
 #proj4 = "+proj=aea +lat_1=24 +lat_2=31.5 +lat_0=24 +lon_0=-84 +x_0=400000 +y_0=0 +ellps=GRS80 +units=m +no_defs "
 #proj4 = "+proj=larr +datum=WGS84 +lon_0=0 +lat_ts=45 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
 #proj4 = "+proj=nsper +datum=WGS84 +ellps=WGS84 +lon_0=-60 +lat_0=40 +h=2000000000000000000000000"
 
-print("Original:", proj4)
-print("")
 
-#crs = pycrs.parser.from_esri_code(54030)
-#crs = pycrs.parser.from_sr_code(7898)
-#crs = pycrs.parser.from_epsg_code(4324)
-#crs = pycrs.parser.from_sr_code(6618)
-crs = pycrs.parser.from_proj4(proj4)
-#crs = pycrs.parser.from_ogc_wkt(wkt)
 
-print("Reconstructed:", crs.to_proj4())
+###########################
+# From OGC WKT
+print("--------")
+print("Testing from ogc wkt:")
 print("")
+for wkt in sourcestrings("ogcwkt"):
+    
+    # test parsing
+    try:
+        print("From:\n")
+        print(wkt)
+        print("")
+        crs = pycrs.parser.from_ogc_wkt(wkt)
+        # test outputs
+        testoutputs(crs)
+        
+    except Exception as err:
+        print(err)   
 
 #render_world(crs)
 
@@ -118,20 +138,33 @@ print("")
 
 
 ###########################
-# ESRI WKT/PRJ FILE
+# From PROJ4
 print("--------")
-print("testing esri prj file")
+print("Testing from proj4:")
 print("")
+proj4 = "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+print(proj4)
+print("")
+
+crs = pycrs.parser.from_proj4(proj4)
+testoutputs(crs)
+
+#render_world(crs)
+
+
+
+
+###########################
+# From ESRI WKT/PRJ FILE
+print("--------")
+print("Testing from esri prj file:")
+print("")
+wkt = open("testfiles/natearth.prj").read()
+print(wkt)
+print("")
+
 crs = pycrs.loader.from_file("testfiles/natearth.prj")
-wkt = crs.to_esri_wkt()
-
-print("Original:", wkt)
-print("")
-
-crs = pycrs.parser.from_esri_wkt(wkt)
-
-print("Reconstructed:", crs.to_esri_wkt())
-print("")
+testoutputs(crs)
 
 #render_world(crs)
 
