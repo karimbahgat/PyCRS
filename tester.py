@@ -1,5 +1,5 @@
 import pycrs
-
+import traceback
 
 
 
@@ -84,15 +84,15 @@ def sourcestrings(format):
 def testoutputs(crs):
     print("To:\n")
     try: result = crs.to_ogc_wkt()
-    except: result = "Fail"
+    except: result = traceback.format_exc()
     print("ogc_wkt: %s \n" % result)
 
     try: result = crs.to_esri_wkt()
-    except: result = "Fail"
+    except: result = traceback.format_exc()
     print("esri_wkt: %s \n" % result)
           
     try: result = crs.to_proj4()
-    except: result = "Fail"
+    except: result = traceback.format_exc()
     print("proj4: %s \n" % result)
 
 
@@ -129,8 +129,8 @@ for wkt in sourcestrings("ogcwkt"):
         # test outputs
         testoutputs(crs)
         
-    except Exception as err:
-        print(err)   
+    except:
+        print(traceback.format_exc()+"\n")   
 
 #render_world(crs)
 

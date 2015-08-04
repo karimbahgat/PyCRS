@@ -95,14 +95,30 @@ def from_esri_wkt(string, strict=False):
     # parse arguments into components
     # use args to create crs
     return _from_wkt(string, "esri", strict)
-        
+
+def from_unknown_wkt(string, strict=False):
+    """
+    Given an unknown wkt string, detect if uses ogc or esri flavor, and parse the crs accordingly.
+
+    Arguments:
+    - *string*: The unknown WKT representation as a string.
+    - *strict* (optional): When True, the parser is strict about names having to match
+        exactly with upper and lowercases. Default is not strict (False).
+
+    Returns:
+    - CRS object.
+    """
+    # parse arguments into components
+    # use args to create crs
+    return _from_wkt(string, None, strict)
+
 def _from_wkt(string, wkttype, strict=False):
     """
     Internal method for parsing wkt, with minor differences depending on ogc or esri style.
 
     Arguments:
     - *string*: The OGC or ESRI WKT representation as a string.
-    - *wkttype*: How to parse the WKT string, as either 'ogc' or 'esri'.
+    - *wkttype* (optional): How to parse the WKT string, as either 'ogc', 'esri', or None. If None, tries to autodetect the wkt type before parsing (default). 
     - *strict* (optional): When True, the parser is strict about names having to match
         exactly with upper and lowercases. Default is not strict (False).
 
@@ -114,8 +130,8 @@ def _from_wkt(string, wkttype, strict=False):
     # - Maybe verify elem arg name
 
     # make sure valid wkttype
-    wkttype = wkttype.lower()
-    assert wkttype in ("ogc","esri")
+    if wkttype: wkttype = wkttype.lower()
+    assert wkttype in ("ogc","esri",None)
     
     # remove newlines and multi spaces
     string = " ".join(string.split())
@@ -212,7 +228,7 @@ def _from_wkt(string, wkttype, strict=False):
         consumed = _clean_value(consumed)
         items.append(consumed)
         return items
-
+    
     # load into nested tuples and arglists
     crstuples = []
     chars = (char for char in string)
@@ -221,6 +237,24 @@ def _from_wkt(string, wkttype, strict=False):
         header,content = _next_elem(chars, char)
         crstuples.append((header, content))
         char = next(chars, None)
+
+    # autodetect wkttype if not specified
+    if not wkttype:
+        topheader,topcontent = crstuples[0]
+        if topheader == "PROJCS":
+            geogcsheader,geogcscontent = topcontent[1]
+        elif topheader == "GEOGCS":
+            geogcsheader,geogcscontent = topheader,topcontent
+
+        # datum elem should be second under geogcs
+        datumheader, datumcontent = geogcscontent[1]
+        datumname = datumcontent[0].upper().strip('"')
+        
+        # esri wkt datums all use "D_" before the datum name
+        if datumname.startswith("D_"):
+            wkttype = "esri"
+        else:
+            wkttype = "ogc"
 
     # parse into actual crs objects
     def _parse_top(header, content):
@@ -395,12 +429,6 @@ def _from_wkt(string, wkttype, strict=False):
         
     # use args to create crs
     return crs
-
-##def from_unknown_wkt(string, strict=False):
-##    # detect if ogc wkt or esri wkt
-##    # TIPS: esri wkt datums all use "D_" before the datum name
-##    # then load with appropriate function
-##    pass
 
 def from_proj4(string, strict=False):
     """
@@ -717,22 +745,22 @@ def from_unknown_text(text, strict=False):
     Detect crs string format and parse into crs object with appropriate function.
 
     Arguments:
-    - *string*: The crs text representation of unknown type.
+    - *string*: The crs text representation of unknown type. 
     - *strict* (optional): When True, the parser is strict about names having to match
         exactly with upper and lowercases. Default is not strict (False).
 
     Returns:
     - CRS object.
     """
-    
-    if string.startswith("urn:"):
-        from_ogc_urn(string, strict)
 
-    elif string.startswith("+"):
+    if string.startswith("+"):
         from_proj4(string, strict)
 
     elif string.startswith(("PROJCS[","GEOGCS[")):
         from_unknown_wkt(string, strict)
+
+    #elif string.startswith("urn:"):
+    #    from_ogc_urn(string, strict)
 
     elif string.startswith("EPSG:"):
         from_epsg_code(string.split(":")[1])

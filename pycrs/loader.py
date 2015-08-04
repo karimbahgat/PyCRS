@@ -16,7 +16,7 @@ def from_url(url, format=None):
 
     Arguments:
     - *url*: The url where the crs string is to be read from. 
-    - *format*: Which format to parse the crs string as. One of "ogcwkt", "esriwkt", or "proj4", but also several others...
+    - *format*: Which format to parse the crs string as. One of "ogc wkt", "esri wkt", or "proj4".
 
     Returns:
     - CRS object.
