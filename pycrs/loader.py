@@ -11,6 +11,16 @@ from . import parser
 # convenience methods for loading from different sources
 
 def from_url(url, format=None):
+    """
+    Returns the crs object from a string interpreted as a specified format, located at a given url site.
+
+    Arguments:
+    - *url*: The url where the crs string is to be read from. 
+    - *format*: Which format to parse the crs string as. One of "ogcwkt", "esriwkt", or "proj4", but also several others...
+
+    Returns:
+    - CRS object.
+    """
     # first get string from url
     string = urllib2.urlopen(url).read()
 
@@ -28,6 +38,9 @@ def from_url(url, format=None):
     return crs
 
 def from_file(filepath):
+    """
+    Returns the crs object from a file, with the format determined from the filename extension.
+    """
     if filepath.endswith(".prj"):
         string = open(filepath, "r").read()
         return parser.from_esri_wkt(string)

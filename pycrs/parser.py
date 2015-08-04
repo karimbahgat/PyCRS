@@ -14,6 +14,16 @@ from . import projections
 from . import webscrape
 
 def from_epsg_code(code):
+    """
+    Load crs object from epsg code, via spatialreference.org.
+    Parses based on the proj4 representation.
+
+    Arguments:
+    - *code*: The EPSG code as an integer.
+
+    Returns:
+    - CRS object. 
+    """
     # must go online (or look up local table) to get crs details
     code = str(code)
     proj4 = webscrape.crscode_to_string("epsg", code, "proj4")
@@ -21,6 +31,16 @@ def from_epsg_code(code):
     return crs
 
 def from_esri_code(code):
+    """
+    Load crs object from esri code, via spatialreference.org.
+    Parses based on the proj4 representation.
+
+    Arguments:
+    - *code*: The ESRI code as an integer.
+
+    Returns:
+    - CRS object.
+    """
     # must go online (or look up local table) to get crs details
     code = str(code)
     proj4 = webscrape.crscode_to_string("esri", code, "proj4")
@@ -28,6 +48,16 @@ def from_esri_code(code):
     return crs
 
 def from_sr_code(code):
+    """
+    Load crs object from sr-org code, via spatialreference.org.
+    Parses based on the proj4 representation.
+
+    Arguments:
+    - *code*: The SR-ORG code as an integer.
+
+    Returns:
+    - CRS object.
+    """
     # must go online (or look up local table) to get crs details
     code = str(code)
     proj4 = webscrape.crscode_to_string("sr-org", code, "proj4")
@@ -35,21 +65,53 @@ def from_sr_code(code):
     return crs
 
 def from_ogc_wkt(string, strict=False):
+    """
+    Parse crs as ogc wkt formatted string and return the resulting crs object.
+
+    Arguments:
+    - *string*: The OGC WKT representation as a string.
+    - *strict* (optional): When True, the parser is strict about names having to match
+        exactly with upper and lowercases. Default is not strict (False).
+
+    Returns:
+    - CRS object.
+    """
     # parse arguments into components
     # use args to create crs
     return _from_wkt(string, "ogc", strict)
 
 def from_esri_wkt(string, strict=False):
+    """
+    Parse crs as esri wkt formatted string and return the resulting crs object.
+
+    Arguments:
+    - *string*: The ESRI WKT representation as a string.
+    - *strict* (optional): When True, the parser is strict about names having to match
+        exactly with upper and lowercases. Default is not strict (False).
+
+    Returns:
+    - CRS object.
+    """
     # parse arguments into components
     # use args to create crs
     return _from_wkt(string, "esri", strict)
         
 def _from_wkt(string, wkttype, strict=False):
+    """
+    Internal method for parsing wkt, with minor differences depending on ogc or esri style.
+
+    Arguments:
+    - *string*: The OGC or ESRI WKT representation as a string.
+    - *wkttype*: How to parse the WKT string, as either 'ogc' or 'esri'.
+    - *strict* (optional): When True, the parser is strict about names having to match
+        exactly with upper and lowercases. Default is not strict (False).
+
+    Returns:
+    - CRS object.
+    """
     # TODO
-    # - Make try except search loops into a reusable function
     # - Make function for finding next elemt by name, instead of knowing its arg index position
     # - Maybe verify elem arg name
-    # - Convert all param and name values to lowercase so not so strict...
 
     # make sure valid wkttype
     wkttype = wkttype.lower()
@@ -162,6 +224,7 @@ def _from_wkt(string, wkttype, strict=False):
 
     # parse into actual crs objects
     def _parse_top(header, content):
+        "procedure for parsing the toplevel crs element and all its children"
         if header.upper() == "PROJCS":
             
             # find name
@@ -174,8 +237,12 @@ def _from_wkt(string, wkttype, strict=False):
             # find projection elem
             subheader, subcontent = content[2]
             projname = subcontent[0].strip('"')
-            projdef = projections.find(projname, "%s_wkt" % wkttype, strict)()
-            proj = parameters.Projection(projdef)
+            projclass = projections.find(projname, "%s_wkt" % wkttype, strict)
+            if projclass:
+                projdef = projclass()
+                proj = parameters.Projection(projdef)
+            else:
+                raise Exception("The specified projection name could not be found")
             
             # find params
             params = []
@@ -230,9 +297,13 @@ def _from_wkt(string, wkttype, strict=False):
                     if subheader == "UNIT":
                         break
             unitname,value = subcontent[0].strip('"'), subcontent[1]
-            unit = units.find(unitname, "%s_wkt" % wkttype, strict)()
-            if unit:
+            unitclass = units.find(unitname, "%s_wkt" % wkttype, strict)
+            if unitclass:
+                unit = unitclass()
                 unittype = parameters.UnitType(unit)
+            else:
+                raise Exception("The specified unit name could not be found")
+
 ##            if subcontent[0].strip('"') == "Meters":
 ##                unittype = parameters.UnitType(units.Meter())
 ##            elif subcontent[0].strip('"') == "degree":
@@ -259,14 +330,21 @@ def _from_wkt(string, wkttype, strict=False):
             
             ## datum name
             datumname = subcontent[0].strip('"')
-            datumdef = datums.find(datumname, "%s_wkt" % wkttype, strict)()
-            if not datumdef:
+            datumclass = datums.find(datumname, "%s_wkt" % wkttype, strict)
+            if datumclass:
+                datumdef = datumclass()
+            else:
                 datumdef = datums.Unknown()
                 
             ## datum ellipsoid
             subsubheader, subsubcontent = subcontent[1]
             ellipsname = subsubcontent[0].strip('"')
-            ellipsdef = ellipsoids.find(ellipsname, "%s_wkt" % wkttype, strict)()
+            ellipsclass = ellipsoids.find(ellipsname, "%s_wkt" % wkttype, strict)
+            if ellipsclass:
+                ellipsdef = ellipsclass()
+            else:
+                raise Exception("The specified ellipsoid name could not be found")
+
             ellipsoid = parameters.Ellipsoid(ellipsdef, subsubcontent[1], subsubcontent[2])
 
             ## datum shift
@@ -290,9 +368,12 @@ def _from_wkt(string, wkttype, strict=False):
             # angunit
             subheader, subcontent = content[3]
             unitname,value = subcontent[0].strip('"'), subcontent[1]
-            unit = units.find(unitname, "%s_wkt" % wkttype, strict)()
-            if unit:
+            unitclass = units.find(unitname, "%s_wkt" % wkttype, strict)
+            if unitclass:
+                unit = unitclass()
                 unittype = parameters.UnitType(unit)
+            else:
+                raise Exception("The specified unit name could not be found")
 ##            if subcontent[0].strip('"') == "Meters":
 ##                unittype = parameters.UnitType(units.Meter())
 ##            elif subcontent[0].strip('"') == "degree":
@@ -315,13 +396,24 @@ def _from_wkt(string, wkttype, strict=False):
     # use args to create crs
     return crs
 
-##def from_unknown_wkt(string):
+##def from_unknown_wkt(string, strict=False):
 ##    # detect if ogc wkt or esri wkt
 ##    # TIPS: esri wkt datums all use "D_" before the datum name
 ##    # then load with appropriate function
 ##    pass
 
 def from_proj4(string, strict=False):
+    """
+    Parse crs as proj4 formatted string and return the resulting crs object.
+
+    Arguments:
+    - *string*: The proj4 representation as a string.
+    - *strict* (optional): When True, the parser is strict about names having to match
+        exactly with upper and lowercases. Default is not strict (False).
+
+    Returns:
+    - CRS object.
+    """
     # parse arguments into components
     # use args to create crs
 
@@ -361,8 +453,10 @@ def from_proj4(string, strict=False):
         
         # get predefined datum def
         datumname = partdict["+datum"]
-        datumdef = datums.find(datumname, "proj4", strict)()
-        if not datumdef:
+        datumclass = datums.find(datumname, "proj4", strict)
+        if datumclass:
+            datumdef = datumclass()
+        else:
             datumdef = datums.Unknown()
 
     else:
@@ -375,9 +469,12 @@ def from_proj4(string, strict=False):
 
         # get predefined ellips def
         ellipsname = partdict["+ellps"]
-        ellipsdef = ellipsoids.find(ellipsname, "proj4", strict)()
-        if not ellipsdef:
-            raise Exception("The ellipsoid name did not match any definitions")
+        ellipsclass = ellipsoids.find(ellipsname, "proj4", strict)
+        if ellipsclass:
+            ellipsdef = ellipsclass
+        else:
+            raise Exception("The specified ellipsoid name could not be found")
+
 
     else:
         raise Exception("Could not find required +ellps element")
@@ -452,7 +549,7 @@ def from_proj4(string, strict=False):
             # proj4 special case, longlat as projection name means unprojected geogcs
             projdef = None
         else:
-            raise Exception("The specified +proj name could not be found")
+            raise Exception("The specified projection name could not be found")
 
     else:
         raise Exception("Could not find required +proj element")
@@ -563,9 +660,12 @@ def from_proj4(string, strict=False):
             metmulti = parameters.MeterMultiplier(partdict["+to_meter"])
         if "+units" in partdict:
             unitname = partdict["+units"]
-            unit = units.find(unitname, "proj4", strict)()
-            if unit:
+            unitclass = units.find(unitname, "proj4", strict)
+            if unitclass:
+                unit = unitclass()
                 unittype = parameters.UnitType(unit)
+            else:
+                raise Exception("The specified unit name could not be found")
 
         ## create unitobj
         unit = parameters.Unit(unittype, metmulti)
@@ -587,7 +687,7 @@ def from_proj4(string, strict=False):
     return crs
 
 
-##def from_ogc_urn(string):
+##def from_ogc_urn(string, strict=False):
 ##    # hmmm, seems like ogc urn could be anything incl online link, epsg, etc...
 ##    # if necessary, must go online (or lookup local table) to get details
 ##    # maybe test which of these and run their function?
@@ -612,17 +712,27 @@ def from_proj4(string, strict=False):
 ##    pass
 
 
-def from_unknown_text(text):
-    """Detect type and load with appropriate function"""
+def from_unknown_text(text, strict=False):
+    """
+    Detect crs string format and parse into crs object with appropriate function.
+
+    Arguments:
+    - *string*: The crs text representation of unknown type.
+    - *strict* (optional): When True, the parser is strict about names having to match
+        exactly with upper and lowercases. Default is not strict (False).
+
+    Returns:
+    - CRS object.
+    """
     
     if string.startswith("urn:"):
-        from_ogc_urn(string)
+        from_ogc_urn(string, strict)
 
-    elif string.startswith("+proj="):
-        from_proj4(string)
+    elif string.startswith("+"):
+        from_proj4(string, strict)
 
-    elif string.startswith("PROJCS["):
-        from_unknown_wkt(string)
+    elif string.startswith(("PROJCS[","GEOGCS[")):
+        from_unknown_wkt(string, strict)
 
     elif string.startswith("EPSG:"):
         from_epsg_code(string.split(":")[1])

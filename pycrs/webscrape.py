@@ -61,9 +61,10 @@ def crscode_to_string(codetype, code, format):
     """
     Lookup crscode on spatialreference.org and return in specified format.
 
-    - codetype: "epsg", "esri", or "sr-org"
-    - code: The code
-    - format: The crs format of the returned string. One of "ogcwkt", "esriwkt", or "proj4", but also several others...
+    Arguments:
+    - *codetype*: "epsg", "esri", or "sr-org".
+    - *code*: The code.
+    - *format*: The crs format of the returned string. One of "ogcwkt", "esriwkt", or "proj4", but also several others...
     """
     link = 'http://spatialreference.org/ref/%s/%s/%s/' %(codetype,code,format)
     result = urllib2.urlopen(link).read()
