@@ -9,6 +9,7 @@
 from .elements import datums
 from .elements import ellipsoids
 from .elements import parameters
+from .elements import containers
 from .elements import units
 from .elements import projections
 from . import utils
@@ -274,7 +275,7 @@ def _from_wkt(string, wkttype, strict=False):
             projclass = projections.find(projname, "%s_wkt" % wkttype, strict)
             if projclass:
                 projdef = projclass()
-                proj = parameters.Projection(projdef)
+                proj = containers.Projection(projdef)
             else:
                 raise Exception("The specified projection name could not be found")
             
@@ -314,7 +315,7 @@ def _from_wkt(string, wkttype, strict=False):
 ##                twinax = None
             
             # put it all together
-            projcs = parameters.ProjCS("Unknown", geogcs, proj, params, linunit) #, twinax)
+            projcs = containers.ProjCS("Unknown", geogcs, proj, params, linunit) #, twinax)
             return projcs
 
         elif header.upper() == "GEOGCS":
@@ -341,7 +342,7 @@ def _from_wkt(string, wkttype, strict=False):
             else:
                 raise Exception("The specified ellipsoid name could not be found")
 
-            ellipsoid = parameters.Ellipsoid(ellipsdef, subsubcontent[1], subsubcontent[2])
+            ellipsoid = containers.Ellipsoid(ellipsdef, subsubcontent[1], subsubcontent[2])
 
             ## datum shift
             if wkttype == "ogc":
@@ -355,7 +356,7 @@ def _from_wkt(string, wkttype, strict=False):
                 datumshift = None
                 
             ## put it all togehter
-            datum = parameters.Datum(datumdef, ellipsoid, datumshift)
+            datum = containers.Datum(datumdef, ellipsoid, datumshift)
             
             # prime mer
             subheader, subcontent = content[2]
@@ -377,13 +378,13 @@ def _from_wkt(string, wkttype, strict=False):
             # ...
             
             # put it all together
-            geogcs = parameters.GeogCS(name, datum, prime_mer, angunit, twin_ax=None)
+            geogcs = containers.GeogCS(name, datum, prime_mer, angunit, twin_ax=None)
             return geogcs
 
     # toplevel collection
     header, content = crstuples[0]
     toplevel = _parse_top(header, content)
-    crs = parameters.CRS(toplevel)
+    crs = containers.CRS(toplevel)
         
     # use args to create crs
     return crs
@@ -476,17 +477,17 @@ def from_proj4(string, strict=False):
     # COMBINE DATUM AND ELLIPS
 
     ## create datum and ellips param objs
-    ellips = parameters.Ellipsoid(ellipsdef,
+    ellips = containers.Ellipsoid(ellipsdef,
                                   semimaj_ax=partdict.get("+a"),
                                   inv_flat=partdict.get("+f"))
     if "+datum" in partdict:
-        datum = parameters.Datum(datumdef, ellips)
+        datum = containers.Datum(datumdef, ellips)
 
     elif "+towgs84" in partdict:
-        datum = parameters.Datum(datumdef, ellips, datumshift)
+        datum = containers.Datum(datumdef, ellips, datumshift)
 
     else:
-        datum = parameters.Datum(datumdef, ellips)
+        datum = containers.Datum(datumdef, ellips)
 
     # PRIME MERIDIAN
 
@@ -520,7 +521,7 @@ def from_proj4(string, strict=False):
 
     # GEOGCS (note, currently does not load axes)
 
-    geogcs = parameters.GeogCS("Unknown", datum, prime_mer, angunit) #, twin_ax)
+    geogcs = containers.GeogCS("Unknown", datum, prime_mer, angunit) #, twin_ax)
 
     # PROJECTION
     
@@ -543,7 +544,7 @@ def from_proj4(string, strict=False):
     if projdef:
 
         # create proj param obj
-        proj = parameters.Projection(projdef)
+        proj = containers.Projection(projdef)
 
         # Because proj4 has no element hierarchy, using automatic element find() would
         # ...would not be very effective, as that would need a try-fail approach for each
@@ -656,15 +657,15 @@ def from_proj4(string, strict=False):
 
         # PROJCS
 
-        projcs = parameters.ProjCS("Unknown", geogcs, proj, params, unit)
+        projcs = containers.ProjCS("Unknown", geogcs, proj, params, unit)
 
         # CRS
 
-        crs = parameters.CRS(projcs)
+        crs = containers.CRS(projcs)
 
     else:
         # means projdef was None, ie unprojected longlat geogcs
-        crs = parameters.CRS(geogcs)
+        crs = containers.CRS(geogcs)
 
     # FINISHED
 
