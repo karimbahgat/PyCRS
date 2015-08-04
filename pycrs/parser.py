@@ -6,12 +6,12 @@
 # especially: http://fossies.org/windows/misc/saga_2.1.4_x64.zip/saga_2.1.4_x64/saga_prj.dic
 # also: http://saga.sourcearchive.com/documentation/2.0.7plus-pdfsg-2/crs__base_8cpp_source.html
 
-from . import datums
-from . import ellipsoids
-from . import parameters
-from . import units
-from . import projections
-from . import webscrape
+from .elements import datums
+from .elements import ellipsoids
+from .elements import parameters
+from .elements import units
+from .elements import projections
+from . import utils
 
 def from_epsg_code(code):
     """
@@ -26,7 +26,7 @@ def from_epsg_code(code):
     """
     # must go online (or look up local table) to get crs details
     code = str(code)
-    proj4 = webscrape.crscode_to_string("epsg", code, "proj4")
+    proj4 = utils.crscode_to_string("epsg", code, "proj4")
     crs = from_proj4(proj4)
     return crs
 
@@ -43,7 +43,7 @@ def from_esri_code(code):
     """
     # must go online (or look up local table) to get crs details
     code = str(code)
-    proj4 = webscrape.crscode_to_string("esri", code, "proj4")
+    proj4 = utils.crscode_to_string("esri", code, "proj4")
     crs = from_proj4(proj4)
     return crs
 
@@ -60,7 +60,7 @@ def from_sr_code(code):
     """
     # must go online (or look up local table) to get crs details
     code = str(code)
-    proj4 = webscrape.crscode_to_string("sr-org", code, "proj4")
+    proj4 = utils.crscode_to_string("sr-org", code, "proj4")
     crs = from_proj4(proj4)
     return crs
 
@@ -290,40 +290,6 @@ def _from_wkt(string, wkttype, strict=False):
                             item = itemclass(value)
                             params.append(item)
                             
-##                        if subcontent[0] == '"Azimuth"':
-##                            item = parameters.Azimuth(subcontent[1])
-##                            params.append(item)
-##                        elif subcontent[0] == '"scale_factor"':
-##                            item = parameters.ScalingFactor(subcontent[1])
-##                            params.append(item)
-##                        elif subcontent[0] == '"latitude_of_origin"':
-##                            item = parameters.LatitudeOrigin(subcontent[1])
-##                            params.append(item)
-##                        elif subcontent[0] == '"standard_parallel_1"':
-##                            item = parameters.LatitudeFirstStndParallel(subcontent[1])
-##                            params.append(item)
-##                        elif subcontent[0] == '"standard_parallel_2"':
-##                            item = parameters.LatitudeSecondStndParallel(subcontent[1])
-##                            params.append(item)
-##                        elif subcontent[0] == '"Standard_Parallel_1"':
-##                            item = parameters.LatitudeTrueScale(subcontent[1])
-##                            params.append(item)
-##                        elif subcontent[0] == '"Central_Meridian"':
-##                            item = parameters.CentralMeridian(subcontent[1])
-##                            params.append(item)
-##                        elif subcontent[0] == '"Longitude_Of_Center"':
-##                            item = parameters.LongitudeCenter(subcontent[1])
-##                            params.append(item)
-##                        elif subcontent[0] == '"false_easting"':
-##                            item = parameters.FalseEasting(subcontent[1])
-##                            params.append(item)
-##                        elif subcontent[0] == '"false_northing"':
-##                            item = parameters.FalseNorthing(subcontent[1])
-##                            params.append(item)
-##                        elif subcontent[0] == '"satellite_height"':
-##                            item = parameters.SatelliteHeight(subcontent[1])
-##                            params.append(item)
-                            
             # find unit
             for part in content:
                 if isinstance(part, tuple):
@@ -338,10 +304,6 @@ def _from_wkt(string, wkttype, strict=False):
             else:
                 raise Exception("The specified unit name could not be found")
 
-##            if subcontent[0].strip('"') == "Meters":
-##                unittype = parameters.UnitType(units.Meter())
-##            elif subcontent[0].strip('"') == "degree":
-##                unittype = parameters.UnitType(units.Degree())
             metmult = parameters.MeterMultiplier(value)
             linunit = parameters.Unit(unittype, metmult)
             
@@ -408,10 +370,6 @@ def _from_wkt(string, wkttype, strict=False):
                 unittype = parameters.UnitType(unit)
             else:
                 raise Exception("The specified unit name could not be found")
-##            if subcontent[0].strip('"') == "Meters":
-##                unittype = parameters.UnitType(units.Meter())
-##            elif subcontent[0].strip('"') == "degree":
-##                unittype = parameters.UnitType(units.Degree())
             metmult = parameters.MeterMultiplier(value)
             angunit = parameters.AngularUnit(unittype, metmult)
             
@@ -445,7 +403,7 @@ def from_proj4(string, strict=False):
     # parse arguments into components
     # use args to create crs
 
-    # SLIGTHLY MESSY STILL, CLEANUP..
+    # TODO: SLIGTHLY MESSY STILL, CLEANUP..
 
     params = []
     partdict = dict([part.split("=") for part in string.split()
@@ -458,9 +416,9 @@ def from_proj4(string, strict=False):
         # first, get the default proj4 string of the +init code
         codetype, code = partdict["+init"].split(":")
         if codetype == "EPSG":
-            initproj4 = webscrape.crscode_to_string("epsg", code, "proj4")
+            initproj4 = utils.crscode_to_string("epsg", code, "proj4")
         elif codetype == "ESRI":
-            initproj4 = webscrape.crscode_to_string("esri", code, "proj4")
+            initproj4 = utils.crscode_to_string("esri", code, "proj4")
 
         # make the default into param dict
         initpartdict = dict([part.split("=") for part in initproj4.split()
@@ -512,7 +470,7 @@ def from_proj4(string, strict=False):
         coeffs = partdict["+towgs84"].split(",")
         datumshift = parameters.DatumShift(coeffs)
 
-        # if no datum, use ellips + towgs84 params to create the correct datum
+        # TODO: if no datum, use ellips + towgs84 params to create the correct datum
         # ...??
 
     # COMBINE DATUM AND ELLIPS
@@ -587,12 +545,10 @@ def from_proj4(string, strict=False):
         # create proj param obj
         proj = parameters.Projection(projdef)
 
-##        # collect param objects
-##        for key,val in partdict.items():
-##            objclass = parameters.find(key, "proj4", strict)
-##            if objclass:
-##                obj = objclass(val)
-##                params.append(obj)
+        # Because proj4 has no element hierarchy, using automatic element find() would
+        # ...would not be very effective, as that would need a try-fail approach for each
+        # ...element type (parameter, projection, datum, ellipsoid, unit).
+        # ...Instead load each element individually.
 
         # CENTRAL MERIDIAN
 

@@ -4,7 +4,11 @@ import re
 def build_crs_table(savepath):
     """
     Build crs table of all equivalent format variations by scraping spatialreference.org.
-    Takes a while.
+    Saves table as tab-delimited text file.
+    NOTE: Might take a while.
+
+    Arguments:
+    - *savepath*: The absolute or relative filepath to which to save the crs table, including the ".txt" extension. 
     """
     # create table
     outfile = open(savepath, "wb")
@@ -65,6 +69,9 @@ def crscode_to_string(codetype, code, format):
     - *codetype*: "epsg", "esri", or "sr-org".
     - *code*: The code.
     - *format*: The crs format of the returned string. One of "ogcwkt", "esriwkt", or "proj4", but also several others...
+
+    Returns:
+    - Crs string in the specified format. 
     """
     link = 'http://spatialreference.org/ref/%s/%s/%s/' %(codetype,code,format)
     result = urllib2.urlopen(link).read()
@@ -87,7 +94,5 @@ def crscode_to_string(codetype, code, format):
 ##    return result
     
 
-##if __name__ == "__main__":
-##    build_crs_table("crstable.txt")
 
 

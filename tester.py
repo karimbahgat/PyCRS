@@ -1,5 +1,6 @@
 import pycrs
 import traceback
+import warnings
 
 
 
@@ -67,14 +68,27 @@ def render_world(crs):
 # Source string generator
 def sourcestrings(format):
     # TODO: now bunch of randoms, instead add only most commonly used ones
-    yield pycrs.webscrape.crscode_to_string("esri", 54030, format)
-    yield pycrs.webscrape.crscode_to_string("sr-org", 7898, format)
-    yield pycrs.webscrape.crscode_to_string("sr-org", 6978, format)
-    yield pycrs.webscrape.crscode_to_string("epsg", 4324, format)
-    yield pycrs.webscrape.crscode_to_string("sr-org", 6618, format)
-    yield pycrs.webscrape.crscode_to_string("sr-org", 22, format)
-    yield pycrs.webscrape.crscode_to_string("esri", 54031, format)
+    yield pycrs.utils.crscode_to_string("esri", 54030, format)
+    yield pycrs.utils.crscode_to_string("sr-org", 7898, format)
+    yield pycrs.utils.crscode_to_string("sr-org", 6978, format)
+    yield pycrs.utils.crscode_to_string("epsg", 4324, format)
+    yield pycrs.utils.crscode_to_string("sr-org", 6618, format)
+    yield pycrs.utils.crscode_to_string("sr-org", 22, format)
+    yield pycrs.utils.crscode_to_string("esri", 54031, format)
     # add more...
+
+    # Misc other crs for testing
+    #crs = pycrs.utils.crscode_to_string("esri", 54030, "proj4")
+    #crs = pycrs.utils.crscode_to_string("sr-org", 6978, "proj4")
+    #crs = pycrs.parser.from_sr_code(7898)
+    #crs = pycrs.parser.from_epsg_code(4324)
+    #crs = pycrs.parser.from_sr_code(6618)
+    #crs = pycrs.parser.from_sr_code(22)
+    #crs = pycrs.parser.from_esri_code(54031)
+    #proj4 = "+proj=longlat +ellps=WGS84 +datum=WGS84"
+    #proj4 = "+proj=aea +lat_1=24 +lat_2=31.5 +lat_0=24 +lon_0=-84 +x_0=400000 +y_0=0 +ellps=GRS80 +units=m +no_defs "
+    #proj4 = "+proj=larr +datum=WGS84 +lon_0=0 +lat_ts=45 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
+    #proj4 = "+proj=nsper +datum=WGS84 +ellps=WGS84 +lon_0=-60 +lat_0=40 +h=2000000000000000000000000"
 
 
 
@@ -83,33 +97,23 @@ def sourcestrings(format):
 # Testing format outputs
 def testoutputs(crs):
     print("To:\n")
-    try: result = crs.to_ogc_wkt()
-    except: result = traceback.format_exc()
-    print("ogc_wkt: %s \n" % result)
+    print("ogc_wkt:\n")
+    try: print(crs.to_ogc_wkt()+"\n")
+    except: warnings.warn(traceback.format_exc())
 
-    try: result = crs.to_esri_wkt()
-    except: result = traceback.format_exc()
-    print("esri_wkt: %s \n" % result)
+    print("esri_wkt:\n")
+    try: print(crs.to_esri_wkt()+"\n")
+    except: warnings.warn(traceback.format_exc())
           
-    try: result = crs.to_proj4()
-    except: result = traceback.format_exc()
-    print("proj4: %s \n" % result)
+    print("proj4:\n")
+    try: print(crs.to_proj4()+"\n")
+    except: warnings.warn(traceback.format_exc())
 
 
 
 
-# Misc crs for testing
-#crs = pycrs.webscrape.crscode_to_string("esri", 54030, "proj4")
-#crs = pycrs.webscrape.crscode_to_string("sr-org", 6978, "proj4")
-#crs = pycrs.parser.from_sr_code(7898)
-#crs = pycrs.parser.from_epsg_code(4324)
-#crs = pycrs.parser.from_sr_code(6618)
-#crs = pycrs.parser.from_sr_code(22)
-#crs = pycrs.parser.from_esri_code(54031)
-#proj4 = "+proj=longlat +ellps=WGS84 +datum=WGS84"
-#proj4 = "+proj=aea +lat_1=24 +lat_2=31.5 +lat_0=24 +lon_0=-84 +x_0=400000 +y_0=0 +ellps=GRS80 +units=m +no_defs "
-#proj4 = "+proj=larr +datum=WGS84 +lon_0=0 +lat_ts=45 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
-#proj4 = "+proj=nsper +datum=WGS84 +ellps=WGS84 +lon_0=-60 +lat_0=40 +h=2000000000000000000000000"
+#############################################################################
+
 
 
 
@@ -130,7 +134,7 @@ for wkt in sourcestrings("ogcwkt"):
         testoutputs(crs)
         
     except:
-        print(traceback.format_exc()+"\n")   
+        warnings.warn(traceback.format_exc()+"\n")
 
 #render_world(crs)
 
