@@ -2,7 +2,7 @@
 
 def find(ellipsname, crstype, strict=False):
     if not strict:
-        ellipsname = ellipsname.lower()
+        ellipsname = ellipsname.lower().replace(" ","_")
     for itemname,item in globals().items():
         if itemname.startswith("_"):
             continue
@@ -10,7 +10,7 @@ def find(ellipsname, crstype, strict=False):
             if hasattr(item, crstype):
                 itemname = getattr(item, crstype)
                 if not strict:
-                    itemname = itemname.lower()
+                    itemname = itemname.lower().replace(" ","_")
                 if ellipsname == itemname:
                     return item
         except:

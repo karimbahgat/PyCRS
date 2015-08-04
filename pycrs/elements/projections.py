@@ -2,7 +2,7 @@
 
 def find(projname, crstype, strict=False):
     if not strict:
-        projname = projname.lower()
+        projname = projname.lower().replace(" ","_")
     for itemname,item in globals().items():
         if itemname.startswith("_"):
             continue
@@ -10,7 +10,7 @@ def find(projname, crstype, strict=False):
             if hasattr(item, crstype):
                 itemname = getattr(item, crstype)
                 if not strict:
-                    itemname = itemname.lower()
+                    itemname = itemname.lower().replace(" ","_")
                 if projname == itemname:
                     return item
         except:
@@ -91,6 +91,11 @@ class Orthographic:
     proj4 = "ortho"
     ogc_wkt = "Orthographic"
     esri_wkt = "Orthographic"
+
+class Stereographic:
+    proj4 = "stere"
+    ogc_wkt = "Stereographic" 
+    esri_wkt = "Stereographic" 
 
 class PolarStereographic:
     proj4 = "stere"
