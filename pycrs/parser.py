@@ -1,5 +1,7 @@
+"""
+The main module containing functions for parsing text strings into crs objects.
+"""
 
-# parse from text strings
 # possible use module: https://github.com/rockdoc/grabbag/wiki/CRS-WKT-Parser
 # also note some paramter descriptions: http://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html
 # and see gdal source code: http://gis.stackexchange.com/questions/129764/how-are-esri-wkt-projections-different-from-ogc-wkt-projections
@@ -303,7 +305,8 @@ def _from_wkt(string, wkttype, strict=False):
                 unit = unitclass()
                 unittype = parameters.UnitType(unit)
             else:
-                raise Exception("The specified unit name could not be found")
+                unit = units.Unknown()
+                unittype = parameters.UnitType(unit)
 
             metmult = parameters.MeterMultiplier(value)
             linunit = parameters.Unit(unittype, metmult)
@@ -340,15 +343,16 @@ def _from_wkt(string, wkttype, strict=False):
             if ellipsclass:
                 ellipsdef = ellipsclass()
             else:
-                raise Exception("The specified ellipsoid name could not be found")
+                ellipsdef = ellipsoids.Unknown()
 
             ellipsoid = containers.Ellipsoid(ellipsdef, subsubcontent[1], subsubcontent[2])
 
             ## datum shift
             if wkttype == "ogc":
-                if len(subcontent) >= 3:
-                    subsubheader, subsubcontent = subcontent[2]
-                    datumshift = parameters.DatumShift(subsubcontent)
+                for subsubheader,subsubcontent in subcontent[1:]:
+                    if subsubheader == "TOWGS84":
+                        datumshift = parameters.DatumShift(subsubcontent)
+                        break
                 else:
                     datumshift = None
             elif wkttype == "esri":
@@ -370,7 +374,8 @@ def _from_wkt(string, wkttype, strict=False):
                 unit = unitclass()
                 unittype = parameters.UnitType(unit)
             else:
-                raise Exception("The specified unit name could not be found")
+                unit = units.Unknown()
+                unittype = parameters.UnitType(unit)
             metmult = parameters.MeterMultiplier(value)
             angunit = parameters.AngularUnit(unittype, metmult)
             
@@ -459,12 +464,18 @@ def from_proj4(string, strict=False):
         ellipsclass = ellipsoids.find(ellipsname, "proj4", strict)
         if ellipsclass:
             ellipsdef = ellipsclass
+        elif "+a" in partdict and "+f" in partdict:
+            ellipsdef = ellipsoids.Unknown()
         else:
-            raise Exception("The specified ellipsoid name could not be found")
+            raise Exception("The specified ellipsoid name could not be found, and there was no manual specification of the semimajor axis and inverse flattening to use as a substitute.")
 
-
+    elif "+a" in partdict and "+f" in partdict:
+        # alternatively, it is okay with a missing ellipsoid if +a and +f are specified
+        # TODO: +f seems to never be specified when +ellps is missing, only +a and +b, look into...
+        ellipsdef = ellipsoids.Unknown()
+        
     else:
-        raise Exception("Could not find required +ellps element")
+        raise Exception("Could not find the required +ellps element, nor a manual specification of the +a or +f elements.")
 
     # TO WGS 84 COEFFS
     if "+towgs84" in partdict:

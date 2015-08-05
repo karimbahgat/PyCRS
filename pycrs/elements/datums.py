@@ -58,13 +58,13 @@ class SphereArcInfo:
     ogc_wkt = "D_Sphere_ARC_INFO" # confirmed but odd that uses D_
     esri_wkt = "D_Sphere_ARC_INFO"
 
-    semimaj_ax = 6370997.0
-    inv_flat = 0.0
+    ellipsdef = "" # ellipsoids...
+    to_wgs84 = None
 
 class Unknown:
-    proj4 = "unknown" # no datum name, just ellips + towgs84 params...
+    proj4 = "" # no datum name, just ellips + towgs84 params...
     ogc_wkt = "Unknown"
     esri_wkt = "Unknown"
 
     ellipsdef = "" # ellipsoids.WGS72()
-    to_wgs84 = None,None
+    to_wgs84 = None

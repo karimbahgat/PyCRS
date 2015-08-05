@@ -1,3 +1,7 @@
+"""
+Misc utility functions related to crs formats and online services. 
+"""
+
 import urllib2
 import re
 

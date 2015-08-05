@@ -34,8 +34,8 @@ class UTM:
 
 class ObliqueMercator:
     proj4 = "omerc"
-    ogc_wkt = "Hotine_Oblique_Mercator"
-    esri_wkt = "Hotine_Oblique_Mercator_Azimuth_Natural_Origin"
+    ogc_wkt = "Hotine_Oblique_Mercator_Two_Point_Natural_Origin" #"Hotine_Oblique_Mercator"
+    esri_wkt = "Hotine_Oblique_Mercator_Two_Point_Natural_Origin" #"Hotine_Oblique_Mercator_Azimuth_Natural_Origin"
     
 class AlbersEqualArea:
     proj4 = "aea"
@@ -49,8 +49,20 @@ class CylindricalEqualArea:
     
 class EquiDistantConic:
     proj4 = "eqdc"
-    ogc_wkt = "Equidistant_Conic"
-    esri_wkt = "Equidistant_Conic"
+    ogc_wkt = "Equidistant_Conic" 
+    esri_wkt = "Equidistant_Conic" 
+
+class EquiDistantCylindrical:
+    # same as equirectangular...?
+    proj4 = "eqc"
+    ogc_wkt = "Equidistant_Cylindrical"
+    esri_wkt = "Equidistant_Cylindrical"
+
+class EquiRectangular:
+    # same as equidistant cylindrical
+    proj4 = "eqc"
+    ogc_wkt = "Equirectangular"
+    esri_wkt = "Equirectangular"
 
 class TransverseMercator:
     proj4 = "tmerc"
@@ -85,7 +97,7 @@ class Mollweide:
 class ObliqueStereographic:
     proj4 = "sterea"
     ogc_wkt = "Oblique_Stereographic"
-    esri_wkt = "Stereographic_North_Pole"
+    esri_wkt = "Oblique Stereographic" #"Stereographic_North_Pole"
 
 class Orthographic:
     proj4 = "ortho"
@@ -111,11 +123,6 @@ class VanDerGrinten:
     proj4 = "vandg"
     ogc_wkt = "VanDerGrinten"
     esri_wkt = "Van_der_Grinten_I"
-
-class Equirectangular:
-    proj4 = "eqc"
-    ogc_wkt = "Equirectangular"
-    esri_wkt = "Equidistant_Cylindrical"
 
 class LambertConformalConic:
     proj4 = "lcc"
@@ -162,8 +169,30 @@ class ObliqueCylindricalEqualArea:
     ogc_wkt = "Oblique_Cylindrical_Equal_Area"
     esri_wkt = "Oblique_Cylindrical_Equal_Area"
 
-        
+class Polyconic:
+    proj4 = "poly"
+    ogc_wkt = "Polyconic"
+    esri_wkt = "Polyconic"
 
+class EckertIV:
+    proj4 = "eck4"
+    ogc_wkt = "Eckert_IV"
+    esri_wkt = "Eckert_IV"
+
+class EckertVI:
+    proj4 = "eck6"
+    ogc_wkt = "Eckert_VI"
+    esri_wkt = "Eckert_VI"
+
+class AzimuthalEquidistant:
+    proj4 = "aeqd"
+    ogc_wkt = "Azimuthal_Equidistant"
+    esri_wkt = "Azimuthal_Equidistant"
+
+class GeostationarySatellite:
+    proj4 = "geos"
+    ogc_wkt = "Geostationary_Satellite"
+    esri_wkt = "Geostationary_Satellite"
 
 
 

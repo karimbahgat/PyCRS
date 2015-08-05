@@ -79,7 +79,30 @@ class SphereArcInfo:
     semimaj_ax = 6370997.0
     inv_flat = 0.0
 
+class Krassowsky1940:
+    proj4 = "krass"
+    ogc_wkt = "Krassowsky 1940"
+    esri_wkt = "Krassowsky_1940"
 
+    semimaj_ax = 6378245.0
+    inv_flat = 298.3
+
+class Bessel1841:
+    proj4 = "bessel"
+    ogc_wkt = "Bessel 1841"
+    esri_wkt = "Bessel_1841"
+
+    semimaj_ax = 6377397.155
+    inv_flat = 299.1528128
+
+class Unknown:
+    proj4 = ""
+    ogc_wkt = "Unknown"
+    esri_wkt = "Unknown"
+
+    # values have to be set manually in Ellipsoid class
+    semimaj_ax = None
+    inv_flat = None
 
 
 

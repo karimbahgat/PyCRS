@@ -6,6 +6,7 @@ import logging
 
 ###########################
 # Drawing routine for testing
+raw = None
 def render_world(crs, savename):
     import urllib2
     import json
@@ -15,7 +16,9 @@ def render_world(crs, savename):
     import random
 
     # load world borders
-    raw = urllib2.urlopen("https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json").read()
+    global raw
+    if not raw:
+        raw = urllib2.urlopen("https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json").read()
     rawdict = json.loads(raw)
     data = pygeoj.load(data=rawdict)
 
@@ -215,6 +218,8 @@ def testoutputs(crs):
 
 
 
+#############################################################################
+#############################################################################
 #############################################################################
 
 

@@ -1,3 +1,6 @@
+"""
+Convenience functions for loading from different sources.
+"""
 
 import json
 import urllib2
@@ -7,8 +10,6 @@ from . import parser
 #################
 # USER FUNCTIONS
 #################
-
-# convenience methods for loading from different sources
 
 def from_url(url, format=None):
     """

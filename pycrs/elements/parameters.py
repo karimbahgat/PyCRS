@@ -24,6 +24,7 @@
 
 from . import datums
 from . import directions
+from . import units
 
 ################
 
@@ -333,7 +334,10 @@ class Unit:
         self.metermultiplier = metermultiplier
 
     def to_proj4(self):
-        return "%s %s" %(self.unittype.to_proj4(), self.metermultiplier.to_proj4())
+        if isinstance(self.unittype, units.Unknown):
+            return "%s" % self.metermultiplier.to_proj4()
+        else:
+            return "%s %s" %(self.unittype.to_proj4(), self.metermultiplier.to_proj4())
 
     def to_ogc_wkt(self):
         return 'UNIT["%s", %s]' %(self.unittype.to_ogc_wkt(), self.metermultiplier.to_ogc_wkt())

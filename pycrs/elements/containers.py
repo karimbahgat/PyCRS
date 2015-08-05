@@ -1,6 +1,7 @@
 
 from . import directions
 from . import datums
+from . import ellipsoids
     
 # the final CRS object which is instantiated with all of the below and parameters
 # remember to use +no_defs when outputting to proj4
@@ -61,6 +62,9 @@ class Datum:
             return "%s %s" % (self.ellips.to_proj4(), self.datumshift.to_proj4())
         elif isinstance(self.name, datums.Unknown):
             return "%s" % self.ellips.to_proj4()
+        elif not self.name.proj4:
+            # has no proj4 equivaent and is better left unspecified, so only return ellips
+            return "%s" % self.ellips.to_proj4()
         else:
             return "+datum=%s %s" % (self.name.proj4, self.ellips.to_proj4())
 
@@ -104,7 +108,14 @@ class Ellipsoid:
         self.inv_flat = inv_flat
 
     def to_proj4(self):
-        return "+ellps=%s +a=%s +f=%s" % (self.name.proj4, self.semimaj_ax, self.inv_flat)
+        if isinstance(self.name, ellipsoids.Unknown):
+            # has no proj4 equivaent and is better left unspecified
+            return "+a=%s +f=%s" % (self.semimaj_ax, self.inv_flat)
+        elif not self.name.proj4:
+            # has no proj4 equivaent and is better left unspecified
+            return "+a=%s +f=%s" % (self.semimaj_ax, self.inv_flat)
+        else:
+            return "+ellps=%s +a=%s +f=%s" % (self.name.proj4, self.semimaj_ax, self.inv_flat)
 
     def to_ogc_wkt(self):
         return 'SPHEROID["%s", %s, %s]' % (self.name.ogc_wkt, self.semimaj_ax, self.inv_flat)

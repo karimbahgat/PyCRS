@@ -15,7 +15,7 @@ def find(unitname, crstype, strict=False):
                 if unitname == itemname:
                     return item
                 # special handling of wkt meters which has multiple possibilities
-                elif isinstance(item(), Meter) and crstype.endswith("wkt") and not strict and unitname in ("meters","meter","metre"):
+                elif isinstance(item(), Meter) and crstype.endswith("wkt") and not strict and unitname in ("meters","meter","metre","m"):
                     return item
         except:
             pass
@@ -39,3 +39,8 @@ class Feet:
     proj4 = "..."
     ogc_wkt = "Foot_US"
     esri_wkt = "Foot_US"
+
+class Unknown:
+    proj4 = ""
+    ogc_wkt = "Unknown"
+    esri_wkt = "Unknown"
