@@ -12,6 +12,7 @@ def build_crs_table(savepath):
     NOTE: Might take a while.
 
     Arguments:
+
     - *savepath*: The absolute or relative filepath to which to save the crs table, including the ".txt" extension. 
     """
     # create table
@@ -70,11 +71,13 @@ def crscode_to_string(codetype, code, format):
     Lookup crscode on spatialreference.org and return in specified format.
 
     Arguments:
+
     - *codetype*: "epsg", "esri", or "sr-org".
     - *code*: The code.
     - *format*: The crs format of the returned string. One of "ogcwkt", "esriwkt", or "proj4", but also several others...
 
     Returns:
+
     - Crs string in the specified format. 
     """
     link = 'http://spatialreference.org/ref/%s/%s/%s/' %(codetype,code,format)

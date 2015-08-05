@@ -22,9 +22,11 @@ def from_epsg_code(code):
     Parses based on the proj4 representation.
 
     Arguments:
+
     - *code*: The EPSG code as an integer.
 
     Returns:
+
     - CRS object. 
     """
     # must go online (or look up local table) to get crs details
@@ -39,9 +41,11 @@ def from_esri_code(code):
     Parses based on the proj4 representation.
 
     Arguments:
+
     - *code*: The ESRI code as an integer.
 
     Returns:
+
     - CRS object.
     """
     # must go online (or look up local table) to get crs details
@@ -56,9 +60,11 @@ def from_sr_code(code):
     Parses based on the proj4 representation.
 
     Arguments:
+
     - *code*: The SR-ORG code as an integer.
 
     Returns:
+
     - CRS object.
     """
     # must go online (or look up local table) to get crs details
@@ -72,11 +78,13 @@ def from_ogc_wkt(string, strict=False):
     Parse crs as ogc wkt formatted string and return the resulting crs object.
 
     Arguments:
+
     - *string*: The OGC WKT representation as a string.
     - *strict* (optional): When True, the parser is strict about names having to match
         exactly with upper and lowercases. Default is not strict (False).
 
     Returns:
+
     - CRS object.
     """
     # parse arguments into components
@@ -88,11 +96,13 @@ def from_esri_wkt(string, strict=False):
     Parse crs as esri wkt formatted string and return the resulting crs object.
 
     Arguments:
+
     - *string*: The ESRI WKT representation as a string.
     - *strict* (optional): When True, the parser is strict about names having to match
         exactly with upper and lowercases. Default is not strict (False).
 
     Returns:
+
     - CRS object.
     """
     # parse arguments into components
@@ -104,6 +114,7 @@ def from_unknown_wkt(string, strict=False):
     Given an unknown wkt string, detect if uses ogc or esri flavor, and parse the crs accordingly.
 
     Arguments:
+
     - *string*: The unknown WKT representation as a string.
     - *strict* (optional): When True, the parser is strict about names having to match
         exactly with upper and lowercases. Default is not strict (False).
@@ -120,12 +131,14 @@ def _from_wkt(string, wkttype, strict=False):
     Internal method for parsing wkt, with minor differences depending on ogc or esri style.
 
     Arguments:
+
     - *string*: The OGC or ESRI WKT representation as a string.
     - *wkttype* (optional): How to parse the WKT string, as either 'ogc', 'esri', or None. If None, tries to autodetect the wkt type before parsing (default). 
     - *strict* (optional): When True, the parser is strict about names having to match
         exactly with upper and lowercases. Default is not strict (False).
 
     Returns:
+
     - CRS object.
     """
     # TODO
@@ -399,11 +412,13 @@ def from_proj4(string, strict=False):
     Parse crs as proj4 formatted string and return the resulting crs object.
 
     Arguments:
+
     - *string*: The proj4 representation as a string.
     - *strict* (optional): When True, the parser is strict about names having to match
         exactly with upper and lowercases. Default is not strict (False).
 
     Returns:
+
     - CRS object.
     """
     # parse arguments into components
@@ -713,11 +728,13 @@ def from_unknown_text(text, strict=False):
     Detect crs string format and parse into crs object with appropriate function.
 
     Arguments:
+
     - *string*: The crs text representation of unknown type. 
     - *strict* (optional): When True, the parser is strict about names having to match
         exactly with upper and lowercases. Default is not strict (False).
 
     Returns:
+
     - CRS object.
     """
 
