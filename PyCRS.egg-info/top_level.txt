@@ -1,2 +1,2 @@
 pycrs
-pycrs\elements
+pycrs/elements
