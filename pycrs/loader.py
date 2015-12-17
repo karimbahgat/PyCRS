@@ -3,7 +3,10 @@ Convenience functions for loading from different sources.
 """
 
 import json
-import urllib2
+try:
+    import urllib.request as urllib2
+except ImportError:
+    import urllib2
 from . import parser
 
 
