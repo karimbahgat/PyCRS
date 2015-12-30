@@ -2,7 +2,10 @@
 Misc utility functions related to crs formats and online services. 
 """
 
-import urllib2
+try:
+    import urllib.request as urllib2
+except ImportError:
+    import urllib2
 import re
 
 def build_crs_table(savepath):
