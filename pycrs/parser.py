@@ -126,7 +126,7 @@ def from_unknown_wkt(string, strict=False):
     # use args to create crs
     return _from_wkt(string, None, strict)
 
-def _from_wkt(string, wkttype, strict=False):
+def _from_wkt(string, wkttype=None, strict=False):
     """
     Internal method for parsing wkt, with minor differences depending on ogc or esri style.
 
@@ -729,7 +729,7 @@ def from_unknown_text(text, strict=False):
 
     Arguments:
 
-    - *string*: The crs text representation of unknown type. 
+    - *text*: The crs text representation of unknown type. 
     - *strict* (optional): When True, the parser is strict about names having to match
         exactly with upper and lowercases. Default is not strict (False).
 
@@ -738,25 +738,27 @@ def from_unknown_text(text, strict=False):
     - CRS object.
     """
 
-    if string.startswith("+"):
-        from_proj4(string, strict)
+    if text.startswith("+"):
+        crs = from_proj4(text, strict)
 
-    elif string.startswith(("PROJCS[","GEOGCS[")):
-        from_unknown_wkt(string, strict)
+    elif text.startswith(("PROJCS[","GEOGCS[")):
+        crs = from_unknown_wkt(text, strict)
 
-    #elif string.startswith("urn:"):
-    #    from_ogc_urn(string, strict)
+    #elif text.startswith("urn:"):
+    #    crs = from_ogc_urn(text, strict)
 
-    elif string.startswith("EPSG:"):
-        from_epsg_code(string.split(":")[1])
+    elif text.startswith("EPSG:"):
+        crs = from_epsg_code(text.split(":")[1])
 
-    elif string.startswith("ESRI:"):
-        from_esri_code(string.split(":")[1])
+    elif text.startswith("ESRI:"):
+        crs = from_esri_code(text.split(":")[1])
 
-    elif string.startswith("SR-ORG:"):
-        from_sr_code(string.split(":")[1])
+    elif text.startswith("SR-ORG:"):
+        crs = from_sr_code(text.split(":")[1])
 
     else: raise Exception("Could not detect which type of crs")
+    
+    return crs
 
 
 ##def from_geotiff_parameters(**params):
