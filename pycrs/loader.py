@@ -3,12 +3,14 @@ Convenience functions for loading from different sources.
 """
 
 import json
+import sys
 try:
     import urllib.request as urllib2
 except ImportError:
     import urllib2
 from . import parser
 
+PY3 = (int(sys.version_info[0]) > 2)
 
 #################
 # USER FUNCTIONS
@@ -30,6 +32,10 @@ def from_url(url, format=None):
     """
     # first get string from url
     string = urllib2.urlopen(url).read()
+    
+    if PY3 is True:
+        # decode bytes into string
+        string = string.decode('utf-8')
 
     # then determine parser
     if format:
