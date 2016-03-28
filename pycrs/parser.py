@@ -662,21 +662,25 @@ def from_proj4(string, strict=False):
 
         # UNIT
 
-        ## set default
-        metmulti = parameters.MeterMultiplier(1.0)
-        unittype = parameters.UnitType(units.Meter())
-
-        ## override with user input
-        if "+to_meter" in partdict:
-            metmulti = parameters.MeterMultiplier(partdict["+to_meter"])
+        # get values
         if "+units" in partdict:
+            # unit name takes precedence over to_meter
             unitname = partdict["+units"]
             unitclass = units.find(unitname, "proj4", strict)
             if unitclass:
                 unit = unitclass()
                 unittype = parameters.UnitType(unit)
+                metmulti = parameters.MeterMultiplier(unit.to_meter) # takes meter multiplier from name, ignoring any custom meter multiplier
             else:
                 raise Exception("The specified unit name could not be found")
+        elif "+to_meter" in partdict:
+            # no unit name specified, only to_meter conversion factor
+            unittype = parameters.UnitType(units.Unknown())
+            metmulti = parameters.MeterMultiplier(partdict["+to_meter"])
+        else:
+            # if nothing specified, defaults to meter
+            unittype = parameters.UnitType(units.Meter())
+            metmulti = parameters.MeterMultiplier(1.0)
 
         ## create unitobj
         unit = parameters.Unit(unittype, metmulti)

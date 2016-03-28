@@ -26,21 +26,32 @@ def find(unitname, crstype, strict=False):
 
 
 class Meter:
+    to_meter = 1.0
     proj4 = "m"
     ogc_wkt = "Meters" # or is it metre?? sometimes even Meter?
     esri_wkt = "Meter"
 
 class Degree:
+    # "For angular units, the conversion factor is the scalar value that converts the described units into radians."
+    to_radians = 0.017453292519943295
     proj4 = "degrees"
     ogc_wkt = "degree"
     esri_wkt = "Degree"
 
-class Feet:
-    proj4 = "..."
+class US_Feet:
+    to_meter = 0.304800609601219241
+    proj4 = "us-ft"
     ogc_wkt = "Foot_US"
     esri_wkt = "Foot_US"
 
+class International_Feet:
+    to_meter = 0.3048
+    proj4 = "ft"
+    ogc_wkt = "Foot"
+    esri_wkt = "Foot"
+
 class Unknown:
+    to_meter = None
     proj4 = ""
     ogc_wkt = "Unknown"
     esri_wkt = "Unknown"
