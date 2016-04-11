@@ -162,6 +162,20 @@ crs from scratch and then save it to a format of your choice. Inspect
 the parser submodule source code for inspiration on how to go about
 this.
 
+Testing
+-------
+
+The testing suite has a few dependent python packages that will need to be installed to fully work:
+
+-  `PyAgg <https://github.com/karimbahgat/PyAgg>`__ - Aggdraw wrapper for lightweight drawing
+-  `PyGeoj <https://github.com/karimbahgat/PyGeoj>`__ - geojson reader/writer
+-  `pyproj <https://github.com/jswhit/pyproj>`__ - - cartographic projection and coordinate system transformation, python wrapper PROJ.4 C library
+
+tester.py and testpycrs.py can be run from the prompt:
+::
+    python tester.py
+    python testpycrs.py
+
 More Information:
 -----------------
 
@@ -170,6 +184,7 @@ functions and supported crs formats, check out the API Documentation.
 
 -  `Home Page <http://github.com/karimbahgat/PyCRS>`__
 -  `API Documentation <http://pythonhosted.org/PyCRS>`__
+
 
 License:
 --------
