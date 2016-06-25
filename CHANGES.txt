@@ -1,6 +1,12 @@
 
 ## Changes
 
+### 0.1.3 (2016-06-25)
+
+- Fixed various bugs
+- Pip install fix for Mac and Linux
+- Python 3 compatability
+
 ### 0.1.2 (2015-08-05)
 
 - First official release

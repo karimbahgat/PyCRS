@@ -17,3 +17,11 @@ pycrs/elements/ellipsoids.py
 pycrs/elements/parameters.py
 pycrs/elements/projections.py
 pycrs/elements/units.py
+pycrs/elements/__init__.py
+pycrs/elements/containers.py
+pycrs/elements/datums.py
+pycrs/elements/directions.py
+pycrs/elements/ellipsoids.py
+pycrs/elements/parameters.py
+pycrs/elements/projections.py
+pycrs/elements/units.py

@@ -42,7 +42,7 @@ quality check.
 
 ## Platforms
 
-So far only tested on Python version 2.x, but should also be compatible with 3.x. 
+Python 2 and 3, all systems (Windows, Linux, and Mac). 
 
 
 ## Dependencies
@@ -137,11 +137,13 @@ and modify according to the MIT license, see license.txt
 
 ## Credits:
 
-Karim Bahgat (2015)
+- Karim Bahgat
+- Micah Cochrain
+- Wassname
 
 """
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 
 from . import loader
