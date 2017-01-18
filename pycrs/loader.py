@@ -34,7 +34,7 @@ def from_url(url, format=None):
     string = urllib2.urlopen(url).read()
     
     if PY3 is True:
-        # decode bytes into string
+        # decode str into string
         string = string.decode('utf-8')
 
     # then determine parser
