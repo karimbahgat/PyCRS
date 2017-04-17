@@ -277,10 +277,10 @@ class DatumShift:
         self.value = value
 
     def to_proj4(self):
-        return "+towgs84=%s" %",".join((bytes(val) for val in self.value))
+        return "+towgs84=%s" %",".join((str(val) for val in self.value))
 
     def to_ogc_wkt(self):
-        return "TOWGS84[%s]" %",".join((bytes(val) for val in self.value))
+        return "TOWGS84[%s]" %",".join((str(val) for val in self.value))
 
     def to_esri_wkt(self):
         raise Exception("Paramater not supported by ESRI WKT")
@@ -297,10 +297,10 @@ class MeterMultiplier:
 
     def to_ogc_wkt(self):
         # the stuff that comes after UNITS["meter", ... # must be combined with unittype in a unit class to make wkt
-        return bytes(self.value)
+        return str(self.value)
 
     def to_esri_wkt(self):
-        return bytes(self.value)
+        return str(self.value)
 
 ##+units     meters, US survey feet, etc.
 class UnitType:
@@ -319,10 +319,10 @@ class UnitType:
 
     def to_ogc_wkt(self):
         # the stuff that comes after UNITS[... # must be combined with metermultiplier in a unit class to make wkt
-        return bytes(self.value.ogc_wkt)
+        return str(self.value.ogc_wkt)
 
     def to_esri_wkt(self):
-        return bytes(self.value.esri_wkt)
+        return str(self.value.esri_wkt)
 
 # special...
 class Unit:
