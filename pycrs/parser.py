@@ -727,7 +727,7 @@ def from_proj4(string, strict=False):
 ##    pass
 
 
-def from_unknown_text(text, strict=False):
+def from_unknown_text(string, strict=False):
     """
     Detect crs string format and parse into crs object with appropriate function.
 
