@@ -481,6 +481,8 @@ def from_proj4(string, strict=False):
             ellipsdef = ellipsclass
         elif "+a" in partdict and "+f" in partdict:
             ellipsdef = ellipsoids.Unknown()
+        elif "+a" in partdict and "+rf" in partdict:
+            ellipsdef = ellipsoids.Unknown()
         else:
             raise Exception("The specified ellipsoid name could not be found, and there was no manual specification of the semimajor axis and inverse flattening to use as a substitute.")
 
@@ -489,8 +491,10 @@ def from_proj4(string, strict=False):
         # TODO: +f seems to never be specified when +ellps is missing, only +a and +b, look into...
         ellipsdef = ellipsoids.Unknown()
         
+    elif "+a" in partdict and "+rf" in partdict:
+        ellipsdef = ellipsoids.Unknown()
     else:
-        raise Exception("Could not find the required +ellps element, nor a manual specification of the +a or +f elements.")
+        raise Exception("Could not find the required +ellps element, nor a manual specification of the +a or +f elements, or +a and +rf elements.")
 
     # TO WGS 84 COEFFS
     if "+towgs84" in partdict:
@@ -503,9 +507,13 @@ def from_proj4(string, strict=False):
     # COMBINE DATUM AND ELLIPS
 
     ## create datum and ellips param objs
+    if "+rf" in partdict:
+        inv_flat = partdict.get("+rf")
+    else:
+        inv_flat = 1.0 / float(partdict.get("+f"))
     ellips = containers.Ellipsoid(ellipsdef,
                                   semimaj_ax=partdict.get("+a"),
-                                  inv_flat=partdict.get("+f"))
+                                  inv_flat=inv_flat)
     if "+datum" in partdict:
         datum = containers.Datum(datumdef, ellips)
 
@@ -636,18 +644,18 @@ def from_proj4(string, strict=False):
 
         # STD PARALLEL 1
 
-        if "+lat1" in partdict:
-            val = partdict["+lat1"]
+        if "+lat_1" in partdict:
+            val = partdict["+lat_1"]
             obj = parameters.LatitudeFirstStndParallel(val)
             params.append(obj)
             
         # STD PARALLEL 2
 
-        if "+lat2" in partdict:
-            val = partdict["+lat2"]
+        if "+lat_2" in partdict:
+            val = partdict["+lat_2"]
             obj = parameters.LatitudeSecondStndParallel(val)
             params.append(obj)
-
+            
         # SATELLITE HEIGHT
         if "+h" in partdict:
             val = partdict["+h"]
