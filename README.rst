@@ -494,7 +494,7 @@ a variety of crs format. For instance:
 
 ::
 
-    >>> with open("shapefile.prj", "w") as writer:
+    >>> with open("testfiles/shapefile.prj", "w") as writer:
     ...     writer.write(tocrs.to_esri_wkt())
 
 Modifying the CRS Class

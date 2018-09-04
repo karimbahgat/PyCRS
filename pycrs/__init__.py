@@ -353,7 +353,7 @@ data coordinates with PyProj:
 After you transform your data coordinates you may also wish to save the data back to file along with the new
 crs. With PyCRS you can do this in a variety of crs format. For instance:
 
-    >>> with open("shapefile.prj", "w") as writer:
+    >>> with open("testfiles/shapefile.prj", "w") as writer:
     ...     writer.write(tocrs.to_esri_wkt())
 
 ### Modifying the CRS Class
