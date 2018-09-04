@@ -4,9 +4,48 @@
 PyCRS is a pure Python GIS package for reading, writing, and converting between various
 common coordinate reference system (CRS) string and data source formats. 
 
-![pycrs logo](https://github.com/karimbahgat/pycrs/raw/master/testrenders/logo.png "PyCRS")
+![](https://github.com/karimbahgat/pycrs/raw/master/testrenders/logo.png "PyCRS")
 
 [![Build Status](https://travis-ci.org/karimbahgat/pycrs.svg?branch=master)](https://travis-ci.org/karimbahgat/pycrs)
+
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Status](#status)
+- [Platforms](#platforms)
+- [Dependencies](#dependencies)
+- [Installation](#installation)
+- [Documentation](#documentation)
+- [Examples](#examples)
+    - [Creating a CRS instance](#creating-a-crs-instance)
+        - [Loading from an external source](#loading-from-an-external-source)
+            - [Loading from a Shapefile](#loading-from-a-shapefile)
+            - [Loading from a GeoJSON](#loading-from-a-geojson)
+            - [Loading from a URL](#loading-from-a-url)
+        - [Parsing from a text string](#parsing-from-a-text-string)
+            - [Parsing from proj4 string](#parsing-from-proj4-string)
+            - [Parsing from ESRI WKT string](#parsing-from-esri-wkt-string)
+            - [Parsing from OGC WKT string](#parsing-from-ogc-wkt-string)
+            - [Parsing from unknown string](#parsing-from-unknown-string)
+        - [Looking up a coordinate system code](#looking-up-a-coordinate-system-code)
+            - [Looking up EPSG codes](#looking-up-epsg-codes)
+            - [Looking up EPSG codes](#looking-up-epsg-codes)
+            - [Looking up SR codes](#looking-up-sr-codes)
+    - [Inspecting the CRS Class](#inspecting-the-crs-class)
+        - [Geographic CRS](#geographic-crs)
+        - [Projected CRS](#projected-crs)
+    - [Converting to other CRS formats](#converting-to-other-crs-formats)
+        - [Converting to Proj4](#converting-to-proj4)
+        - [Converting to ESRI WKT](#converting-to-esri-wkt)
+        - [Converting to OGC WKT](#converting-to-ogc-wkt)
+- [Recipes](#recipes)
+    - [Coordinate Transformations](#coordinate-transformations)
+    - [Writing a Shapefile .prj file](#writing-a-shapefile-.prj-file)
+    - [Modifying the CRS Class](#modifying-the-crs-class)
+- [Testing](#testing)
+- [License](#license)
+- [Credits](#credits)
 
 
 ## Introduction
@@ -54,7 +93,7 @@ Python 2 and 3, all systems (Windows, Linux, and Mac).
 Pure Python, no dependencies. 
 
 
-## Installing it
+## Installation
 
 PyCRS is installed with pip from the commandline:
 
@@ -64,7 +103,7 @@ It also works to just place the "pycrs" package folder in an importable location
 "PythonXX/Lib/site-packages".
 
 
-## Documentation:
+## Documentation
 
 This tutorial only covers some basic examples. For the full list of functions and supported crs formats,
 check out the reference API Documentation. 
@@ -176,15 +215,6 @@ To look up codes defined by spatialreference.org:
 
     >>> crs = pycrs.parser.from_sr_code(42)
     
-
-#### Building a CRS from Scratch
-
-The last way to create a CRS instance is to build it from scratch. This is what the functions in
-the loading and parsing modules do under the hood. Most users will not need to do this, and is really
-only useful if you want to experiment with composing your own CRS or playing around with the parameters.
-
-If you are interested in doing this, we provide some demonstrations for doing this in the "Recipes" section. 
-
 
 
 ### Inspecting the CRS Class
@@ -352,13 +382,13 @@ data coordinates with PyProj:
     >>> pyproj.transform(fromproj, toproj, lng, lat)
     (-6766170.001635834, 3985755.032695593)
 
-### Writing a Shapefile '.prj' file
+### Writing a Shapefile .prj file
 
 After you transform your data coordinates you may also wish to save the data back to file along with the new
-crs. With PyCRS you can do this in a variety of crs format. For instance:
+crs. With PyCRS you can do this in a variety of crs format. For instance, to write a shapefile .prj file:
 
     >>> with open("testfiles/shapefile.prj", "w") as writer:
-    ...     writer.write(tocrs.to_esri_wkt())
+    ...     _ = writer.write(tocrs.to_esri_wkt())
 
 ### Modifying the CRS Class
 
@@ -375,7 +405,7 @@ Let's demonstrate some examples using the World Robinson projection:
 
 Here is a map of the default Robinson projection:
 
-![Map](https://github.com/karimbahgat/pycrs/raw/master/testrenders/docs_orig.png "Defualt Robinson")
+![](https://github.com/karimbahgat/pycrs/raw/master/testrenders/docs_orig.png "Defualt Robinson")
 
 Let's say we wanted to switch its datum from WGS84 to NAD83, we could do it
 like so:
@@ -395,7 +425,7 @@ closer to the Pacific instead of over Greenwhich:
 And here is what that map would look like (the odd-looking lines is just a rendering issue due to
 polygons that cross the meridian):
 
-![Map](https://github.com/karimbahgat/pycrs/raw/master/testrenders/docs_tweak2.png "Modified Robinson")
+![](https://github.com/karimbahgat/pycrs/raw/master/testrenders/docs_tweak2.png "Modified Robinson")
 
 
 
@@ -421,14 +451,14 @@ The test files have a few dependent python packages that will need to be install
 
 
 
-## License:
+## License
 
 This code is free to share, use, reuse,
 and modify according to the MIT license, see license.txt
 
 
 
-## Credits:
+## Credits
 
 - Karim Bahgat
 - Micah Cochrain
