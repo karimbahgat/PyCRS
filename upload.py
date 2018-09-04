@@ -6,9 +6,7 @@ pipy.define_upload(packpath,
                    author_email="karim.bahgat.norway@gmail.com",
                    license="MIT",
                    name="PyCRS",
-                   changes=["Fixed various bugs",
-                            "Pip install fix for Mac and Linux",
-                            "Python 3 compatability"],
+                   changes=["Added more documentation"],
                    description="GIS package for reading, writing, and converting between CRS formats.",
                    url="http://github.com/karimbahgat/PyCRS",
                    keywords="GIS spatial CRS coordinates format",
@@ -23,5 +21,5 @@ pipy.define_upload(packpath,
 
 pipy.generate_docs(packpath)
 #pipy.upload_test(packpath)
-pipy.upload(packpath)
+#pipy.upload(packpath)
 

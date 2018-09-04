@@ -249,6 +249,9 @@ class PrimeMeridian:
     
     def __init__(self, value):
         """
+        The prime meridian coordinate, relative to greenwhich, where the
+        longitude is considered to be 0. 
+
         Arguments:
 
         - **value**: Longitude value relative to Greenwich. 
@@ -274,6 +277,13 @@ class DatumShift:
     ogc_wkt = "TOWGS84"
     
     def __init__(self, value):
+        """
+        The WGS84 Datum shift parameter.
+
+        Args:
+        
+        - **value**: A list of 3 or 7 term datum transform parameters.
+        """
         self.value = value
 
     def to_proj4(self):
@@ -290,6 +300,13 @@ class MeterMultiplier:
     proj4 = "+to_meter"
     
     def __init__(self, value):
+        """
+        The multiplier factor for converting coordinate units to meters. 
+
+        Arguments:
+
+        - **value**: the meter multiplier, as a float.
+        """
         self.value = value
 
     def to_proj4(self):
@@ -308,9 +325,11 @@ class UnitType:
     
     def __init__(self, value):
         """
+        The generic unit type parameter. 
+
         Arguments:
 
-        - **value**: A specific unit type instance, eg Meter(). 
+        - **value**: A specific unit type instance, eg pycrs.elements.units.Meter(). 
         """
         self.value = value
 
@@ -330,6 +349,14 @@ class Unit:
     esri_wkt = "UNIT"
     
     def __init__(self, unittype, metermultiplier):
+        """
+        Distance unit parameter. 
+
+        Args:
+
+        - **unittype**: A pycrs.elements.parameters.UnitType instance. 
+        - **metermultiplier**: A pycrs.elements.parameters.MeterMultiplier instance. 
+        """
         self.unittype = unittype
         self.metermultiplier = metermultiplier
 
@@ -352,6 +379,14 @@ class AngularUnit:
     esri_wkt = "UNIT"
     
     def __init__(self, unittype, metermultiplier):
+        """
+        Angular unit parameter. 
+
+        Args:
+
+        - **unittype**: A pycrs.elements.parameters.UnitType instance. 
+        - **metermultiplier**: A pycrs.elements.parameters.MeterMultiplier instance. 
+        """
         self.unittype = unittype
         self.metermultiplier = metermultiplier
 

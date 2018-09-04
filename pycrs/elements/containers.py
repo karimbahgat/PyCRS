@@ -8,6 +8,16 @@ from . import ellipsoids
 # ...
 class CRS:
     def __init__(self, toplevel):
+        """
+        The main CRS class that defines a coordinate reference system and provides access
+        to all the sub-containers, sub-elements, parameters,
+        and values of the reference system in a nested structure.
+
+        Args:
+
+        - **toplevel**: The type of reference system. Can be either a projected (arbitrary coordinates)
+                        or geographic (latitude-longitude coordinates) reference system.
+        """
         self.toplevel = toplevel
         
     def to_proj4(self):
@@ -29,6 +39,13 @@ class Projection:
     esri_wkt = "PROJECTION"
     
     def __init__(self, value):
+        """
+        A generic container for the specific projection used.
+
+        Args:
+
+        - **value**: One of the classes defined in pycrs.elements.projections. 
+        """
         self.value = value
 
     def to_proj4(self):
@@ -48,10 +65,13 @@ class Datum:
     
     def __init__(self, name, ellipsoid, datumshift=None):
         """
+        A Datum defines the shape of the earth. 
+
         Arguments:
 
-        - **name**: Specific datum name instance.
-        - **ellipsoid**: Ellipsoid parameter instance. 
+        - **name**: One of the classes defined in pycrs.elements.datums. 
+        - **ellipsoid**: A pycrs.elements.containers.Ellipsoid instance.
+        - **datumshift** (optional): A pycrs.elements.parameters.DatumShift instance. 
         """
         self.name = name
         self.ellips = ellipsoid
@@ -92,9 +112,13 @@ class Ellipsoid:
 
     def __init__(self, name, semimaj_ax=None, inv_flat=None):
         """
+        The ellipsoid that defines the shape of the earth. 
+
         Arguments:
 
-        - **name**: Specific ellipsoid name instance. 
+        - **name**: One of the classes defined in pycrs.elements.ellipsoids. 
+        - **semimaj_ax**: A float representing the coordinate position of the semimajor axis.
+        - **inv_flat**: A float representing the inverse flattening factor. 
         """
         self.name = name
         
@@ -134,9 +158,20 @@ class GeogCS:
 
     def __init__(self, name, datum, prime_mer, angunit, twin_ax=None):
         """
+        A geographic coordinate system where the coordinates are in the latitude-longitude space. 
+        
         Arguments:
 
-        - **name**: Arbitrary name. 
+        - **name**: An arbitrary name given to this geographic coordinate system, to represent its unique
+                    configuration of datum, prime meridian, angular unit, and twin axes. The actual name
+                    is just for human readability, and does not actually have any implication. 
+        - **datum**: A pycrs.elements.container.Datum instance, representing the shape of the earth.
+        - **prime_mer**: A pycrs.elements.parameters.PrimeMeridian instance, representing the prime meridian
+                    coordinate where the longitude is considered to be 0.
+        - **angunit**: A pycrs.elements.parameters.AngularUnit instance, representing the angular unit in which
+                    coordinates are measured.
+        - **twin_ax**: A pair of pycrs.elements.directions.North/South/East/West instances, one for each axis,
+                    representing the compass direction in which each axis increases. Defaults to East and North. 
         """
         self.name = name
         self.datum = datum
@@ -166,7 +201,14 @@ class ProjCS:
         """
         Arguments:
 
-        - **name**: Arbitrary name. 
+        - **name**: Arbitrary name of the projected coordinate system.
+        - **geogcs**: A pycrs.elements.containers.GeogCS instance.
+        - **proj**: A pycrs.elements.containers.Projection instance.
+        - **params**: A list of custom parameters from the pycrs.elements.parameters module.
+        - **unit**: A pycrs.elements.parameters.Unit instance, representing the angular unit in which
+                    coordinates are measured.
+        - **twin_ax**: A pair of pycrs.elements.directions.North/South/East/West instances, one for each axis,
+                    representing the compass direction in which each axis increases. Defaults to East and North. 
         """
         self.name = name
         self.geogcs = geogcs
