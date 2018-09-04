@@ -52,7 +52,7 @@ def render_world(crs, savename):
     c = pyagg.Canvas(1000,1000)
     c.geographic_space()
     c.zoom_bbox(*bbox)
-    c.zoom_out(1.3)
+    #c.zoom_out(1.3)
 
     # draw countries
     for feat in data:
@@ -64,8 +64,8 @@ def render_world(crs, savename):
             print("unable to draw?", feat.geometry)
 
     # draw text of the proj4 string used
-    c.percent_space()
-    c.draw_text(crs.to_proj4(), (50,10))
+    #c.percent_space()
+    #c.draw_text(crs.to_proj4(), (50,10))
 
     # save
     c.save("testrenders/"+savename+".png")

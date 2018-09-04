@@ -509,8 +509,13 @@ def from_proj4(string, strict=False):
     ## create datum and ellips param objs
     if "+rf" in partdict:
         inv_flat = partdict.get("+rf")
-    else:
+    elif "+f" in partdict:
         inv_flat = 1.0 / float(partdict.get("+f"))
+    elif ellipsdef.inv_flat is not None:
+        inv_flat = ellipsdef.inv_flat
+    else:
+        raise Exception("Could not find the required +ellps element, nor a manual specification of the +f or +rf elements.")
+        
     ellips = containers.Ellipsoid(ellipsdef,
                                   semimaj_ax=partdict.get("+a"),
                                   inv_flat=inv_flat)
