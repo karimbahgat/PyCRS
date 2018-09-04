@@ -606,8 +606,8 @@ the prompt:
 
 ::
 
-    python tester.py
-    python testpycrs.py
+    python testdocs.py
+    python testbatch.py
 
 The test files have a few dependent python packages that will need to be
 installed to fully work:
@@ -660,5 +660,5 @@ Changes
 
 -  First official release
 
-.. |Build Status| image:: https://travis-ci.org/karimbahgat/pycrs.svg?branch=master
-   :target: https://travis-ci.org/karimbahgat/pycrs
+.. |Build Status| image:: https://travis-ci.org/karimbahgat/PyCRS.svg?branch=master
+   :target: https://travis-ci.org/karimbahgat/PyCRS

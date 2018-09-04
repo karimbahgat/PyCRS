@@ -6,7 +6,7 @@ common coordinate reference system (CRS) string and data source formats.
 
 ![](https://github.com/karimbahgat/pycrs/raw/master/testrenders/logo.png "PyCRS")
 
-[![Build Status](https://travis-ci.org/karimbahgat/pycrs.svg?branch=master)](https://travis-ci.org/karimbahgat/pycrs)
+[![Build Status](https://travis-ci.org/karimbahgat/PyCRS.svg?branch=master)](https://travis-ci.org/karimbahgat/PyCRS)
 
 
 ## Table of Contents
@@ -436,8 +436,8 @@ The testing suite is still a work in progress and is spread across multiple file
 The files testdocs.py (the official doctests) and testbatch.py (tests and renders a batch of projections)
 can be run from the prompt:
 
-    python tester.py
-    python testpycrs.py
+    python testdocs.py
+    python testbatch.py
 
 The test files have a few dependent python packages that will need to be installed to fully work:
 
