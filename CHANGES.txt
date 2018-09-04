@@ -1,7 +1,7 @@
 
 ## Changes
 
-### 0.2.0 (2018-09-03)
+### 0.2.0 (2018-09-04)
 
 - Added more documentation
 - Fixed bug from recent +f/+rf PR

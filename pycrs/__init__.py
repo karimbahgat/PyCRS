@@ -4,6 +4,10 @@
 PyCRS is a pure Python GIS package for reading, writing, and converting between various
 common coordinate reference system (CRS) string and data source formats. 
 
+![pycrs logo](https://github.com/karimbahgat/pycrs/raw/master/testrenders/logo.png "PyCRS")
+
+[![Build Status](https://travis-ci.org/karimbahgat/pycrs.svg?branch=master)](https://travis-ci.org/karimbahgat/pycrs)
+
 
 ## Introduction
 
@@ -371,7 +375,7 @@ Let's demonstrate some examples using the World Robinson projection:
 
 Here is a map of the default Robinson projection:
 
-    ![Map](https://github.com/karimbahgat/pycrs/raw/master/testrenders/docs_orig.png "Defualt Robinson")
+![Map](https://github.com/karimbahgat/pycrs/raw/master/testrenders/docs_orig.png "Defualt Robinson")
 
 Let's say we wanted to switch its datum from WGS84 to NAD83, we could do it
 like so:
@@ -391,7 +395,7 @@ closer to the Pacific instead of over Greenwhich:
 And here is what that map would look like (the odd-looking lines is just a rendering issue due to
 polygons that cross the meridian):
 
-    ![Map](https://github.com/karimbahgat/pycrs/raw/master/testrenders/docs_tweak2.png "Modified Robinson")
+![Map](https://github.com/karimbahgat/pycrs/raw/master/testrenders/docs_tweak2.png "Modified Robinson")
 
 
 

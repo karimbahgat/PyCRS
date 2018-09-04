@@ -5,6 +5,12 @@ PyCRS is a pure Python GIS package for reading, writing, and converting
 between various common coordinate reference system (CRS) string and data
 source formats.
 
+.. figure:: https://github.com/karimbahgat/pycrs/raw/master/testrenders/logo.png
+   :alt: PyCRS
+
+   pycrs logo
+|Build Status|
+
 Introduction
 ------------
 
@@ -515,10 +521,10 @@ Let's demonstrate some examples using the World Robinson projection:
 
 Here is a map of the default Robinson projection:
 
-::
+.. figure:: https://github.com/karimbahgat/pycrs/raw/master/testrenders/docs_orig.png
+   :alt: Defualt Robinson
 
-    ![Map](https://github.com/karimbahgat/pycrs/raw/master/testrenders/docs_orig.png "Defualt Robinson")
-
+   Map
 Let's say we wanted to switch its datum from WGS84 to NAD83, we could do
 it like so:
 
@@ -542,10 +548,10 @@ Greenwhich:
 And here is what that map would look like (the odd-looking lines is just
 a rendering issue due to polygons that cross the meridian):
 
-::
+.. figure:: https://github.com/karimbahgat/pycrs/raw/master/testrenders/docs_tweak2.png
+   :alt: Modified Robinson
 
-    ![Map](https://github.com/karimbahgat/pycrs/raw/master/testrenders/docs_tweak2.png "Modified Robinson")
-
+   Map
 License:
 --------
 
@@ -565,7 +571,7 @@ Credits:
 Changes
 -------
 
-0.2.0 (2018-09-03)
+0.2.0 (2018-09-04)
 ~~~~~~~~~~~~~~~~~~
 
 -  Added more documentation
@@ -582,3 +588,6 @@ Changes
 ~~~~~~~~~~~~~~~~~~
 
 -  First official release
+
+.. |Build Status| image:: https://travis-ci.org/karimbahgat/pycrs.svg?branch=master
+   :target: https://travis-ci.org/karimbahgat/pycrs
