@@ -552,6 +552,30 @@ a rendering issue due to polygons that cross the meridian):
    :alt: Modified Robinson
 
    Map
+Testing
+-------
+
+The testing suite is still a work in progress and is spread across
+multiple files. The files testdocs.py (the official doctests) and
+testbatch.py (tests and renders a batch of projections) can be run from
+the prompt:
+
+::
+
+    python tester.py
+    python testpycrs.py
+
+The test files have a few dependent python packages that will need to be
+installed to fully work:
+
+-  `pyproj <https://github.com/jswhit/pyproj>`__ - cartographic
+   projection and coordinate system transformation, python wrapper
+   PROJ.4 C library
+-  `PyAgg <https://github.com/karimbahgat/PyAgg>`__ - Aggdraw wrapper
+   for lightweight drawing
+-  `PyGeoj <https://github.com/karimbahgat/PyGeoj>`__ - geojson
+   reader/writer
+
 License:
 --------
 
@@ -571,11 +595,14 @@ Credits:
 Changes
 -------
 
-0.2.0 (2018-09-04)
+0.1.4 (2018-09-04)
 ~~~~~~~~~~~~~~~~~~
 
 -  Added more documentation
--  Fixed bug from recent +f/+rf PR
+-  Fix +f interpretation
+-  Include reading +rf parameter
+-  Fix Python 3 bugs
+-  Fix proj4 standard parallels being ignored
 
 0.1.3 (2016-06-25)
 ~~~~~~~~~~~~~~~~~~

@@ -400,6 +400,27 @@ polygons that cross the meridian):
 
 
 
+## Testing
+
+The testing suite is still a work in progress and is spread across multiple files.
+The files testdocs.py (the official doctests) and testbatch.py (tests and renders a batch of projections)
+can be run from the prompt:
+
+    python tester.py
+    python testpycrs.py
+
+The test files have a few dependent python packages that will need to be installed to fully work:
+
+- [pyproj](https://github.com/jswhit/pyproj) - cartographic projection and coordinate system transformation, python wrapper PROJ.4 C library
+- [PyAgg](https://github.com/karimbahgat/PyAgg) - Aggdraw wrapper for lightweight drawing
+- [PyGeoj](https://github.com/karimbahgat/PyGeoj) - geojson reader/writer
+ 
+
+
+
+
+
+
 ## License:
 
 This code is free to share, use, reuse,
@@ -418,7 +439,7 @@ and modify according to the MIT license, see license.txt
 
 """
 
-__version__ = "0.2.0"
+__version__ = "0.1.4"
 
 
 from . import loader
