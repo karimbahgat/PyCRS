@@ -22,8 +22,8 @@ def test(**kwargs):
 
     # run tests
     runner = doctest.DocTestRunner(checker=Py23DocChecker(), verbose=verbosity)
-    import pycrs
-    doc = pycrs.__doc__
+    with open('README.md') as r:
+        doc = r.read()
     test = doctest.DocTestParser().get_doctest(string=doc, globs={}, name="__init__", filename="__init__.py", lineno=0)
     failure_count, test_count = runner.run(test)
 
