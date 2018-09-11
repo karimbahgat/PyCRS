@@ -39,9 +39,9 @@ common coordinate reference system (CRS) string and data source formats.
         - [Converting to ESRI WKT](#converting-to-esri-wkt)
         - [Converting to OGC WKT](#converting-to-ogc-wkt)
 - [Recipes](#recipes)
+	- [Modifying the CRS Class](#modifying-the-crs-class)
     - [Coordinate Transformations](#coordinate-transformations)
     - [Writing a Shapefile .prj file](#writing-a-shapefile-.prj-file)
-    - [Modifying the CRS Class](#modifying-the-crs-class)
 - [Testing](#testing)
 - [License](#license)
 - [Credits](#credits)
@@ -358,6 +358,8 @@ PyCRS allows converting to the following CRS formats:
 
 
 
+---
+	
 ## Recipes
 
 ### Modifying the CRS Class
@@ -433,6 +435,7 @@ crs. With PyCRS you can do this in a variety of crs format. For instance, to wri
 
 
 
+---
 
 ## Testing
 
