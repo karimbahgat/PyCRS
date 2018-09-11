@@ -158,12 +158,17 @@ are interoperating with other libraries, or you have already read it from some e
 In these cases, you can create the CRS instance by using the functions available in the "pycrs.parser"
 module.
 
-##### Parsing from proj4 string
+##### Parsing from proj4 string or dict
 
 To create the CRS instance from a proj4 string, you can do like this:
 
     >>> proj4 = "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
     >>> crs = pycrs.parser.from_proj4(proj4)
+
+Or if your proj4 string is represented as a dict:
+
+    >>> proj4_as_dict = dict(proj='robin', lon_0=0, x_0=0, y_0=0, ellps='WGS84', datum='WGS84', units='m')
+    >>> crs = pycrs.parser.from_proj4(proj4_as_dict)
 
 ##### Parsing from ESRI WKT string
 

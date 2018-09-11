@@ -407,13 +407,13 @@ def _from_wkt(string, wkttype=None, strict=False):
     # use args to create crs
     return crs
 
-def from_proj4(string, strict=False):
+def from_proj4(proj4, strict=False):
     """
-    Parse crs as proj4 formatted string and return the resulting crs object.
+    Parse crs as proj4 formatted string or dict and return the resulting crs object.
 
     Arguments:
 
-    - *string*: The proj4 representation as a string.
+    - *proj4*: The proj4 representation as a string or dict.
     - *strict* (optional): When True, the parser is strict about names having to match
         exactly with upper and lowercases. Default is not strict (False).
 
@@ -427,8 +427,13 @@ def from_proj4(string, strict=False):
     # TODO: SLIGTHLY MESSY STILL, CLEANUP..
 
     params = []
-    partdict = dict([part.split("=") for part in string.split()
-                     if len(part.split("=")) == 2 ])
+
+    if isinstance(proj4, dict):
+        # add leading + sign as expected below, proj4 dicts do not have that
+        partdict = dict([('+'+k,v) for k,v in proj4.items()])
+    else: 
+        partdict = dict([part.split("=") for part in proj4.split()
+                         if len(part.split("=")) == 2 ])
 
     # INIT CODES
     # eg, +init=EPSG:1234
