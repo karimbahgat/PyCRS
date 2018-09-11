@@ -360,40 +360,6 @@ PyCRS allows converting to the following CRS formats:
 
 ## Recipes
 
-### Coordinate Transformations
-
-A common reason for wanting to convert between CRS formats, is if you want to transform coordinates
-from one coordinate system to another. In Python this is typically done with the PyProj module,
-which only takes proj4 format. Using PyCRS we can easily define the original coordinate system that
-we want to convert and get its proj4 representation:
-
-    >>> fromcrs = pycrs.parser.from_epsg_code(4326) # WGS84 projection from epsg code
-    >>> fromcrs_proj4 = fromcrs.to_proj4()
-
-We can then use PyCRS to define our target projection from the format of your choice, before converting
-it to the proj4 format that PyProj expects:
-
-    >>> tocrs = pycrs.parser.from_esri_code(54030) # Robinson projection from esri code
-    >>> tocrs_proj4 = tocrs.to_proj4()
-
-With the source and target projections defined in the proj4 crs format, we are ready to transform our
-data coordinates with PyProj: 
-
-    >>> import pyproj
-    >>> fromproj = pyproj.Proj(fromcrs_proj4)
-    >>> toproj = pyproj.Proj(tocrs_proj4)
-    >>> lng,lat = -76.7075, 37.2707  # Williamsburg, Virginia :)
-    >>> pyproj.transform(fromproj, toproj, lng, lat)
-    (-6766170.001635834, 3985755.032695593)
-
-### Writing a Shapefile .prj file
-
-After you transform your data coordinates you may also wish to save the data back to file along with the new
-crs. With PyCRS you can do this in a variety of crs format. For instance, to write a shapefile .prj file:
-
-    >>> with open("testfiles/shapefile.prj", "w") as writer:
-    ...     _ = writer.write(tocrs.to_esri_wkt())
-
 ### Modifying the CRS Class
 
 In most case you will only ever need to load a CRS and convert it to some format. 
@@ -430,6 +396,40 @@ And here is what that map would look like (the odd-looking lines is just a rende
 polygons that cross the meridian):
 
 ![](https://github.com/karimbahgat/pycrs/raw/master/testrenders/docs_tweak2.png "Modified Robinson")
+
+### Coordinate Transformations
+
+A common reason for wanting to convert between CRS formats, is if you want to transform coordinates
+from one coordinate system to another. In Python this is typically done with the PyProj module,
+which only takes proj4 format. Using PyCRS we can easily define the original coordinate system that
+we want to convert and get its proj4 representation:
+
+    >>> fromcrs = pycrs.parser.from_epsg_code(4326) # WGS84 projection from epsg code
+    >>> fromcrs_proj4 = fromcrs.to_proj4()
+
+We can then use PyCRS to define our target projection from the format of your choice, before converting
+it to the proj4 format that PyProj expects:
+
+    >>> tocrs = pycrs.parser.from_esri_code(54030) # Robinson projection from esri code
+    >>> tocrs_proj4 = tocrs.to_proj4()
+
+With the source and target projections defined in the proj4 crs format, we are ready to transform our
+data coordinates with PyProj: 
+
+    >>> import pyproj
+    >>> fromproj = pyproj.Proj(fromcrs_proj4)
+    >>> toproj = pyproj.Proj(tocrs_proj4)
+    >>> lng,lat = -76.7075, 37.2707  # Williamsburg, Virginia :)
+    >>> pyproj.transform(fromproj, toproj, lng, lat)
+    (-6766170.001635834, 3985755.032695593)
+
+### Writing a Shapefile .prj file
+
+After you transform your data coordinates you may also wish to save the data back to file along with the new
+crs. With PyCRS you can do this in a variety of crs format. For instance, to write a shapefile .prj file:
+
+    >>> with open("testfiles/shapefile.prj", "w") as writer:
+    ...     _ = writer.write(tocrs.to_esri_wkt())
 
 
 
