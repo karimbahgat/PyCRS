@@ -1107,16 +1107,16 @@ Parses based on the proj4 representation.</p>
       
   <div class="item">
     <div class="name def" id="pycrs.parser.from_proj4">
-    <p>def <span class="ident">from_proj4</span>(</p><p>string, strict=False)</p>
+    <p>def <span class="ident">from_proj4</span>(</p><p>proj4, strict=False)</p>
     </div>
     
 
     
   
-    <div class="desc"><p>Parse crs as proj4 formatted string and return the resulting crs object.</p>
+    <div class="desc"><p>Parse crs as proj4 formatted string or dict and return the resulting crs object.</p>
 <p>Arguments:</p>
 <ul>
-<li><em>string</em>: The proj4 representation as a string.</li>
+<li><em>proj4</em>: The proj4 representation as a string or dict.</li>
 <li><em>strict</em> (optional): When True, the parser is strict about names having to match
     exactly with upper and lowercases. Default is not strict (False).</li>
 </ul>

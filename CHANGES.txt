@@ -1,6 +1,15 @@
 
 ## Changes
 
+### 1.0.0 (2018-09-14)
+
+- Added more documentation
+- Fix +f interpretation
+- Include reading +rf parameter
+- Fix Python 3 bugs
+- Fix proj4 standard parallels being ignored
+- Allow proj4 as dict
+
 ### 0.1.4 (2018-09-04)
 
 - Added more documentation

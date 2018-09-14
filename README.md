@@ -108,7 +108,7 @@ This tutorial only covers some basic examples. For the full list of functions an
 check out the reference API Documentation. 
 
 - [Home Page](http://github.com/karimbahgat/PyCRS)
-- [API Documentation](http://pythonhosted.org/PyCRS)
+- [API Documentation](https://karimbahgat.github.io/PyCRS)
 
 
 ## Examples
