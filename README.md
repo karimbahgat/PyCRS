@@ -29,7 +29,7 @@ common coordinate reference system (CRS) string and data source formats.
             - [Parsing from unknown string](#parsing-from-unknown-string)
         - [Looking up a coordinate system code](#looking-up-a-coordinate-system-code)
             - [Looking up EPSG codes](#looking-up-epsg-codes)
-            - [Looking up EPSG codes](#looking-up-epsg-codes)
+            - [Looking up ESRI codes](#looking-up-esri-codes)
             - [Looking up SR codes](#looking-up-sr-codes)
     - [Inspecting the CRS Class](#inspecting-the-crs-class)
         - [Geographic CRS](#geographic-crs)
@@ -207,7 +207,7 @@ To look up codes defined by EPSG:
 
     >>> crs = pycrs.parser.from_epsg_code(4326)
 
-##### Looking up EPSG codes
+##### Looking up ESRI codes
 
 To look up codes defined by ESRI:
 
