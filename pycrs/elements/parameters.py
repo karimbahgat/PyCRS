@@ -150,7 +150,7 @@ class ScalingFactor:
 
     def to_esri_wkt(self):
         # REALLY??
-        raise Exception("Paramater not supported by ESRI WKT")
+        raise Exception("Parameter %r not supported by ESRI WKT" % self)
 
     def to_geotiff(self):
         pass
@@ -341,7 +341,7 @@ class DatumShift:
         return "TOWGS84[%s]" %",".join((str(val) for val in self.value))
 
     def to_esri_wkt(self):
-        raise Exception("Paramater not supported by ESRI WKT")
+        raise Exception("Parameter %r not supported by ESRI WKT" % self)
     
 ##+to_meter  Multiplier to convert map units to 1.0m
 class MeterMultiplier:

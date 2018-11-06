@@ -291,7 +291,7 @@ def _from_wkt(string, wkttype=None, strict=False):
             if projclass:
                 proj = projclass()
             else:
-                raise Exception("The specified projection name could not be found")
+                raise Exception("The specified projection name %r could not be found" % projname)
             
             # find params
             params = []
@@ -596,7 +596,7 @@ def from_proj4(proj4, strict=False):
             # proj4 special case, longlat as projection name means unprojected geogcs
             proj = None
         else:
-            raise Exception("The specified projection name could not be found")
+            raise Exception("The specified projection name %r could not be found" % projname)
 
     else:
         raise Exception("Could not find required +proj element")
@@ -703,7 +703,7 @@ def from_proj4(proj4, strict=False):
                 unittype = parameters.UnitType(unit)
                 metmulti = parameters.MeterMultiplier(unit.to_meter) # takes meter multiplier from name, ignoring any custom meter multiplier
             else:
-                raise Exception("The specified unit name could not be found")
+                raise Exception("The specified unit name %r could not be found" % unitname)
         elif "+to_meter" in partdict:
             # no unit name specified, only to_meter conversion factor
             unittype = parameters.UnitType(units.Unknown())
