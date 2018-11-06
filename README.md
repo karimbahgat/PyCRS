@@ -254,7 +254,7 @@ For instance, if we wanted to check the datum we could do:
 Or the inverse flattening factor of the ellipsoid:
 
     >>> ellips = crs.toplevel.datum.ellips
-    >>> ellips.inv_flat
+    >>> ellips.inv_flat.value
     298.257223563
 
 For more ideas on how to inspect the CRS instance, the following overview gives an idea of the
@@ -344,17 +344,17 @@ PyCRS allows converting to the following CRS formats:
 #### Converting to Proj4
 
     >>> crs.to_proj4()
-    '+proj=robin +datum=WGS84 +ellps=WGS84 +a=6378137 +f=298.257223563 +pm=0  +lon_0=0 +x_0=0 +y_0=0 +units=m +axis=enu +no_defs'
+    '+proj=robin +datum=WGS84 +ellps=WGS84 +a=6378137.0 +rf=298.257223563 +pm=0  +lon_0=0 +x_0=0 +y_0=0 +units=m +axis=enu +no_defs'
 
 #### Converting to ESRI WKT
 
     >>> crs.to_esri_wkt()
-    'PROJCS["Unknown", GEOGCS["Unknown", DATUM["D_WGS_1984", SPHEROID["WGS_1984", 6378137, 298.257223563]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Robinson"], PARAMETER["Central_Meridian", 0], PARAMETER["False_Easting", 0], PARAMETER["False_Northing", 0], UNIT["Meter", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
+    'PROJCS["Unknown", GEOGCS["Unknown", DATUM["D_WGS_1984", SPHEROID["WGS_1984", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Robinson"], PARAMETER["Central_Meridian", 0], PARAMETER["False_Easting", 0], PARAMETER["False_Northing", 0], UNIT["Meter", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
 
 #### Converting to OGC WKT
 
     >>> crs.to_ogc_wkt()
-    'PROJCS["Unknown", GEOGCS["Unknown", DATUM["WGS_1984", SPHEROID["WGS_1984", 6378137, 298.257223563]], PRIMEM["Greenwich", 0], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Robinson"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
+    'PROJCS["Unknown", GEOGCS["Unknown", DATUM["WGS_1984", SPHEROID["WGS_1984", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Robinson"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
 
 
 
@@ -373,7 +373,7 @@ Let's demonstrate some examples using the World Robinson projection:
 
     >>> crs = pycrs.parser.from_esri_code(54030) # Robinson projection from esri code
     >>> crs.to_ogc_wkt()
-    'PROJCS["Unknown", GEOGCS["Unknown", DATUM["WGS_1984", SPHEROID["WGS_1984", 6378137, 298.257223563]], PRIMEM["Greenwich", 0], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Robinson"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
+    'PROJCS["Unknown", GEOGCS["Unknown", DATUM["WGS_1984", SPHEROID["WGS_1984", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Robinson"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
 
 Here is a map of the default Robinson projection:
 

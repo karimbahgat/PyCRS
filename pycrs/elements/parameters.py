@@ -44,26 +44,75 @@ def find(paramname, crstype, strict=False):
             pass
     else:
         return None
+
+
+##################
+# Ellipsoid parameters
     
+##+a         Semimajor radius of the ellipsoid axis
+class SemiMajorRadius:
+    proj4 = "+a"    
+    def __init__(self, value):
+        self.value = value
 
-# NOT CURRENTLY USED, BUT SHOULD BE
-# FOR NOW ONLY SET AS PURE VALUES INSIDE ELLIPSOID...
+    def to_proj4(self):
+        return "%s=%s" % (self.proj4, self.value)
 
-####+a         Semimajor radius of the ellipsoid axis
-##class SemiMajorRadius:
-##    proj4 = "+a"    
-##    def __init__(self, value):
-##        pass
-##
-####+b         Semiminor radius of the ellipsoid axis
-##class SemiMinorRadius:
-##    proj4 = "+b"
-##    def __init__(self, value):
-##        pass
+    def to_esri_wkt(self):
+        return str(self.value)
+
+    def to_ogc_wkt(self):
+        return str(self.value)
+    
+##+b         Semiminor radius of the ellipsoid axis
+class SemiMinorRadius:
+    proj4 = "+b"
+    def __init__(self, value):
+        self.value = value
+
+    def to_proj4(self):
+        return "%s=%s" % (self.proj4, self.value)
+
+    def to_esri_wkt(self):
+        return str(self.value)
+
+    def to_ogc_wkt(self):
+        return str(self.value)
+
+##+f         Flattening of the ellipsoid axis
+class Flattening:
+    proj4 = "+f"    
+    def __init__(self, value):
+        self.value = value
+
+    def to_proj4(self):
+        return "%s=%s" % (self.proj4, self.value)
+
+    def to_esri_wkt(self):
+        return str(self.value)
+
+    def to_ogc_wkt(self):
+        return str(self.value)
+
+##+rf         Inverse flattening of the ellipsoid axis
+class InverseFlattening:
+    proj4 = "+rf"    
+    def __init__(self, value):
+        self.value = value
+
+    def to_proj4(self):
+        return "%s=%s" % (self.proj4, self.value)
+
+    def to_esri_wkt(self):
+        return str(self.value)
+
+    def to_ogc_wkt(self):
+        return str(self.value)
     
 
 
 #################
+# Other parameters
 
 ##+alpha     ? Used with Oblique Mercator and possibly a few others
 class Azimuth:

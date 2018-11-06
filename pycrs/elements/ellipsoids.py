@@ -1,4 +1,6 @@
 
+from . import parameters
+
 
 def find(ellipsname, crstype, strict=False):
     if not strict:
@@ -27,37 +29,86 @@ class Ellipsoid:
 
     name = None
     semimaj_ax = None
+    semimin_ax = None
+    flat = None
     inv_flat = None
 
     def __init__(self, **kwargs):
         """
-        The ellipsoid that defines the shape of the earth. 
+        The ellipsoid that defines the shape of the earth.
+        To sufficiently define an ellipsoid, either set semimaj_ax + semimin_ax, semimaj_ax + flat,
+        or semimaj_ax + inv_flat. 
 
         Arguments:
 
         - **name**: A pycrs.ellipsoids.EllipsoidName instance with the name given by each supported format. 
-        - **semimaj_ax**: A float representing the coordinate position of the semimajor axis.
-        - **inv_flat**: A float representing the inverse flattening factor. 
+        - **semimaj_ax**: A pycrs.parameters.SemiMajorRadius representing the radius of the semimajor axis.
+        - **semimin_ax**: A pycrs.parameters.SemiMinorRadius representing the radius of the semiminor axis.
+        - **flat**: A pycrs.parameters.Flattening representing the flattening factor. 
+        - **inv_flat**: A pycrs.parameters.InverseFlattening representing the inverse flattening factor. 
         """
         self.name = kwargs.get('name', self.name)
         self.semimaj_ax = kwargs.get('semimaj_ax', self.semimaj_ax)
+        self.semimin_ax = kwargs.get('semimin_ax', self.semimin_ax)
+        self.flat = kwargs.get('flat', self.flat)
         self.inv_flat = kwargs.get('inv_flat', self.inv_flat)
 
-    def to_proj4(self):
-        if isinstance(self, Unknown):
-            # has no proj4 equivaent and is better left unspecified
-            return "+a=%s +f=%s" % (self.semimaj_ax, self.inv_flat)
-        elif not self.name.proj4:
-            # has no proj4 equivaent and is better left unspecified
-            return "+a=%s +f=%s" % (self.semimaj_ax, self.inv_flat)
+    def _get_flat(self):
+        if self.flat:
+            # flattening given directly
+            flat = self.flat.value
+        elif self.semimaj_ax and self.semimin_ax:
+            # calculate flattening from semimajor and minor radius
+            a = float(self.semimaj_ax.value)
+            b = float(self.semimin_ax.value)
+            flat = (a - b) / float(a)
+        elif self.inv_flat:
+            # calculate flattening from the inverse flattening
+            flat = 1 / float(self.inv_flat.value)
         else:
-            return "+ellps=%s +a=%s +f=%s" % (self.name.proj4, self.semimaj_ax, self.inv_flat)
+            raise Exception("Cannot get ellipsoid flattening, needs either semimaj_ax + semimin_ax, semimaj_ax + flat, or semimaj_ax + inv_flat")
+        return flat
+
+    def _get_wkt_invflat(self):
+        # WKT is special in that it falsely sets the inverse flattening to 0 for perfect spheres
+        # mathematically, when flattening is 0, then the inverse undefined
+        if self.inv_flat:
+            inv_flat = self.inv_flat.value
+        else:
+            flat = self._get_flat()
+            if flat == 0:
+                inv_flat = 0 # special WKT handling
+            else:
+                inv_flat = 1 / float(flat)
+        return inv_flat
+
+    def to_proj4(self):
+        proj4 = []
+        if self.name.proj4:
+            # ellipsoid name
+            proj4.append("+ellps=%s" % self.name.proj4)
+        if self.semimaj_ax:
+            proj4.append(self.semimaj_ax.to_proj4())
+            # include just one of semiminor, flattening, or inverse flattening (all aspects of the same)
+            # TODO: If has name matching a predefined ellipsoid, maybe consider comparing and only reporting
+            # those values that differ. 
+            if self.semimin_ax:
+                proj4.append(self.semimin_ax.to_proj4())
+            elif self.inv_flat:
+                proj4.append(self.inv_flat.to_proj4())
+            elif self.flat:
+                proj4.append(self.flat.to_proj4())
+        if not proj4:
+            raise Exception("Not enough information to export the ellipsoid to proj4")
+        return " ".join(proj4)
 
     def to_ogc_wkt(self):
-        return 'SPHEROID["%s", %s, %s]' % (self.name.ogc_wkt, self.semimaj_ax, self.inv_flat)
+        inv_flat = self._get_wkt_invflat()
+        return 'SPHEROID["%s", %s, %s]' % (self.name.ogc_wkt, self.semimaj_ax.value, inv_flat)
     
     def to_esri_wkt(self):
-        return 'SPHEROID["%s", %s, %s]' % (self.name.esri_wkt, self.semimaj_ax, self.inv_flat)
+        inv_flat = self._get_wkt_invflat()
+        return 'SPHEROID["%s", %s, %s]' % (self.name.esri_wkt, self.semimaj_ax.value, inv_flat)
 
     def to_geotiff(self):
         pass
@@ -78,8 +129,8 @@ class WGS84(Ellipsoid):
                 esri_wkt = "WGS_1984",
                 )
     
-    semimaj_ax = 6378137
-    inv_flat = 298.257223563
+    semimaj_ax = parameters.SemiMajorRadius(6378137.0)
+    inv_flat = parameters.InverseFlattening(298.257223563)
 
 class WGS72(Ellipsoid):
     name = EllipsoidName(
@@ -88,8 +139,8 @@ class WGS72(Ellipsoid):
                 esri_wkt = "WGS_1972",
                 )
 
-    semimaj_ax = 6378135
-    inv_flat = 298.26
+    semimaj_ax = parameters.SemiMajorRadius(6378135.0)
+    inv_flat = parameters.InverseFlattening(298.26)
 
 class International(Ellipsoid):
     name = EllipsoidName(
@@ -98,8 +149,8 @@ class International(Ellipsoid):
                 esri_wkt = "International_1924",
                 )
 
-    semimaj_ax = 6378388.0
-    inv_flat = 297.0
+    semimaj_ax = parameters.SemiMajorRadius(6378388.0)
+    inv_flat = parameters.InverseFlattening(297.0)
 
 class GRS80(Ellipsoid):
     name = EllipsoidName(
@@ -108,8 +159,8 @@ class GRS80(Ellipsoid):
                 esri_wkt = "GRS_1980",
                 )
 
-    semimaj_ax = 6378137.0
-    inv_flat = 298.257222101
+    semimaj_ax = parameters.SemiMajorRadius(6378137.0)
+    inv_flat = parameters.InverseFlattening(298.257222101)
 
 class Clarke1866(Ellipsoid):
     name = EllipsoidName(
@@ -118,8 +169,8 @@ class Clarke1866(Ellipsoid):
                 esri_wkt = "Clarke_1866",
                 )
 
-    semimaj_ax = 6378206.4
-    inv_flat = 294.9786982
+    semimaj_ax = parameters.SemiMajorRadius(6378206.4)
+    inv_flat = parameters.InverseFlattening(294.9786982)
 
 class Airy1830(Ellipsoid):
     name = EllipsoidName(
@@ -128,8 +179,8 @@ class Airy1830(Ellipsoid):
                 esri_wkt = "Airy_1830",
                 )
 
-    semimaj_ax = 6377563.396
-    inv_flat = 299.3249646
+    semimaj_ax = parameters.SemiMajorRadius(6377563.396)
+    inv_flat = parameters.InverseFlattening(299.3249646)
 
 class SphereArcInfo(Ellipsoid):
     name = EllipsoidName(
@@ -138,8 +189,8 @@ class SphereArcInfo(Ellipsoid):
                 esri_wkt = "Sphere_ARC_INFO",
                 )
 
-    semimaj_ax = 6370997.0
-    inv_flat = 0.0
+    semimaj_ax = parameters.SemiMajorRadius(6370997.0)
+    flat = parameters.Flattening(0.0)
 
 class Krassowsky1940(Ellipsoid):
     name = EllipsoidName(
@@ -148,8 +199,8 @@ class Krassowsky1940(Ellipsoid):
                 esri_wkt = "Krassowsky_1940",
                 )
 
-    semimaj_ax = 6378245.0
-    inv_flat = 298.3
+    semimaj_ax = parameters.SemiMajorRadius(6378245.0)
+    inv_flat = parameters.InverseFlattening(298.3)
 
 class Bessel1841(Ellipsoid):
     name = EllipsoidName(
@@ -158,8 +209,8 @@ class Bessel1841(Ellipsoid):
                 esri_wkt = "Bessel_1841",
                 )
 
-    semimaj_ax = 6377397.155
-    inv_flat = 299.1528128
+    semimaj_ax = parameters.SemiMajorRadius(6377397.155)
+    inv_flat = parameters.InverseFlattening(299.1528128)
 
 class Unknown(Ellipsoid):
     name = EllipsoidName(

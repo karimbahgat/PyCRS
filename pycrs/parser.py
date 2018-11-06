@@ -357,8 +357,13 @@ def _from_wkt(string, wkttype=None, strict=False):
             else:
                 ellipsoid = ellipsoids.Unknown()
 
-            ellipsoid.semimaj_ax = subsubcontent[1]
-            ellipsoid.inv_flat = subsubcontent[2]
+            ellipsoid.semimaj_ax = parameters.SemiMajorRadius(subsubcontent[1])
+            if subsubcontent[2] == 0:
+                # WKT falsely sets inverse flattening to 0 for spheroids
+                # but actually it cannot be 0, it is the flattening that is 0
+                ellipsoid.flat = parameters.Flattening(subsubcontent[2])
+            else:
+                ellipsoid.inv_flat = parameters.InverseFlattening(subsubcontent[2])
 
             ## datum shift
             if wkttype == "ogc":
@@ -478,6 +483,7 @@ def from_proj4(proj4, strict=False):
     # ELLIPS
 
     # ellipse param is required
+    ellips = None
     if "+ellps" in partdict:
 
         # get predefined ellips def
@@ -485,22 +491,9 @@ def from_proj4(proj4, strict=False):
         ellipsclass = ellipsoids.find(ellipsname, "proj4", strict)
         if ellipsclass:
             ellips = ellipsclass()
-        elif "+a" in partdict and "+f" in partdict:
-            ellips = ellipsoids.Unknown()
-        elif "+a" in partdict and "+rf" in partdict:
-            ellips = ellipsoids.Unknown()
-        else:
-            raise Exception("The specified ellipsoid name could not be found, and there was no manual specification of the semimajor axis and inverse flattening to use as a substitute.")
 
-    elif "+a" in partdict and "+f" in partdict:
-        # alternatively, it is okay with a missing ellipsoid if +a and +f are specified
-        # TODO: +f seems to never be specified when +ellps is missing, only +a and +b, look into...
+    if not ellips:
         ellips = ellipsoids.Unknown()
-        
-    elif "+a" in partdict and "+rf" in partdict:
-        ellips = ellipsoids.Unknown()
-    else:
-        raise Exception("Could not find the required +ellps element, nor a manual specification of the +a or +f elements, or +a and +rf elements.")
 
     # TO WGS 84 COEFFS
     if "+towgs84" in partdict:
@@ -513,17 +506,38 @@ def from_proj4(proj4, strict=False):
     # COMBINE DATUM AND ELLIPS
 
     ## create datum and ellips param objs
+
+    # +ellps loads all the required ellipsoid parameters
+    # here we set or overwrite the parameters manually
+    if "+a" in partdict:
+        # semimajor radius
+        ellips.semimaj_ax = parameters.SemiMajorRadius(partdict["+a"])        
+
+    if "+b" in partdict:
+        # semiminor radius
+        ellips.semimin_ax = parameters.SemiMinorRadius(partdict["+b"])
+
+    if "+f" in partdict:
+        # flattening
+        ellips.flat = parameters.Flattening(partdict["+f"])
+
     if "+rf" in partdict:
-        inv_flat = partdict.get("+rf")
-    elif "+f" in partdict:
-        inv_flat = 1.0 / float(partdict.get("+f"))
-    elif ellips.inv_flat is not None:
-        inv_flat = ellips.inv_flat
+        # inverse flattening
+        ellips.inv_flat = parameters.InverseFlattening(partdict["+rf"])
+
+    # check that ellipsoid is sufficiently defined
+    if ellips.semimaj_ax and ellips.semimin_ax:
+        # +a (semimajor radius) and +b (semiminor radius) is enough and can be used to calculate flattening
+        # see https://en.wikipedia.org/wiki/Flattening
+        pass
+    elif ellips.semimaj_ax and ellips.inv_flat:
+        # alternatively, it is okay with if +a (semimajor) and +f (flattening) are specified
+        pass
+    elif ellips.semimaj_ax and ellips.flat:
+        # alternatively, semimajor and +rf is also acceptable (the reciprocal/inverse of +f)
+        pass
     else:
-        raise Exception("Could not find the required +ellps element, nor a manual specification of the +f or +rf elements.")
-        
-    ellips.semimaj_ax = partdict.get("+a", ellips.semimaj_ax)
-    ellips.inv_flat = inv_flat
+        raise Exception("Could not find the required +ellps element, nor a manual specification of the +a with +b or +f/+rf elements: \n\t %s" % partdict)
     
     if "+datum" in partdict:
         datum.ellips = ellips
