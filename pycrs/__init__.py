@@ -12,8 +12,8 @@ common coordinate reference system (CRS) string and data source formats.
 __version__ = "1.0.0"
 
 
-from . import loader
-from . import parser
+from . import load
+from . import parse
 from . import utils
 from .elements.containers import CRS
 

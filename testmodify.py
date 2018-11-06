@@ -79,7 +79,7 @@ fromproj = pyproj.Proj("+init=EPSG:4326")
 x,y = -76.7075, 37.2707
 
 # Load
-crs = pycrs.parser.from_esri_code(54030) # Robinson projection from esri code
+crs = pycrs.parse.from_esri_code(54030) # Robinson projection from esri code
 render_world(crs, 'docs_orig')
 print pyproj.transform(fromproj, pyproj.Proj(crs.to_proj4()), x,y)
 

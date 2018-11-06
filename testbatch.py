@@ -177,11 +177,11 @@ def sourcestrings(format):
     # Misc other crs for testing
     #crs = pycrs.utils.crscode_to_string("esri", 54030, "proj4")
     #crs = pycrs.utils.crscode_to_string("sr-org", 6978, "proj4")
-    #crs = pycrs.parser.from_sr_code(7898)
-    #crs = pycrs.parser.from_epsg_code(4324)
-    #crs = pycrs.parser.from_sr_code(6618)
-    #crs = pycrs.parser.from_sr_code(22)
-    #crs = pycrs.parser.from_esri_code(54031)
+    #crs = pycrs.parse.from_sr_code(7898)
+    #crs = pycrs.parse.from_epsg_code(4324)
+    #crs = pycrs.parse.from_sr_code(6618)
+    #crs = pycrs.parse.from_sr_code(22)
+    #crs = pycrs.parse.from_esri_code(54031)
     #proj4 = "+proj=longlat +ellps=WGS84 +datum=WGS84"
     #proj4 = "+proj=aea +lat_1=24 +lat_2=31.5 +lat_0=24 +lon_0=-84 +x_0=400000 +y_0=0 +ellps=GRS80 +units=m +no_defs "
     #proj4 = "+proj=larr +datum=WGS84 +lon_0=0 +lat_ts=45 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
@@ -246,7 +246,7 @@ for wkt in sourcestrings("ogcwkt"):
         print("From:\n")
         print(wkt)
         print("")
-        crs = pycrs.parser.from_ogc_wkt(wkt)
+        crs = pycrs.parse.from_ogc_wkt(wkt)
         loaded += 1
         
         # test outputs
@@ -297,7 +297,7 @@ for proj4 in sourcestrings("proj4"):
         print("From:\n")
         print(proj4)
         print("")
-        crs = pycrs.parser.from_proj4(proj4)
+        crs = pycrs.parse.from_proj4(proj4)
         loaded += 1
         
         # test outputs
@@ -348,7 +348,7 @@ for wkt in sourcestrings("esriwkt"):
         print("From:\n")
         print(wkt)
         print("")
-        crs = pycrs.parser.from_esri_wkt(wkt)
+        crs = pycrs.parse.from_esri_wkt(wkt)
         loaded += 1
         
         # test outputs

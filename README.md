@@ -128,33 +128,33 @@ look up from a CRS code, or build it from scratch.
 #### Loading from an external source
 
 If you know the crs information is located in some external source, PyCRS provides some convenient
-functions for loading these, all located in the "pycrs.loader" module. 
+functions for loading these, all located in the "pycrs.load" module. 
 
 ##### Loading from a Shapefile
 
 In most situations this will mean reading the ESRI .prj file that accomponies
 a shapefile. PyCRS has a convenience function for doing that:
 
-    >>> crs = pycrs.loader.from_file("testfiles/natearth.prj")
+    >>> crs = pycrs.load.from_file("testfiles/natearth.prj")
 
 ##### Loading from a GeoJSON
 
 The same function also supports reading the crs from GeoJSON files:
 
-    >>> crs = pycrs.loader.from_file("testfiles/cshapes.geo.json")
+    >>> crs = pycrs.load.from_file("testfiles/cshapes.geo.json")
 
 ##### Loading from a URL
 
 If your crs is not defined in a file, but rather as plain text on a webpage, there is also a function for that:
 
-    >>> crs = pycrs.loader.from_url("http://spatialreference.org/ref/esri/54030/ogcwkt/")
+    >>> crs = pycrs.load.from_url("http://spatialreference.org/ref/esri/54030/ogcwkt/")
 
 
 #### Parsing from a text string
 
 In many cases however, you may already have the string representation in your code. This could be if you
 are interoperating with other libraries, or you have already read it from some external source.
-In these cases, you can create the CRS instance by using the functions available in the "pycrs.parser"
+In these cases, you can create the CRS instance by using the functions available in the "pycrs.parse"
 module.
 
 ##### Parsing from proj4 string or dict
@@ -162,12 +162,12 @@ module.
 To create the CRS instance from a proj4 string, you can do like this:
 
     >>> proj4 = "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
-    >>> crs = pycrs.parser.from_proj4(proj4)
+    >>> crs = pycrs.parse.from_proj4(proj4)
 
 Or if your proj4 string is represented as a dict:
 
     >>> proj4_as_dict = dict(proj='robin', lon_0=0, x_0=0, y_0=0, ellps='WGS84', datum='WGS84', units='m')
-    >>> crs = pycrs.parser.from_proj4(proj4_as_dict)
+    >>> crs = pycrs.parse.from_proj4(proj4_as_dict)
 
 ##### Parsing from ESRI WKT string
 
@@ -175,7 +175,7 @@ The ESRI WKT format is the format typically found in a shapefile's .prj file.
 If you have already loaded it from a file, you can parse it like this:
 
     >>> esri_wkt = 'PROJCS["World_Robinson",GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Robinson"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["Central_Meridian",0],UNIT["Meter",1]]'
-    >>> crs = pycrs.parser.from_esri_wkt(esri_wkt)
+    >>> crs = pycrs.parse.from_esri_wkt(esri_wkt)
 
 ##### Parsing from OGC WKT string
 
@@ -184,7 +184,7 @@ There are only minor differences, but will likely be more supported in the futur
 If you already have it as a string, you can parse it like this:
 
     >>> ogc_wkt = 'PROJCS["World_Robinson",GEOGCS["GCS_WGS_1984",DATUM["WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Robinson"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["Central_Meridian",0],UNIT["Meter",1],AUTHORITY["EPSG","54030"]]'
-    >>> crs = pycrs.parser.from_ogc_wkt(ogc_wkt)
+    >>> crs = pycrs.parse.from_ogc_wkt(ogc_wkt)
 
 ##### Parsing from unknown string
 
@@ -192,7 +192,7 @@ Finally, if you do not know the format of the crs string, you can also let PyCRS
 and parse the crs type for you:
 
     >>> for unknown in [proj4, esri_wkt, ogc_wkt]:
-    ...     crs = pycrs.parser.from_unknown_text(unknown)
+    ...     crs = pycrs.parse.from_unknown_text(unknown)
 
 
 #### Looking up a coordinate system code
@@ -205,19 +205,19 @@ codes.
 
 To look up codes defined by EPSG:
 
-    >>> crs = pycrs.parser.from_epsg_code(4326)
+    >>> crs = pycrs.parse.from_epsg_code(4326)
 
 ##### Looking up ESRI codes
 
 To look up codes defined by ESRI:
 
-    >>> crs = pycrs.parser.from_esri_code(54030)
+    >>> crs = pycrs.parse.from_esri_code(54030)
 
 ##### Looking up SR codes
 
 To look up codes defined by spatialreference.org:
 
-    >>> crs = pycrs.parser.from_sr_code(42)
+    >>> crs = pycrs.parse.from_sr_code(42)
     
 
 
@@ -235,7 +235,7 @@ A geographic reference system keeps coordinates in the latitude-longitude space,
 it is because there are different ways of defining the shape of the earth. As an example, let's load the commonly
 used WGS84 geographic coordinate system:
 
-    >>> crs = pycrs.parser.from_epsg_code(4326)
+    >>> crs = pycrs.parse.from_epsg_code(4326)
     >>> isinstance(crs, pycrs.CRS)
     True
 
@@ -289,7 +289,7 @@ defines some additional parameters in order to transform the coordinates to a wi
 variety of map types. Let's take the commonly used World Robinson projected coordinate
 system as our example:
 
-    >>> crs = pycrs.parser.from_esri_code(54030)
+    >>> crs = pycrs.parse.from_esri_code(54030)
     >>> isinstance(crs, pycrs.CRS)
     True
 
@@ -371,7 +371,7 @@ desired attributes.
 
 Let's demonstrate some examples using the World Robinson projection:
 
-    >>> crs = pycrs.parser.from_esri_code(54030) # Robinson projection from esri code
+    >>> crs = pycrs.parse.from_esri_code(54030) # Robinson projection from esri code
     >>> crs.to_ogc_wkt()
     'PROJCS["Unknown", GEOGCS["Unknown", DATUM["WGS_1984", SPHEROID["WGS_1984", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Robinson"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
 
@@ -413,13 +413,13 @@ from one coordinate system to another. In Python this is typically done with the
 which only takes proj4 format. Using PyCRS we can easily define the original coordinate system that
 we want to convert and get its proj4 representation:
 
-    >>> fromcrs = pycrs.parser.from_epsg_code(4326) # WGS84 projection from epsg code
+    >>> fromcrs = pycrs.parse.from_epsg_code(4326) # WGS84 projection from epsg code
     >>> fromcrs_proj4 = fromcrs.to_proj4()
 
 We can then use PyCRS to define our target projection from the format of your choice, before converting
 it to the proj4 format that PyProj expects:
 
-    >>> tocrs = pycrs.parser.from_esri_code(54030) # Robinson projection from esri code
+    >>> tocrs = pycrs.parse.from_esri_code(54030) # Robinson projection from esri code
     >>> tocrs_proj4 = tocrs.to_proj4()
 
 With the source and target projections defined in the proj4 crs format, we are ready to transform our
