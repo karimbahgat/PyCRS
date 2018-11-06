@@ -245,10 +245,10 @@ When the CRS is a geographic reference system, the `toplevel` attribute will be 
     True
 
 Through the toplevel GeogCRS instance, we can further access its subcomponents and parameters.
-For instance, if we wanted to check the named datum we could do:
+For instance, if we wanted to check the datum we could do:
 
     >>> datum = crs.toplevel.datum
-    >>> isinstance(datum.name, pycrs.elements.datums.WGS84)
+    >>> isinstance(datum, pycrs.elements.datums.WGS84)
     True
 
 Or the inverse flattening factor of the ellipsoid:
@@ -263,10 +263,10 @@ composition and attributes of a geographic CRS:
 - `crs` -> pycrs.CRS
     - `toplevel` -> pycrs.elements.containers.GeogCS
         - `name` -> string
-        - `datum` -> pycrs.elements.container.Datum
-            - `name` -> a named datum from pycrs.elements.datums
-            - `ellips` -> pycrs.elements.containers.Ellipsoid
-                - `name` -> a named ellipsoid from pycrs.elements.ellipsoids
+        - `datum` -> a datum from pycrs.elements.datums
+            - `name` -> pycrs.elements.datums.DatumName
+            - `ellips` -> an ellipsoid from pycrs.elements.ellipsoids
+                - `name` -> pycrs.elements.ellipsoids.EllipsoidName
                 - `semimaj_ax` -> float
                 - `inv_flat` -> float
             - `datumshift` -> optional, pycrs.elements.parameters.DatumShift or None
@@ -302,7 +302,7 @@ Through the toplevel ProjCRS instance, we can further access its subcomponents a
 For instance, if we wanted to check the named projection we could do:
 
     >>> proj = crs.toplevel.proj
-    >>> isinstance(proj.value, pycrs.elements.projections.Robinson)
+    >>> isinstance(proj, pycrs.elements.projections.Robinson)
     True
 
 Or check the type of coordinate unit:
@@ -318,8 +318,8 @@ composition and attributes of a projected CRS:
     - `toplevel` -> pycrs.elements.containers.ProjCS
         - `name` -> string
         - `geogcs` -> pycrs.elements.containers.GeogCS (See the section on geographic CRS...)
-        - `proj` -> pycrs.elements.containers.Projection
-            - `value` -> a named projection from pycrs.elements.projections]
+        - `proj` -> a projection from pycrs.elements.projections
+            - `name` -> pycrs.elements.projections.ProjName
         - `params` -> list
             - 1: named parameters from pycrs.elements.parameters
             - 2: named parameters from pycrs.elements.parameters
@@ -382,22 +382,29 @@ Here is a map of the default Robinson projection:
 Let's say we wanted to switch its datum from WGS84 to NAD83, we could do it
 like so:
 
-    >>> crs.toplevel.geogcs.datum.name = pycrs.elements.datums.NAD83
-    >>> crs.toplevel.geogcs.datum.ellips.name = pycrs.elements.ellipsoids.GRS80
+    >>> crs.toplevel.geogcs.datum = pycrs.elements.datums.NAD83()
     >>> crs.to_ogc_wkt()
-    'PROJCS["Unknown", GEOGCS["Unknown", DATUM["North_American_Datum_1983", SPHEROID["GRS_1980", 6378137, 298.257223563]], PRIMEM["Greenwich", 0], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Robinson"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
+    'PROJCS["Unknown", GEOGCS["Unknown", DATUM["North_American_Datum_1983", SPHEROID["GRS_1980", 6378137.0, 298.257222101]], PRIMEM["Greenwich", 0], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Robinson"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
 
 Or let's say we wanted to switch its prime meridian, so that the longitude axis is centered
 closer to the Pacific instead of over Greenwhich:
 
     >>> crs.toplevel.geogcs.prime_mer.value = 160.0
     >>> crs.to_ogc_wkt()
-    'PROJCS["Unknown", GEOGCS["Unknown", DATUM["North_American_Datum_1983", SPHEROID["GRS_1980", 6378137, 298.257223563]], PRIMEM["Greenwich", 160.0], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Robinson"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
+    'PROJCS["Unknown", GEOGCS["Unknown", DATUM["North_American_Datum_1983", SPHEROID["GRS_1980", 6378137.0, 298.257222101]], PRIMEM["Greenwich", 160.0], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Robinson"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
 
 And here is what that map would look like (the odd-looking lines is just a rendering issue due to
 polygons that cross the meridian):
 
 ![](https://github.com/karimbahgat/pycrs/raw/master/testrenders/docs_tweak2.png "Modified Robinson")
+
+Or if we just switch the projection type alltogether:
+
+    >>> crs.toplevel.proj = pycrs.elements.projections.Sinusoidal()
+    >>> crs.to_ogc_wkt()
+    'PROJCS["Unknown", GEOGCS["Unknown", DATUM["North_American_Datum_1983", SPHEROID["GRS_1980", 6378137.0, 298.257222101]], PRIMEM["Greenwich", 160.0], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Sinusoidal"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
+	
+![](https://github.com/karimbahgat/pycrs/raw/master/testrenders/docs_tweak3.png "Modified Sinusoidal")	
 
 ### Coordinate Transformations
 

@@ -84,8 +84,8 @@ render_world(crs, 'docs_orig')
 print pyproj.transform(fromproj, pyproj.Proj(crs.to_proj4()), x,y)
 
 # Tweak1
-crs.toplevel.geogcs.datum.name = pycrs.elements.datums.NAD83
-crs.toplevel.geogcs.datum.ellips.name = pycrs.elements.ellipsoids.GRS80 #WGS72
+crs.toplevel.geogcs.datum = pycrs.elements.datums.NAD83()
+#crs.toplevel.geogcs.datum.ellips = pycrs.elements.ellipsoids.WGS72()
 render_world(crs, 'docs_tweak1')
 print pyproj.transform(fromproj, pyproj.Proj(crs.to_proj4()), x,y)
 
@@ -94,7 +94,10 @@ crs.toplevel.geogcs.prime_mer.value = 160.0
 render_world(crs, 'docs_tweak2')
 print pyproj.transform(fromproj, pyproj.Proj(crs.to_proj4()), x,y)
 
-
+# Tweak3
+crs.toplevel.proj = pycrs.elements.projections.Sinusoidal()
+render_world(crs, 'docs_tweak3')
+print pyproj.transform(fromproj, pyproj.Proj(crs.to_proj4()), x,y)
 
 
 

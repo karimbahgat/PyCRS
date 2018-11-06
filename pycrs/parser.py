@@ -289,8 +289,7 @@ def _from_wkt(string, wkttype=None, strict=False):
             projname = subcontent[0].strip('"')
             projclass = projections.find(projname, "%s_wkt" % wkttype, strict)
             if projclass:
-                projdef = projclass()
-                proj = containers.Projection(projdef)
+                proj = projclass()
             else:
                 raise Exception("The specified projection name could not be found")
             
@@ -345,20 +344,21 @@ def _from_wkt(string, wkttype=None, strict=False):
             datumname = subcontent[0].strip('"')
             datumclass = datums.find(datumname, "%s_wkt" % wkttype, strict)
             if datumclass:
-                datumdef = datumclass()
+                datum = datumclass()
             else:
-                datumdef = datums.Unknown()
+                datum = datums.Unknown()
                 
             ## datum ellipsoid
             subsubheader, subsubcontent = subcontent[1]
             ellipsname = subsubcontent[0].strip('"')
             ellipsclass = ellipsoids.find(ellipsname, "%s_wkt" % wkttype, strict)
             if ellipsclass:
-                ellipsdef = ellipsclass()
+                ellipsoid = ellipsclass()
             else:
-                ellipsdef = ellipsoids.Unknown()
+                ellipsoid = ellipsoids.Unknown()
 
-            ellipsoid = containers.Ellipsoid(ellipsdef, subsubcontent[1], subsubcontent[2])
+            ellipsoid.semimaj_ax = subsubcontent[1]
+            ellipsoid.inv_flat = subsubcontent[2]
 
             ## datum shift
             if wkttype == "ogc":
@@ -373,7 +373,8 @@ def _from_wkt(string, wkttype=None, strict=False):
                 datumshift = None
                 
             ## put it all togehter
-            datum = containers.Datum(datumdef, ellipsoid, datumshift)
+            datum.ellips = ellipsoid
+            datum.datumshift = datumshift
             
             # prime mer
             subheader, subcontent = content[2]
@@ -467,12 +468,12 @@ def from_proj4(proj4, strict=False):
         datumname = partdict["+datum"]
         datumclass = datums.find(datumname, "proj4", strict)
         if datumclass:
-            datumdef = datumclass()
+            datum = datumclass()
         else:
-            datumdef = datums.Unknown()
+            datum = datums.Unknown()
 
     else:
-        datumdef = datums.Unknown()
+        datum = datums.Unknown()
 
     # ELLIPS
 
@@ -483,21 +484,21 @@ def from_proj4(proj4, strict=False):
         ellipsname = partdict["+ellps"]
         ellipsclass = ellipsoids.find(ellipsname, "proj4", strict)
         if ellipsclass:
-            ellipsdef = ellipsclass
+            ellips = ellipsclass()
         elif "+a" in partdict and "+f" in partdict:
-            ellipsdef = ellipsoids.Unknown()
+            ellips = ellipsoids.Unknown()
         elif "+a" in partdict and "+rf" in partdict:
-            ellipsdef = ellipsoids.Unknown()
+            ellips = ellipsoids.Unknown()
         else:
             raise Exception("The specified ellipsoid name could not be found, and there was no manual specification of the semimajor axis and inverse flattening to use as a substitute.")
 
     elif "+a" in partdict and "+f" in partdict:
         # alternatively, it is okay with a missing ellipsoid if +a and +f are specified
         # TODO: +f seems to never be specified when +ellps is missing, only +a and +b, look into...
-        ellipsdef = ellipsoids.Unknown()
+        ellips = ellipsoids.Unknown()
         
     elif "+a" in partdict and "+rf" in partdict:
-        ellipsdef = ellipsoids.Unknown()
+        ellips = ellipsoids.Unknown()
     else:
         raise Exception("Could not find the required +ellps element, nor a manual specification of the +a or +f elements, or +a and +rf elements.")
 
@@ -516,22 +517,23 @@ def from_proj4(proj4, strict=False):
         inv_flat = partdict.get("+rf")
     elif "+f" in partdict:
         inv_flat = 1.0 / float(partdict.get("+f"))
-    elif ellipsdef.inv_flat is not None:
-        inv_flat = ellipsdef.inv_flat
+    elif ellips.inv_flat is not None:
+        inv_flat = ellips.inv_flat
     else:
         raise Exception("Could not find the required +ellps element, nor a manual specification of the +f or +rf elements.")
         
-    ellips = containers.Ellipsoid(ellipsdef,
-                                  semimaj_ax=partdict.get("+a"),
-                                  inv_flat=inv_flat)
+    ellips.semimaj_ax = partdict.get("+a", ellips.semimaj_ax)
+    ellips.inv_flat = inv_flat
+    
     if "+datum" in partdict:
-        datum = containers.Datum(datumdef, ellips)
+        datum.ellips = ellips
 
     elif "+towgs84" in partdict:
-        datum = containers.Datum(datumdef, ellips, datumshift)
+        datum.ellips = ellips
+        datum.datumshift = datumshift
 
     else:
-        datum = containers.Datum(datumdef, ellips)
+        datum.ellips = ellips
 
     # PRIME MERIDIAN
 
@@ -575,20 +577,17 @@ def from_proj4(proj4, strict=False):
         projname = partdict["+proj"]
         projclass = projections.find(projname, "proj4", strict)
         if projclass:
-            projdef = projclass()
+            proj = projclass()
         elif projname == "longlat":
             # proj4 special case, longlat as projection name means unprojected geogcs
-            projdef = None
+            proj = None
         else:
             raise Exception("The specified projection name could not be found")
 
     else:
         raise Exception("Could not find required +proj element")
 
-    if projdef:
-
-        # create proj param obj
-        proj = containers.Projection(projdef)
+    if proj:
 
         # Because proj4 has no element hierarchy, using automatic element find() would
         # ...would not be very effective, as that would need a try-fail approach for each

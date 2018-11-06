@@ -1,14 +1,17 @@
 
+from . import ellipsoids
+from . import parameters
+
 
 def find(datumname, crstype, strict=False):
     if not strict:
         datumname = datumname.lower().replace(" ","_")
     for itemname,item in globals().items():
-        if itemname.startswith("_"):
+        if itemname.startswith("_") or itemname == 'Datum':
             continue
         try:
-            if hasattr(item, crstype):
-                itemname = getattr(item, crstype)
+            if hasattr(item.name, crstype):
+                itemname = getattr(item.name, crstype)
                 if not strict:
                     itemname = itemname.lower().replace(" ","_")
                 if datumname == itemname:
@@ -18,53 +21,122 @@ def find(datumname, crstype, strict=False):
     else:
         return None
 
+
+##+datum     Datum name (see `proj -ld`)
+class Datum:
+    proj4 = "+datum"
+    ogc_wkt = "DATUM"
+    esri_wkt = "DATUM"
+
+    name = None
+    ellips = None
+    datumshift = None
     
+    def __init__(self, **kwargs):
+        """
+        A Datum defines the shape of the earth. 
 
+        Arguments:
 
-class WGS84:
-    proj4 = "WGS84"
-    ogc_wkt = "WGS_1984"
-    esri_wkt = "D_WGS_1984"
+        - **name**: A pycrs.datums.DatumName instance with the name given by each supported format. 
+        - **ellipsoid**: A pycrs.elements.containers.Ellipsoid instance.
+        - **datumshift** (optional): A pycrs.elements.parameters.DatumShift instance. 
+        """
+        self.name = kwargs.get('name', self.name)
+        self.ellips = kwargs.get('ellipsoid', self.ellips)
+        self.datumshift = kwargs.get('datumshift', self.datumshift)
 
-    ellipsdef = "" # ellipsoids.WGS84()
-    to_wgs84 = None
+    def to_proj4(self):
+        if self.datumshift:
+            return "%s %s" % (self.ellips.to_proj4(), self.datumshift.to_proj4())
+        elif isinstance(self, Unknown):
+            return "%s" % self.ellips.to_proj4()
+        elif not self.name.proj4:
+            # has no proj4 equivaent and is better left unspecified, so only return ellips
+            return "%s" % self.ellips.to_proj4()
+        else:
+            return "+datum=%s %s" % (self.name.proj4, self.ellips.to_proj4())
 
-class WGS72_BE:
-    proj4 = "" # no datum name, just ellips + towgs84 params...
-    ogc_wkt = "WGS_1972_Transit_Broadcast_Ephemeris"
-    esri_wkt = "D_WGS_1972_BE"
+    def to_ogc_wkt(self):
+        if self.datumshift:
+            return 'DATUM["%s", %s, %s]' % (self.name.ogc_wkt, self.ellips.to_ogc_wkt(), self.datumshift.to_ogc_wkt())
+        else:
+            return 'DATUM["%s", %s]' % (self.name.ogc_wkt, self.ellips.to_ogc_wkt())
 
-    ellipsdef = "" # ellipsoids.WGS72()
-    to_wgs84 = 0,0,1.9,0,0,0.814,-0.38
+    def to_esri_wkt(self):
+        if self.datumshift:
+            return 'DATUM["%s", %s, %s]' % (self.name.esri_wkt, self.ellips.to_esri_wkt(), self.datumshift.to_esri_wkt())
+        else:
+            return 'DATUM["%s", %s]' % (self.name.esri_wkt, self.ellips.to_esri_wkt())
 
-class NAD83:
-    proj4 = "NAD83" # no datum name, just ellips + towgs84 params...
-    ogc_wkt = "North_American_Datum_1983"
-    esri_wkt = "D_North_American_1983"
+    def to_geotiff(self):
+        pass
+        #return "GeogGeodeticDatum"
 
-    ellipsdef = "" # ellipsoids.WGS72()
-    to_wgs84 = None
+class DatumName:
+    def __init__(self, proj4="", ogc_wkt="", esri_wkt=""):
+        self.proj4 = proj4
+        self.ogc_wkt = ogc_wkt
+        self.esri_wkt = esri_wkt
+        
 
-class NAD27:
-    proj4 = "NAD27"
-    ogc_wkt = "D_North_American_1927"
-    esri_wkt = "D_North_American_1927"
+# Specific predefined datum classes
+class WGS84(Datum):
+    name = DatumName(
+                proj4 = "WGS84",
+                ogc_wkt = "WGS_1984",
+                esri_wkt = "D_WGS_1984",
+                )
+
+    ellips = ellipsoids.WGS84()
+    datumshift = None
+
+class WGS72_BE(Datum):
+    name = DatumName(
+                proj4 = "", # no datum name, just ellips + towgs84 params...
+                ogc_wkt = "WGS_1972_Transit_Broadcast_Ephemeris",
+                esri_wkt = "D_WGS_1972_BE",
+                )
+
+    ellips = ellipsoids.WGS72()
+    datumshift = parameters.DatumShift([0,0,1.9,0,0,0.814,-0.38])
+
+class NAD83(Datum):
+    name = DatumName(
+                proj4 = "NAD83", # no datum name, just ellips + towgs84 params...
+                ogc_wkt = "North_American_Datum_1983",
+                esri_wkt = "D_North_American_1983",
+                )
+
+    ellips = ellipsoids.GRS80()
+    datumshift = None
+
+class NAD27(Datum):
+    name = DatumName(
+                proj4 = "NAD27",
+                ogc_wkt = "D_North_American_1927",
+                esri_wkt = "D_North_American_1927",
+                )
     
-    ellipsdef = "" # ellipsoids...
-    to_wgs84 = None
+    ellips = ellipsoids.Clarke1866()
+    datumshift = None
 
-class SphereArcInfo:
-    proj4 = "" # no name
-    ogc_wkt = "D_Sphere_ARC_INFO" # confirmed but odd that uses D_
-    esri_wkt = "D_Sphere_ARC_INFO"
+class SphereArcInfo(Datum):
+    name = DatumName(
+                proj4 = "", # no name
+                ogc_wkt = "D_Sphere_ARC_INFO", # confirmed but odd that uses D_
+                esri_wkt = "D_Sphere_ARC_INFO",
+                )
 
-    ellipsdef = "" # ellipsoids...
-    to_wgs84 = None
+    ellips = ellipsoids.SphereArcInfo()
+    datumshift = None
 
-class Unknown:
-    proj4 = "" # no datum name, just ellips + towgs84 params...
-    ogc_wkt = "Unknown"
-    esri_wkt = "Unknown"
+class Unknown(Datum):
+    name = DatumName(
+                proj4 = "", # no datum name, just ellips + towgs84 params...
+                ogc_wkt = "Unknown",
+                esri_wkt = "Unknown",
+                )
 
-    ellipsdef = "" # ellipsoids.WGS72()
-    to_wgs84 = None
+    ellips = ellipsoids.Unknown()
+    datumshift = None

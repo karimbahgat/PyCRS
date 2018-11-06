@@ -22,7 +22,6 @@
 
 # +unit and +to_metre are what makes up 'UNIT["Meter",1.0]'
 
-from . import datums
 from . import directions
 from . import units
 
