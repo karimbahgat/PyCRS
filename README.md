@@ -84,7 +84,7 @@ quality check.
 
 ## Platforms
 
-Python 2 and 3, all systems (Windows, Linux, and Mac). 
+Python 2 and 3. 
 
 
 ## Dependencies
@@ -265,11 +265,23 @@ composition and attributes of a geographic CRS:
         - `name` -> string
         - `datum` -> a datum from pycrs.elements.datums
             - `name` -> pycrs.elements.datums.DatumName
+				- `proj4` -> string
+				- `esri_wkt` -> string
+				- `ogc_wkt` -> string
             - `ellips` -> an ellipsoid from pycrs.elements.ellipsoids
                 - `name` -> pycrs.elements.ellipsoids.EllipsoidName
-                - `semimaj_ax` -> float
-                - `inv_flat` -> float
-            - `datumshift` -> optional, pycrs.elements.parameters.DatumShift or None
+					- `proj4` -> string
+					- `esri_wkt` -> string
+					- `ogc_wkt` -> string
+                - `semimaj_ax` -> pycrs.elements.parameters.SemiMajorRadius
+					- `value` -> float
+				- `semimin_ax` -> (optional) pycrs.elements.parameters.SemiMinorRadius
+					- `value` -> float
+				- `flat` -> (optional) pycrs.elements.parameters.Flattening
+					- `value` -> float
+                - `inv_flat` -> (optional) pycrs.elements.parameters.InverseFlattening
+					- `value` -> float
+            - `datumshift` -> (optional) pycrs.elements.parameters.DatumShift or None
         - `prime_mer` -> pycrs.elements.parameters.PrimeMeridian
             - `value` -> float
         - `angunit` -> pycrs.elements.parameters.AngularUnit
@@ -320,6 +332,9 @@ composition and attributes of a projected CRS:
         - `geogcs` -> pycrs.elements.containers.GeogCS (See the section on geographic CRS...)
         - `proj` -> a projection from pycrs.elements.projections
             - `name` -> pycrs.elements.projections.ProjName
+				- `proj4` -> string
+				- `esri_wkt` -> string
+				- `ogc_wkt` -> string
         - `params` -> list
             - 1: named parameters from pycrs.elements.parameters
             - 2: named parameters from pycrs.elements.parameters
