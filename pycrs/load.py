@@ -60,7 +60,7 @@ def from_file(filepath):
     """
     if filepath.endswith(".prj"):
         string = open(filepath, "r").read()
-        return parse.from_esri_wkt(string)
+        return parse.from_unknown_wkt(string)
     
     elif filepath.endswith((".geojson",".json")):
         raw = open(filepath).read()
