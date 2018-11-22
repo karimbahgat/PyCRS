@@ -20,10 +20,7 @@
 # some of these names imply certain combinations of datum and spheroid and paramters.
 # so in proj4 one simply needs to give that name, but in wkt one needs to spell it all out.
 
-# +unit and +to_metre are what makes up 'UNIT["Meter",1.0]'
-
 from . import directions
-from . import units
 
 ################
 
@@ -342,111 +339,6 @@ class DatumShift:
 
     def to_esri_wkt(self):
         raise Exception("Parameter %r not supported by ESRI WKT" % self)
-    
-##+to_meter  Multiplier to convert map units to 1.0m
-class MeterMultiplier:
-    proj4 = "+to_meter"
-    
-    def __init__(self, value):
-        """
-        The multiplier factor for converting coordinate units to meters. 
-
-        Arguments:
-
-        - **value**: the meter multiplier, as a float.
-        """
-        self.value = value
-
-    def to_proj4(self):
-        return "+to_meter=%s" %repr(self.value)
-
-    def to_ogc_wkt(self):
-        # the stuff that comes after UNITS["meter", ... # must be combined with unittype in a unit class to make wkt
-        return repr(self.value)
-
-    def to_esri_wkt(self):
-        return repr(self.value)
-
-##+units     meters, US survey feet, etc.
-class UnitType:
-    proj4 = "+units"
-    
-    def __init__(self, value):
-        """
-        The generic unit type parameter. 
-
-        Arguments:
-
-        - **value**: A specific unit type instance, eg pycrs.elements.units.Meter(). 
-        """
-        self.value = value
-
-    def to_proj4(self):
-        return "+units=%s" %self.value.proj4
-
-    def to_ogc_wkt(self):
-        # the stuff that comes after UNITS[... # must be combined with metermultiplier in a unit class to make wkt
-        return str(self.value.ogc_wkt)
-
-    def to_esri_wkt(self):
-        return str(self.value.esri_wkt)
-
-# special...
-class Unit:
-    ogc_wkt = "UNIT"
-    esri_wkt = "UNIT"
-    
-    def __init__(self, unittype, metermultiplier):
-        """
-        Distance unit parameter. 
-
-        Args:
-
-        - **unittype**: A pycrs.elements.parameters.UnitType instance. 
-        - **metermultiplier**: A pycrs.elements.parameters.MeterMultiplier instance. 
-        """
-        self.unittype = unittype
-        self.metermultiplier = metermultiplier
-
-    def to_proj4(self):
-        # always use unit type, or meter multiplier if unknown unit type
-        if isinstance(self.unittype.value, units.Unknown):
-            return "%s" % self.metermultiplier.to_proj4()
-        else:
-            return "%s" % self.unittype.to_proj4()
-
-    def to_ogc_wkt(self):
-        return 'UNIT["%s", %s]' %(self.unittype.to_ogc_wkt(), self.metermultiplier.to_ogc_wkt())
-
-    def to_esri_wkt(self):
-        return 'UNIT["%s", %s]' %(self.unittype.to_esri_wkt(), self.metermultiplier.to_esri_wkt())
-
-# angular unit
-class AngularUnit:
-    ogc_wkt = "UNIT"
-    esri_wkt = "UNIT"
-    
-    def __init__(self, unittype, metermultiplier):
-        """
-        Angular unit parameter. 
-
-        Args:
-
-        - **unittype**: A pycrs.elements.parameters.UnitType instance. 
-        - **metermultiplier**: A pycrs.elements.parameters.MeterMultiplier instance. 
-        """
-        self.unittype = unittype
-        self.metermultiplier = metermultiplier
-
-    def to_proj4(self):
-        # cannot be specified in proj4, so just return nothing
-        return ""
-
-    def to_ogc_wkt(self):
-        return 'UNIT["%s", %s]' %(self.unittype.to_ogc_wkt(), self.metermultiplier.to_ogc_wkt())
-
-    def to_esri_wkt(self):
-        return 'UNIT["%s", %s]' %(self.unittype.to_esri_wkt(), self.metermultiplier.to_esri_wkt())
     
 ##+x_0       False easting
 class FalseEasting:

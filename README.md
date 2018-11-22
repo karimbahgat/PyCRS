@@ -284,10 +284,12 @@ composition and attributes of a geographic CRS:
             - `datumshift` -> (optional) pycrs.elements.parameters.DatumShift or None
         - `prime_mer` -> pycrs.elements.parameters.PrimeMeridian
             - `value` -> float
-        - `angunit` -> pycrs.elements.parameters.AngularUnit
-            - `unittype` -> pycrs.elements.parameters.UnitType
-                - `value` -> a named unit from pycrs.elements.units
-            - `metermultiplier` -> pycrs.elements.parameters.MeterMultiplier
+        - `angunit` -> an angular unit from pycrs.elements.units, eg Degree
+            - `unitname` -> pycrs.elements.units.UnitName
+				- `proj4` -> string
+				- `esri_wkt` -> string
+				- `ogc_wkt` -> string
+            - `unitmultiplier` -> pycrs.elements.units.UnitMultiplier
                 - `value` -> float
         - `twin_ax` -> tuple
             - 1: a named compass direction (east-west) from pycrs.elements.directions
@@ -320,7 +322,7 @@ For instance, if we wanted to check the named projection we could do:
 Or check the type of coordinate unit:
 
     >>> unit = crs.toplevel.unit
-    >>> isinstance(unit.unittype.value, pycrs.elements.units.Meter)
+    >>> isinstance(unit, pycrs.elements.units.Meter)
     True
 
 For more ideas on how to inspect the CRS instance, the following overview gives an idea of the
@@ -340,10 +342,12 @@ composition and attributes of a projected CRS:
             - 2: named parameters from pycrs.elements.parameters
             - 3: ...
             - n: named parameters from pycrs.elements.parameters
-        - `unit` -> pycrs.elements.parameters.Unit
-            - `unittype` -> pycrs.elements.parameters.UnitType
-                - `value` -> a named unit from pycrs.elements.units
-            - `metermultiplier` -> pycrs.elements.parameters.MeterMultiplier
+        - `unit` -> a unit from pycrs.elements.units
+            - `unitname` -> pycrs.elements.units.UnitName
+				- `proj4` -> string
+				- `esri_wkt` -> string
+				- `ogc_wkt` -> string
+            - `unitmultiplier` -> pycrs.elements.units.UnitMultiplier
                 - `value` -> float
         - `twin_ax` -> tuple
             - 1: a named compass direction (east-west) from pycrs.elements.directions
@@ -359,7 +363,7 @@ PyCRS allows converting to the following CRS formats:
 #### Converting to Proj4
 
     >>> crs.to_proj4()
-    '+proj=robin +datum=WGS84 +ellps=WGS84 +a=6378137.0 +rf=298.257223563 +pm=0  +lon_0=0 +x_0=0 +y_0=0 +units=m +axis=enu +no_defs'
+    '+proj=robin +datum=WGS84 +ellps=WGS84 +a=6378137.0 +rf=298.257223563 +pm=0 +lon_0=0 +x_0=0 +y_0=0 +units=m +axis=enu +no_defs'
 
 #### Converting to ESRI WKT
 

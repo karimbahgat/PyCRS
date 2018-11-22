@@ -315,13 +315,11 @@ def _from_wkt(string, wkttype=None, strict=False):
             unitclass = units.find(unitname, "%s_wkt" % wkttype, strict)
             if unitclass:
                 unit = unitclass()
-                unittype = parameters.UnitType(unit)
             else:
                 unit = units.Unknown()
-                unittype = parameters.UnitType(unit)
 
-            metmult = parameters.MeterMultiplier(value)
-            linunit = parameters.Unit(unittype, metmult)
+            unit.unitmultiplier.value = value # override default multiplier
+            linunit = unit
             
             # find twin axis maybe
 ##            if len(content) >= 6:
@@ -391,12 +389,10 @@ def _from_wkt(string, wkttype=None, strict=False):
             unitclass = units.find(unitname, "%s_wkt" % wkttype, strict)
             if unitclass:
                 unit = unitclass()
-                unittype = parameters.UnitType(unit)
             else:
                 unit = units.Unknown()
-                unittype = parameters.UnitType(unit)
-            metmult = parameters.MeterMultiplier(value)
-            angunit = parameters.AngularUnit(unittype, metmult)
+            unit.unitmultiplier.value = value # override default multiplier
+            angunit = unit
             
             # twin axis
             # ...
@@ -575,9 +571,7 @@ def from_proj4(proj4, strict=False):
     # ANGULAR UNIT    
 
     ## proj4 cannot set angular unit, so just set to default
-    metmulti = parameters.MeterMultiplier(0.017453292519943295)
-    unittype = parameters.UnitType(units.Degree())
-    angunit = parameters.AngularUnit(unittype, metmulti)
+    angunit = units.Degree() 
 
     # GEOGCS (note, currently does not load axes)
 
@@ -699,22 +693,16 @@ def from_proj4(proj4, strict=False):
             unitname = partdict["+units"]
             unitclass = units.find(unitname, "proj4", strict)
             if unitclass:
-                unit = unitclass()
-                unittype = parameters.UnitType(unit)
-                metmulti = parameters.MeterMultiplier(unit.to_meter) # takes meter multiplier from name, ignoring any custom meter multiplier
+                unit = unitclass() # takes meter multiplier from name, ignoring any custom meter multiplier
             else:
                 raise Exception("The specified unit name %r could not be found" % unitname)
         elif "+to_meter" in partdict:
             # no unit name specified, only to_meter conversion factor
-            unittype = parameters.UnitType(units.Unknown())
-            metmulti = parameters.MeterMultiplier(partdict["+to_meter"])
+            unit = units.Unknown()
+            unit.metermultiplier.value = partdict["+to_meter"]
         else:
             # if nothing specified, defaults to meter
-            unittype = parameters.UnitType(units.Meter())
-            metmulti = parameters.MeterMultiplier(1.0)
-
-        ## create unitobj
-        unit = parameters.Unit(unittype, metmulti)
+            unit = units.Meter()
 
         # PROJCS
 

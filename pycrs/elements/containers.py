@@ -65,7 +65,8 @@ class GeogCS:
 
     def to_proj4(self):
         # dont parse axis to proj4, because in proj4, axis only applies to the cs, ie the projcs (not the geogcs, where wkt can specify with axis)
-        return "%s %s %s" % (self.datum.to_proj4(), self.prime_mer.to_proj4(), self.angunit.to_proj4() ) 
+        # also proj4 cannot specify angular units
+        return "%s %s" % (self.datum.to_proj4(), self.prime_mer.to_proj4()) 
 
     def to_ogc_wkt(self):
         return 'GEOGCS["%s", %s, %s, %s, AXIS["Lon", %s], AXIS["Lat", %s]]' % (self.name, self.datum.to_ogc_wkt(), self.prime_mer.to_ogc_wkt(), self.angunit.to_ogc_wkt(), self.twin_ax[0].ogc_wkt, self.twin_ax[1].ogc_wkt )
