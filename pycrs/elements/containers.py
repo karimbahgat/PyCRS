@@ -20,11 +20,21 @@ class CRS:
         """
         self.toplevel = toplevel
         
-    def to_proj4(self):
+    def to_proj4(self, as_dict=False):
+        proj4 = None
         if isinstance(self.toplevel, ProjCS):
-            return "%s +no_defs" % self.toplevel.to_proj4()
+            proj4 = "%s +no_defs" % self.toplevel.to_proj4()
         elif isinstance(self.toplevel, GeogCS):
-            return "+proj=longlat %s +no_defs" % self.toplevel.to_proj4()
+            proj4 = "+proj=longlat %s +no_defs" % self.toplevel.to_proj4()
+        if proj4:
+            if as_dict:
+                return dict([
+                            entry.lstrip('+').split('=')
+                            for entry in proj4.split()
+                            if entry != "+no_defs"
+                             ])
+            else:
+                return proj4
 
     def to_ogc_wkt(self):
         return "%s" % self.toplevel.to_ogc_wkt()

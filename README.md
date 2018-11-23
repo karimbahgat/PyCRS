@@ -362,8 +362,13 @@ PyCRS allows converting to the following CRS formats:
 
 #### Converting to Proj4
 
+	# as a string
     >>> crs.to_proj4()
     '+proj=robin +datum=WGS84 +ellps=WGS84 +a=6378137.0 +rf=298.257223563 +pm=0 +lon_0=0 +x_0=0 +y_0=0 +units=m +axis=enu +no_defs'
+	
+	# or as a dict
+	>>> isinstance(crs.to_proj4(as_dict=True), dict)
+	True
 
 #### Converting to ESRI WKT
 
