@@ -4,7 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
     <title>pycrs.elements.datums API documentation</title>
-    <meta name="description" content="" />
+    <meta name="description" content="Named datum classes that can be created or parsed." />
 
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
   
@@ -1095,7 +1095,7 @@ table {
 
   <header id="section-intro">
   <h1 class="title"><span class="name">pycrs.elements.datums</span> module</h1>
-  
+  <p>Named datum classes that can be created or parsed.</p>
   
 
   </header>
@@ -1112,6 +1112,16 @@ table {
 
     
   
+    <div class="desc"><p>Search for a datum name located in this module.</p>
+<p>Arguments:</p>
+<ul>
+<li><strong>datumname</strong>: The datum name to search for.</li>
+<li><strong>crstype</strong>: Which CRS naming convention to search (different
+    CRS formats have different names for the same datum).</li>
+<li><strong>strict</strong> (optional): If False, ignores minor name mismatches
+    such as underscore or character casing, otherwise must be exact
+    match (defaults to False).</li>
+</ul></div>
   <div class="source_cont">
 </div>
 
@@ -1147,7 +1157,7 @@ table {
 <p>Arguments:</p>
 <ul>
 <li><strong>name</strong>: A pycrs.datums.DatumName instance with the name given by each supported format. </li>
-<li><strong>ellipsoid</strong>: A pycrs.elements.containers.Ellipsoid instance.</li>
+<li><strong>ellipsoid</strong>: A pycrs.elements.ellipsoids.Ellipsoid instance.</li>
 <li><strong>datumshift</strong> (optional): A pycrs.elements.parameters.DatumShift instance.</li>
 </ul></div>
   <div class="source_cont">
@@ -1277,7 +1287,7 @@ table {
 <p>Arguments:</p>
 <ul>
 <li><strong>name</strong>: A pycrs.datums.DatumName instance with the name given by each supported format. </li>
-<li><strong>ellipsoid</strong>: A pycrs.elements.containers.Ellipsoid instance.</li>
+<li><strong>ellipsoid</strong>: A pycrs.elements.ellipsoids.Ellipsoid instance.</li>
 <li><strong>datumshift</strong> (optional): A pycrs.elements.parameters.DatumShift instance.</li>
 </ul></div>
   <div class="source_cont">
@@ -1392,7 +1402,7 @@ table {
 <p>Arguments:</p>
 <ul>
 <li><strong>name</strong>: A pycrs.datums.DatumName instance with the name given by each supported format. </li>
-<li><strong>ellipsoid</strong>: A pycrs.elements.containers.Ellipsoid instance.</li>
+<li><strong>ellipsoid</strong>: A pycrs.elements.ellipsoids.Ellipsoid instance.</li>
 <li><strong>datumshift</strong> (optional): A pycrs.elements.parameters.DatumShift instance.</li>
 </ul></div>
   <div class="source_cont">
@@ -1507,7 +1517,7 @@ table {
 <p>Arguments:</p>
 <ul>
 <li><strong>name</strong>: A pycrs.datums.DatumName instance with the name given by each supported format. </li>
-<li><strong>ellipsoid</strong>: A pycrs.elements.containers.Ellipsoid instance.</li>
+<li><strong>ellipsoid</strong>: A pycrs.elements.ellipsoids.Ellipsoid instance.</li>
 <li><strong>datumshift</strong> (optional): A pycrs.elements.parameters.DatumShift instance.</li>
 </ul></div>
   <div class="source_cont">
@@ -1622,7 +1632,7 @@ table {
 <p>Arguments:</p>
 <ul>
 <li><strong>name</strong>: A pycrs.datums.DatumName instance with the name given by each supported format. </li>
-<li><strong>ellipsoid</strong>: A pycrs.elements.containers.Ellipsoid instance.</li>
+<li><strong>ellipsoid</strong>: A pycrs.elements.ellipsoids.Ellipsoid instance.</li>
 <li><strong>datumshift</strong> (optional): A pycrs.elements.parameters.DatumShift instance.</li>
 </ul></div>
   <div class="source_cont">
@@ -1737,7 +1747,7 @@ table {
 <p>Arguments:</p>
 <ul>
 <li><strong>name</strong>: A pycrs.datums.DatumName instance with the name given by each supported format. </li>
-<li><strong>ellipsoid</strong>: A pycrs.elements.containers.Ellipsoid instance.</li>
+<li><strong>ellipsoid</strong>: A pycrs.elements.ellipsoids.Ellipsoid instance.</li>
 <li><strong>datumshift</strong> (optional): A pycrs.elements.parameters.DatumShift instance.</li>
 </ul></div>
   <div class="source_cont">
@@ -1852,7 +1862,7 @@ table {
 <p>Arguments:</p>
 <ul>
 <li><strong>name</strong>: A pycrs.datums.DatumName instance with the name given by each supported format. </li>
-<li><strong>ellipsoid</strong>: A pycrs.elements.containers.Ellipsoid instance.</li>
+<li><strong>ellipsoid</strong>: A pycrs.elements.ellipsoids.Ellipsoid instance.</li>
 <li><strong>datumshift</strong> (optional): A pycrs.elements.parameters.DatumShift instance.</li>
 </ul></div>
   <div class="source_cont">

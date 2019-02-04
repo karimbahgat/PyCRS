@@ -1,9 +1,24 @@
+"""
+Named datum classes that can be created or parsed. 
+"""
 
 from . import ellipsoids
 from . import parameters
 
 
 def find(datumname, crstype, strict=False):
+    """
+    Search for a datum name located in this module.
+
+    Arguments:
+
+    - **datumname**: The datum name to search for.
+    - **crstype**: Which CRS naming convention to search (different
+        CRS formats have different names for the same datum).
+    - **strict** (optional): If False, ignores minor name mismatches
+        such as underscore or character casing, otherwise must be exact
+        match (defaults to False). 
+    """
     if not strict:
         datumname = datumname.lower().replace(" ","_")
     for itemname,item in globals().items():
@@ -39,7 +54,7 @@ class Datum:
         Arguments:
 
         - **name**: A pycrs.datums.DatumName instance with the name given by each supported format. 
-        - **ellipsoid**: A pycrs.elements.containers.Ellipsoid instance.
+        - **ellipsoid**: A pycrs.elements.ellipsoids.Ellipsoid instance.
         - **datumshift** (optional): A pycrs.elements.parameters.DatumShift instance. 
         """
         self.name = kwargs.get('name', self.name)

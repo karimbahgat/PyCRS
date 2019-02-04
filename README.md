@@ -1,11 +1,16 @@
 # PyCRS
 
+[![Build Status](https://travis-ci.org/karimbahgat/PyCRS.svg?branch=master)](https://travis-ci.org/karimbahgat/PyCRS)
+
 PyCRS is a pure Python GIS package for reading, writing, and converting between various
 common coordinate reference system (CRS) string and data source formats. 
 
 ![](https://github.com/karimbahgat/pycrs/raw/master/testrenders/logo.png "PyCRS")
 
-[![Build Status](https://travis-ci.org/karimbahgat/PyCRS.svg?branch=master)](https://travis-ci.org/karimbahgat/PyCRS)
+**Version: 1.0.1**
+
+- [GitHub Repository](http://github.com/karimbahgat/PyCRS)
+- [API Documentation](https://karimbahgat.github.io/PyCRS/)
 
 
 ## Table of Contents
@@ -15,7 +20,6 @@ common coordinate reference system (CRS) string and data source formats.
 - [Platforms](#platforms)
 - [Dependencies](#dependencies)
 - [Installation](#installation)
-- [Documentation](#documentation)
 - [Examples](#examples)
     - [Creating a CS Instance](#creating-a-cs-instance)
         - [Loading from an external source](#loading-from-an-external-source)
@@ -72,11 +76,11 @@ Currently, the supported formats are OGC WKT (v1), ESRI WKT, Proj4, and any EPSG
 available from spatialreference.org. In the future I hope to add support for OGC URN identifier strings,
 and GeoTIFF file tags.
 
-The package is still in alpha version, so it will not perfectly parse or convert between all crs,
-and it is likely to have several (hopefully minor) differences from the results of other parsers like GDAL.
+There are still some cases where PyCRS does not perfectly parse or convert between all crs formats,
+based on (hopefully mostly cosmetic) differences from the results of other parsers like GDAL.
 In the source repository there is a tester.py script, which uses a barrage of commonly
 used crs as listed on http://www.remotesensing.org/geotiff/proj_list/. Currently, the overall success rate
-for loading as well as converting between the three main formats is 70-90%, and visual inspections of 
+for loading as well as converting between the three main formats is 80-90%, and visual inspections of 
 rendering the world with each crs generally look correct. However, whether the converted crs strings
 are logically equivalent to each other from a mathematical standpoint is something that needs a more detailed
 quality check. 
@@ -100,15 +104,6 @@ PyCRS is installed with pip from the commandline:
 
 It also works to just place the "pycrs" package folder in an importable location like 
 "PythonXX/Lib/site-packages".
-
-
-## Documentation
-
-This tutorial only covers some basic examples. For the full list of functions and supported crs formats,
-check out the reference API Documentation. 
-
-- [Home Page](http://github.com/karimbahgat/PyCRS)
-- [API Documentation](https://karimbahgat.github.io/PyCRS/)
 
 
 ## Examples

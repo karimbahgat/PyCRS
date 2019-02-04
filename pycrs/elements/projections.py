@@ -1,6 +1,20 @@
-
+"""
+Named projection classes that can be created or parsed. 
+"""
 
 def find(projname, crstype, strict=False):
+    """
+    Search for a projection name located in this module.
+
+    Arguments:
+
+    - **projname**: The projection name to search for.
+    - **crstype**: Which CRS naming convention to search (different
+        CRS formats have different names for the same projection).
+    - **strict** (optional): If False, ignores minor name mismatches
+        such as underscore or character casing, otherwise must be exact
+        match (defaults to False). 
+    """
     if not strict:
         projname = projname.lower().replace(" ","_")
     for itemname,item in globals().items():

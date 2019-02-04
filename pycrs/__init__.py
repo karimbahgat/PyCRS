@@ -9,7 +9,7 @@ common coordinate reference system (CRS) string and data source formats.
 
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 
 from . import load

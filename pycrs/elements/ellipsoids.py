@@ -1,8 +1,23 @@
+"""
+Named ellipsoid classes that can be created or parsed. 
+"""
 
 from . import parameters
 
 
 def find(ellipsname, crstype, strict=False):
+    """
+    Search for a ellipsoid name located in this module.
+
+    Arguments:
+
+    - **ellipsname**: The ellipsoid name to search for.
+    - **crstype**: Which CRS naming convention to search (different
+        CRS formats have different names for the same ellipsoid).
+    - **strict** (optional): If False, ignores minor name mismatches
+        such as underscore or character casing, otherwise must be exact
+        match (defaults to False). 
+    """
     if not strict:
         ellipsname = ellipsname.lower().replace(" ","_")
     for itemname,item in globals().items():
