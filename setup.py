@@ -2,7 +2,7 @@ try: from setuptools import setup
 except: from distutils.core import setup
 
 setup(	long_description=open("README.md").read(),
-        long_description_content_type='text/markdown', 
+        long_description_content_type='text/markdown',
 	name="""PyCRS""",
 	license="""MIT""",
 	author="""Karim Bahgat""",

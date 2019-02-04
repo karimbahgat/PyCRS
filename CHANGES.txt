@@ -8,7 +8,6 @@ API Changes:
 - Dropping CRS wrapper class, instead handling GeogCS or ProjCS directly
 - Change module names to load.py, and parse.py
 - Move Ellipsoid, Datum, and Projection to their respective modules
-- Other parameter class structure changes
 - Allow proj4 input and output as dict
 
 Fixes:
