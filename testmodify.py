@@ -90,7 +90,7 @@ render_world(crs, 'docs_tweak1')
 print pyproj.transform(fromproj, pyproj.Proj(crs.to_proj4()), x,y)
 
 # Tweak2
-crs.geogcs.prime_mer.value = 160.0
+crs.geogcs.prime_mer.value = 160.0 #'oslo'
 render_world(crs, 'docs_tweak2')
 print pyproj.transform(fromproj, pyproj.Proj(crs.to_proj4()), x,y)
 

@@ -416,7 +416,7 @@ closer to the Pacific instead of over Greenwhich:
 
     >>> crs.geogcs.prime_mer.value = 160.0
     >>> crs.to_ogc_wkt()
-    'PROJCS["Unknown", GEOGCS["Unknown", DATUM["North_American_Datum_1983", SPHEROID["GRS_1980", 6378137.0, 298.257222101]], PRIMEM["Greenwich", 160.0], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Robinson"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
+    'PROJCS["Unknown", GEOGCS["Unknown", DATUM["North_American_Datum_1983", SPHEROID["GRS_1980", 6378137.0, 298.257222101]], PRIMEM["Greenwich", 160], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Robinson"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
 
 And here is what that map would look like (the odd-looking lines is just a rendering issue due to
 polygons that cross the meridian):
@@ -427,7 +427,7 @@ Or if we just switch the projection type alltogether:
 
     >>> crs.proj = pycrs.elements.projections.Sinusoidal()
     >>> crs.to_ogc_wkt()
-    'PROJCS["Unknown", GEOGCS["Unknown", DATUM["North_American_Datum_1983", SPHEROID["GRS_1980", 6378137.0, 298.257222101]], PRIMEM["Greenwich", 160.0], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Sinusoidal"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
+    'PROJCS["Unknown", GEOGCS["Unknown", DATUM["North_American_Datum_1983", SPHEROID["GRS_1980", 6378137.0, 298.257222101]], PRIMEM["Greenwich", 160], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Sinusoidal"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
 	
 ![](https://github.com/karimbahgat/pycrs/raw/master/testrenders/docs_tweak3.png "Modified Sinusoidal")	
 

@@ -291,26 +291,69 @@ class PrimeMeridian:
     proj4 = "+pm"
     ogc_wkt = "PRIMEM"
     esri_wkt = "PRIMEM"
+
+    cities = {
+        'greenwich': 0,
+        'lisbon': -9.131906111111112,
+        'paris': 2.337229166666667,
+        'bogota': -74.08091666666667,
+        'madrid': -3.687911111111111,
+        'rome': 12.452333333333332,
+        'bern': 7.439583333333333,
+        'jakarta': 106.80771944444444,
+        'ferro': -17.666666666666668,
+        'brussels': 4.3679749999999995,
+        'stockholm': 18.05827777777778,
+        'athens': 23.716337499999998,
+        'oslo': 10.722916666666666,
+        }
+
+    # based on http://proj.maptools.org/gen_parms.html
+##       greenwich 0dE                           
+##          lisbon 9d07'54.862"W                 
+##           paris 2d20'14.025"E                 
+##          bogota 74d04'51.3"E                  
+##          madrid 3d41'16.48"W                  
+##            rome 12d27'8.4"E                   
+##            bern 7d26'22.5"E                   
+##         jakarta 106d48'27.79"E                
+##           ferro 17d40'W                       
+##        brussels 4d22'4.71"E                   
+##       stockholm 18d3'29.8"E                   
+##          athens 23d42'58.815"E                
+##            oslo 10d43'22.5"E  
     
     def __init__(self, value):
         """
-        The prime meridian coordinate, relative to greenwhich, where the
+        The prime meridian coordinate (or city name), relative to greenwhich, where the
         longitude is considered to be 0. 
 
         Arguments:
 
-        - **value**: Longitude value relative to Greenwich. 
-        """
+        - **value**: Longitude value relative to Greenwich, or the name of one of these cities: {}. 
+        """.format(', '.join(self.cities.keys()))
         self.value = value
 
+    def get_value(self):
+        value = self.value
+        try:
+            value = float(value)
+        except:
+            value = value.lower()
+            if value not in self.cities:
+                raise Exception("Prime meridian value {} must be a number or the name of one of these cities: {}".format(value, ', '.join(self.cities.keys())))
+            value = self.cities[value]
+        value = int(value) if value.is_integer() else value
+        return value
+
     def to_proj4(self):
-        return "+pm=%s" %self.value
+        return "+pm=%s" %self.get_value()
 
     def to_ogc_wkt(self):
-        return 'PRIMEM["Greenwich", %s]' %self.value
+        return 'PRIMEM["Greenwich", %s]' %self.get_value()
 
     def to_esri_wkt(self):
-        return 'PRIMEM["Greenwich", %s]' %self.value
+        return 'PRIMEM["Greenwich", %s]' %self.get_value()
 
 ##+zone     UTM zone
     
