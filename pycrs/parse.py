@@ -278,7 +278,7 @@ def _from_wkt(string, wkttype=None, strict=False):
         if header.upper() == "PROJCS":
             
             # find name
-            name = content[0].strip('"')
+            csname = content[0].strip('"')
             
             # find geogcs elem (by running parse again)
             subheader, subcontent = content[1]
@@ -328,12 +328,12 @@ def _from_wkt(string, wkttype=None, strict=False):
 ##                twinax = None
             
             # put it all together
-            projcs = containers.ProjCS("Unknown", geogcs, proj, params, linunit) #, twinax)
+            projcs = containers.ProjCS(csname, geogcs, proj, params, linunit) #, twinax)
             return projcs
 
         elif header.upper() == "GEOGCS":
             # name
-            name = content[0].strip('"')
+            csname = content[0].strip('"')
             
             # datum
             subheader, subcontent = content[1]
@@ -398,7 +398,7 @@ def _from_wkt(string, wkttype=None, strict=False):
             # ...
             
             # put it all together
-            geogcs = containers.GeogCS(name, datum, prime_mer, angunit, twin_ax=None)
+            geogcs = containers.GeogCS(csname, datum, prime_mer, angunit, twin_ax=None)
             return geogcs
 
     # toplevel collection
