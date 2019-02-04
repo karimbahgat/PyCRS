@@ -1,22 +1,26 @@
 
 ## Changes
 
-### 1.0.0 (2018-09-14)
+### 1.0.0 (2019-02-04)
+
+API Changes:
+
+- Dropping CRS wrapper class, instead handling GeogCS or ProjCS directly
+- Change module names to load.py, and parse.py
+- Move Ellipsoid, Datum, and Projection to their respective modules
+- Other parameter class structure changes
+- Allow proj4 input and output as dict
+
+Fixes:
 
 - Added more documentation
 - Fix +f interpretation
 - Include reading +rf parameter
+- Better ellipsoid support for +a and +b
 - Fix Python 3 bugs
 - Fix proj4 standard parallels being ignored
-- Allow proj4 as dict
-
-### 0.1.4 (2018-09-04)
-
-- Added more documentation
-- Fix +f interpretation
-- Include reading +rf parameter
-- Fix Python 3 bugs
-- Fix proj4 standard parallels being ignored
+- Parse WKT CS names which were ignored before
+- Support for prime meridian city names
 
 ### 0.1.3 (2016-06-25)
 

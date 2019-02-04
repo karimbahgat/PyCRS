@@ -3,8 +3,8 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
-    <title>pycrs.elements API documentation</title>
-    <meta name="description" content="Access to the various construct and parameter classes needed to build a CRS object." />
+    <title>pycrs.load API documentation</title>
+    <meta name="description" content="Convenience functions for loading from different sources." />
 
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
   
@@ -970,19 +970,16 @@ table {
     <h1>Index</h1>
     <ul id="index">
 
+    <li class="set"><h3><a href="#header-functions">Functions</a></h3>
+      
+  <ul>
+    <li class="mono"><a href="#pycrs.load.from_file">from_file</a></li>
+    <li class="mono"><a href="#pycrs.load.from_url">from_url</a></li>
+  </ul>
 
-
-    <li class="set"><h3><a href="#header-submodules">Sub-modules</a></h3>
-      <ul>
-        <li class="mono"><a href="cs.m.html">pycrs.elements.cs</a></li>
-        <li class="mono"><a href="datums.m.html">pycrs.elements.datums</a></li>
-        <li class="mono"><a href="directions.m.html">pycrs.elements.directions</a></li>
-        <li class="mono"><a href="ellipsoids.m.html">pycrs.elements.ellipsoids</a></li>
-        <li class="mono"><a href="parameters.m.html">pycrs.elements.parameters</a></li>
-        <li class="mono"><a href="projections.m.html">pycrs.elements.projections</a></li>
-        <li class="mono"><a href="units.m.html">pycrs.elements.units</a></li>
-      </ul>
     </li>
+
+
     </ul>
   </div>
 
@@ -994,59 +991,61 @@ table {
 
 
   <header id="section-intro">
-  <h1 class="title"><span class="name">pycrs.elements</span> module</h1>
-  <p>Access to the various construct and parameter classes needed to build a CRS object.</p>
+  <h1 class="title"><span class="name">pycrs.load</span> module</h1>
+  <p>Convenience functions for loading from different sources.</p>
   
 
   </header>
 
   <section id="section-items">
 
-
-
-    <h2 class="section-title" id="header-submodules">Sub-modules</h2>
-      <div class="item">
-      <p class="name"><a href="cs.m.html">pycrs.elements.cs</a></p>
+    <h2 class="section-title" id="header-functions">Functions</h2>
       
+  <div class="item">
+    <div class="name def" id="pycrs.load.from_file">
+    <p>def <span class="ident">from_file</span>(</p><p>filepath)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns the crs object from a file, with the format determined from the filename extension.</p>
+<p>Arguments:</p>
+<ul>
+<li><em>filepath</em>: filepath to be loaded, including extension.</li>
+</ul></div>
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="pycrs.load.from_url">
+    <p>def <span class="ident">from_url</span>(</p><p>url, format=None)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns the crs object from a string interpreted as a specified format, located at a given url site.</p>
+<p>Arguments:</p>
+<ul>
+<li><em>url</em>: The url where the crs string is to be read from. </li>
+<li><em>format</em> (optional): Which format to parse the crs string as. One of "ogc wkt", "esri wkt", or "proj4".
+    If None, tries to autodetect the format for you (default).</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>CRS object.</li>
+</ul></div>
+  <div class="source_cont">
+</div>
+
+  </div>
   
 
-      </div>
-      <div class="item">
-      <p class="name"><a href="datums.m.html">pycrs.elements.datums</a></p>
-      
-  
 
-      </div>
-      <div class="item">
-      <p class="name"><a href="directions.m.html">pycrs.elements.directions</a></p>
-      
-  
-
-      </div>
-      <div class="item">
-      <p class="name"><a href="ellipsoids.m.html">pycrs.elements.ellipsoids</a></p>
-      
-  
-
-      </div>
-      <div class="item">
-      <p class="name"><a href="parameters.m.html">pycrs.elements.parameters</a></p>
-      
-  
-
-      </div>
-      <div class="item">
-      <p class="name"><a href="projections.m.html">pycrs.elements.projections</a></p>
-      
-  
-
-      </div>
-      <div class="item">
-      <p class="name"><a href="units.m.html">pycrs.elements.units</a></p>
-      
-  
-
-      </div>
   </section>
 
     </article>

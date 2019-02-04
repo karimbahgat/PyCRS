@@ -3,8 +3,8 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
-    <title>pycrs.elements API documentation</title>
-    <meta name="description" content="Access to the various construct and parameter classes needed to build a CRS object." />
+    <title>pycrs.parse API documentation</title>
+    <meta name="description" content="The main module containing functions for parsing text strings into crs objects." />
 
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
   
@@ -970,19 +970,22 @@ table {
     <h1>Index</h1>
     <ul id="index">
 
+    <li class="set"><h3><a href="#header-functions">Functions</a></h3>
+      
+  <ul>
+    <li class="mono"><a href="#pycrs.parse.from_epsg_code">from_epsg_code</a></li>
+    <li class="mono"><a href="#pycrs.parse.from_esri_code">from_esri_code</a></li>
+    <li class="mono"><a href="#pycrs.parse.from_esri_wkt">from_esri_wkt</a></li>
+    <li class="mono"><a href="#pycrs.parse.from_ogc_wkt">from_ogc_wkt</a></li>
+    <li class="mono"><a href="#pycrs.parse.from_proj4">from_proj4</a></li>
+    <li class="mono"><a href="#pycrs.parse.from_sr_code">from_sr_code</a></li>
+    <li class="mono"><a href="#pycrs.parse.from_unknown_text">from_unknown_text</a></li>
+    <li class="mono"><a href="#pycrs.parse.from_unknown_wkt">from_unknown_wkt</a></li>
+  </ul>
 
-
-    <li class="set"><h3><a href="#header-submodules">Sub-modules</a></h3>
-      <ul>
-        <li class="mono"><a href="cs.m.html">pycrs.elements.cs</a></li>
-        <li class="mono"><a href="datums.m.html">pycrs.elements.datums</a></li>
-        <li class="mono"><a href="directions.m.html">pycrs.elements.directions</a></li>
-        <li class="mono"><a href="ellipsoids.m.html">pycrs.elements.ellipsoids</a></li>
-        <li class="mono"><a href="parameters.m.html">pycrs.elements.parameters</a></li>
-        <li class="mono"><a href="projections.m.html">pycrs.elements.projections</a></li>
-        <li class="mono"><a href="units.m.html">pycrs.elements.units</a></li>
-      </ul>
     </li>
+
+
     </ul>
   </div>
 
@@ -994,59 +997,212 @@ table {
 
 
   <header id="section-intro">
-  <h1 class="title"><span class="name">pycrs.elements</span> module</h1>
-  <p>Access to the various construct and parameter classes needed to build a CRS object.</p>
+  <h1 class="title"><span class="name">pycrs.parse</span> module</h1>
+  <p>The main module containing functions for parsing text strings into crs objects.</p>
   
 
   </header>
 
   <section id="section-items">
 
-
-
-    <h2 class="section-title" id="header-submodules">Sub-modules</h2>
-      <div class="item">
-      <p class="name"><a href="cs.m.html">pycrs.elements.cs</a></p>
+    <h2 class="section-title" id="header-functions">Functions</h2>
       
+  <div class="item">
+    <div class="name def" id="pycrs.parse.from_epsg_code">
+    <p>def <span class="ident">from_epsg_code</span>(</p><p>code)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Load crs object from epsg code, via spatialreference.org.
+Parses based on the proj4 representation.</p>
+<p>Arguments:</p>
+<ul>
+<li><em>code</em>: The EPSG code as an integer.</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>A CS instance of the indicated type.</li>
+</ul></div>
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="pycrs.parse.from_esri_code">
+    <p>def <span class="ident">from_esri_code</span>(</p><p>code)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Load crs object from esri code, via spatialreference.org.
+Parses based on the proj4 representation.</p>
+<p>Arguments:</p>
+<ul>
+<li><em>code</em>: The ESRI code as an integer.</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>A CS instance of the indicated type.</li>
+</ul></div>
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="pycrs.parse.from_esri_wkt">
+    <p>def <span class="ident">from_esri_wkt</span>(</p><p>string, strict=False)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Parse crs as esri wkt formatted string and return the resulting crs object.</p>
+<p>Arguments:</p>
+<ul>
+<li><em>string</em>: The ESRI WKT representation as a string.</li>
+<li><em>strict</em> (optional): When True, the parser is strict about names having to match
+    exactly with upper and lowercases. Default is not strict (False).</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>A CS instance of the indicated type.</li>
+</ul></div>
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="pycrs.parse.from_ogc_wkt">
+    <p>def <span class="ident">from_ogc_wkt</span>(</p><p>string, strict=False)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Parse crs as ogc wkt formatted string and return the resulting crs object.</p>
+<p>Arguments:</p>
+<ul>
+<li><em>string</em>: The OGC WKT representation as a string.</li>
+<li><em>strict</em> (optional): When True, the parser is strict about names having to match
+    exactly with upper and lowercases. Default is not strict (False).</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>A CS instance of the indicated type.</li>
+</ul></div>
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="pycrs.parse.from_proj4">
+    <p>def <span class="ident">from_proj4</span>(</p><p>proj4, strict=False)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Parse crs as proj4 formatted string or dict and return the resulting crs object.</p>
+<p>Arguments:</p>
+<ul>
+<li><em>proj4</em>: The proj4 representation as a string or dict.</li>
+<li><em>strict</em> (optional): When True, the parser is strict about names having to match
+    exactly with upper and lowercases. Default is not strict (False).</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>A CS instance of the indicated type.</li>
+</ul></div>
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="pycrs.parse.from_sr_code">
+    <p>def <span class="ident">from_sr_code</span>(</p><p>code)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Load crs object from sr-org code, via spatialreference.org.
+Parses based on the proj4 representation.</p>
+<p>Arguments:</p>
+<ul>
+<li><em>code</em>: The SR-ORG code as an integer.</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>A CS instance of the indicated type.</li>
+</ul></div>
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="pycrs.parse.from_unknown_text">
+    <p>def <span class="ident">from_unknown_text</span>(</p><p>text, strict=False)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Detect crs string format and parse into crs object with appropriate function.</p>
+<p>Arguments:</p>
+<ul>
+<li><em>text</em>: The crs text representation of unknown type. </li>
+<li><em>strict</em> (optional): When True, the parser is strict about names having to match
+    exactly with upper and lowercases. Default is not strict (False).</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>CRS object.</li>
+</ul></div>
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="pycrs.parse.from_unknown_wkt">
+    <p>def <span class="ident">from_unknown_wkt</span>(</p><p>string, strict=False)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Given an unknown wkt string, detect if uses ogc or esri flavor, and parse the crs accordingly.</p>
+<p>Arguments:</p>
+<ul>
+<li><em>string</em>: The unknown WKT representation as a string.</li>
+<li><em>strict</em> (optional): When True, the parser is strict about names having to match
+    exactly with upper and lowercases. Default is not strict (False).</li>
+</ul>
+<p>Returns:
+- A CS instance of the indicated type.</p></div>
+  <div class="source_cont">
+</div>
+
+  </div>
   
 
-      </div>
-      <div class="item">
-      <p class="name"><a href="datums.m.html">pycrs.elements.datums</a></p>
-      
-  
 
-      </div>
-      <div class="item">
-      <p class="name"><a href="directions.m.html">pycrs.elements.directions</a></p>
-      
-  
-
-      </div>
-      <div class="item">
-      <p class="name"><a href="ellipsoids.m.html">pycrs.elements.ellipsoids</a></p>
-      
-  
-
-      </div>
-      <div class="item">
-      <p class="name"><a href="parameters.m.html">pycrs.elements.parameters</a></p>
-      
-  
-
-      </div>
-      <div class="item">
-      <p class="name"><a href="projections.m.html">pycrs.elements.projections</a></p>
-      
-  
-
-      </div>
-      <div class="item">
-      <p class="name"><a href="units.m.html">pycrs.elements.units</a></p>
-      
-  
-
-      </div>
   </section>
 
     </article>

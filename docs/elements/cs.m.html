@@ -3,7 +3,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
-    <title>pycrs.elements.units API documentation</title>
+    <title>pycrs.elements.cs API documentation</title>
     <meta name="description" content="" />
 
   <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
@@ -970,103 +970,34 @@ table {
     <h1>Index</h1>
     <ul id="index">
 
-    <li class="set"><h3><a href="#header-functions">Functions</a></h3>
-      
-  <ul>
-    <li class="mono"><a href="#pycrs.elements.units.find">find</a></li>
-  </ul>
-
-    </li>
 
     <li class="set"><h3><a href="#header-classes">Classes</a></h3>
       <ul>
         <li class="mono">
-        <span class="class_name"><a href="#pycrs.elements.units.Degree">Degree</a></span>
+        <span class="class_name"><a href="#pycrs.elements.cs.CS">CS</a></span>
+        
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#pycrs.elements.cs.GeogCS">GeogCS</a></span>
         
           
   <ul>
-    <li class="mono"><a href="#pycrs.elements.units.Degree.__init__">__init__</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.Degree.to_esri_wkt">to_esri_wkt</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.Degree.to_ogc_wkt">to_ogc_wkt</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.Degree.to_proj4">to_proj4</a></li>
+    <li class="mono"><a href="#pycrs.elements.cs.GeogCS.__init__">__init__</a></li>
+    <li class="mono"><a href="#pycrs.elements.cs.GeogCS.to_esri_wkt">to_esri_wkt</a></li>
+    <li class="mono"><a href="#pycrs.elements.cs.GeogCS.to_ogc_wkt">to_ogc_wkt</a></li>
+    <li class="mono"><a href="#pycrs.elements.cs.GeogCS.to_proj4">to_proj4</a></li>
   </ul>
 
         </li>
         <li class="mono">
-        <span class="class_name"><a href="#pycrs.elements.units.International_Feet">International_Feet</a></span>
+        <span class="class_name"><a href="#pycrs.elements.cs.ProjCS">ProjCS</a></span>
         
           
   <ul>
-    <li class="mono"><a href="#pycrs.elements.units.International_Feet.__init__">__init__</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.International_Feet.to_esri_wkt">to_esri_wkt</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.International_Feet.to_ogc_wkt">to_ogc_wkt</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.International_Feet.to_proj4">to_proj4</a></li>
-  </ul>
-
-        </li>
-        <li class="mono">
-        <span class="class_name"><a href="#pycrs.elements.units.Meter">Meter</a></span>
-        
-          
-  <ul>
-    <li class="mono"><a href="#pycrs.elements.units.Meter.__init__">__init__</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.Meter.to_esri_wkt">to_esri_wkt</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.Meter.to_ogc_wkt">to_ogc_wkt</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.Meter.to_proj4">to_proj4</a></li>
-  </ul>
-
-        </li>
-        <li class="mono">
-        <span class="class_name"><a href="#pycrs.elements.units.US_Feet">US_Feet</a></span>
-        
-          
-  <ul>
-    <li class="mono"><a href="#pycrs.elements.units.US_Feet.__init__">__init__</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.US_Feet.to_esri_wkt">to_esri_wkt</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.US_Feet.to_ogc_wkt">to_ogc_wkt</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.US_Feet.to_proj4">to_proj4</a></li>
-  </ul>
-
-        </li>
-        <li class="mono">
-        <span class="class_name"><a href="#pycrs.elements.units.Unit">Unit</a></span>
-        
-          
-  <ul>
-    <li class="mono"><a href="#pycrs.elements.units.Unit.__init__">__init__</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.Unit.to_esri_wkt">to_esri_wkt</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.Unit.to_ogc_wkt">to_ogc_wkt</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.Unit.to_proj4">to_proj4</a></li>
-  </ul>
-
-        </li>
-        <li class="mono">
-        <span class="class_name"><a href="#pycrs.elements.units.UnitMultiplier">UnitMultiplier</a></span>
-        
-          
-  <ul>
-    <li class="mono"><a href="#pycrs.elements.units.UnitMultiplier.__init__">__init__</a></li>
-  </ul>
-
-        </li>
-        <li class="mono">
-        <span class="class_name"><a href="#pycrs.elements.units.UnitName">UnitName</a></span>
-        
-          
-  <ul>
-    <li class="mono"><a href="#pycrs.elements.units.UnitName.__init__">__init__</a></li>
-  </ul>
-
-        </li>
-        <li class="mono">
-        <span class="class_name"><a href="#pycrs.elements.units.Unknown">Unknown</a></span>
-        
-          
-  <ul>
-    <li class="mono"><a href="#pycrs.elements.units.Unknown.__init__">__init__</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.Unknown.to_esri_wkt">to_esri_wkt</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.Unknown.to_ogc_wkt">to_ogc_wkt</a></li>
-    <li class="mono"><a href="#pycrs.elements.units.Unknown.to_proj4">to_proj4</a></li>
+    <li class="mono"><a href="#pycrs.elements.cs.ProjCS.__init__">__init__</a></li>
+    <li class="mono"><a href="#pycrs.elements.cs.ProjCS.to_esri_wkt">to_esri_wkt</a></li>
+    <li class="mono"><a href="#pycrs.elements.cs.ProjCS.to_ogc_wkt">to_ogc_wkt</a></li>
+    <li class="mono"><a href="#pycrs.elements.cs.ProjCS.to_proj4">to_proj4</a></li>
   </ul>
 
         </li>
@@ -1084,7 +1015,7 @@ table {
 
 
   <header id="section-intro">
-  <h1 class="title"><span class="name">pycrs.elements.units</span> module</h1>
+  <h1 class="title"><span class="name">pycrs.elements.cs</span> module</h1>
   
   
 
@@ -1092,28 +1023,15 @@ table {
 
   <section id="section-items">
 
-    <h2 class="section-title" id="header-functions">Functions</h2>
-      
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.find">
-    <p>def <span class="ident">find</span>(</p><p>unitname, crstype, strict=False)</p>
-    </div>
-    
-
-    
-  
-  <div class="source_cont">
-</div>
-
-  </div>
-  
 
     <h2 class="section-title" id="header-classes">Classes</h2>
       
       <div class="item">
-      <p id="pycrs.elements.units.Degree" class="name">class <span class="ident">Degree</span></p>
+      <p id="pycrs.elements.cs.CS" class="name">class <span class="ident">CS</span></p>
       
   
+    <div class="desc"><p>Base class for all CS classes. 
+Mostly just for basic type checking.</p></div>
   <div class="source_cont">
 </div>
 
@@ -1121,93 +1039,13 @@ table {
       <div class="class">
           <h3>Ancestors (in MRO)</h3>
           <ul class="class_list">
-          <li><a href="#pycrs.elements.units.Degree">Degree</a></li>
-          <li><a href="#pycrs.elements.units.Unit">Unit</a></li>
+          <li><a href="#pycrs.elements.cs.CS">CS</a></li>
           </ul>
-          <h3>Methods</h3>
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.Degree.__init__">
-    <p>def <span class="ident">__init__</span>(</p><p>self, **kwargs)</p>
-    </div>
-    
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.__init__">__init__</a></code>
-    </p>
-
-    
-  
-    <div class="desc inherited"><p>Distance unit parameter. </p>
-<p>Args:</p>
-<ul>
-<li><strong>unitname</strong>: A pycrs.elements.units.UnitName instance with the name given by each supported format. </li>
-<li><strong>unitmultiplier</strong>: A pycrs.elements.units.UnitMultiplier instance.</li>
-</ul></div>
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.Degree.to_esri_wkt">
-    <p>def <span class="ident">to_esri_wkt</span>(</p><p>self)</p>
-    </div>
-    
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.to_esri_wkt">to_esri_wkt</a></code>
-    </p>
-
-    
-  
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.Degree.to_ogc_wkt">
-    <p>def <span class="ident">to_ogc_wkt</span>(</p><p>self)</p>
-    </div>
-    
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.to_ogc_wkt">to_ogc_wkt</a></code>
-    </p>
-
-    
-  
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.Degree.to_proj4">
-    <p>def <span class="ident">to_proj4</span>(</p><p>self)</p>
-    </div>
-    
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.to_proj4">to_proj4</a></code>
-    </p>
-
-    
-  
-  <div class="source_cont">
-</div>
-
-  </div>
-  
       </div>
       </div>
       
       <div class="item">
-      <p id="pycrs.elements.units.International_Feet" class="name">class <span class="ident">International_Feet</span></p>
+      <p id="pycrs.elements.cs.GeogCS" class="name">class <span class="ident">GeogCS</span></p>
       
   
   <div class="source_cont">
@@ -1217,463 +1055,33 @@ table {
       <div class="class">
           <h3>Ancestors (in MRO)</h3>
           <ul class="class_list">
-          <li><a href="#pycrs.elements.units.International_Feet">International_Feet</a></li>
-          <li><a href="#pycrs.elements.units.Unit">Unit</a></li>
+          <li><a href="#pycrs.elements.cs.GeogCS">GeogCS</a></li>
+          <li><a href="#pycrs.elements.cs.CS">CS</a></li>
           </ul>
           <h3>Methods</h3>
             
   <div class="item">
-    <div class="name def" id="pycrs.elements.units.International_Feet.__init__">
-    <p>def <span class="ident">__init__</span>(</p><p>self, **kwargs)</p>
-    </div>
-    
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.__init__">__init__</a></code>
-    </p>
-
-    
-  
-    <div class="desc inherited"><p>Distance unit parameter. </p>
-<p>Args:</p>
-<ul>
-<li><strong>unitname</strong>: A pycrs.elements.units.UnitName instance with the name given by each supported format. </li>
-<li><strong>unitmultiplier</strong>: A pycrs.elements.units.UnitMultiplier instance.</li>
-</ul></div>
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.International_Feet.to_esri_wkt">
-    <p>def <span class="ident">to_esri_wkt</span>(</p><p>self)</p>
-    </div>
-    
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.to_esri_wkt">to_esri_wkt</a></code>
-    </p>
-
-    
-  
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.International_Feet.to_ogc_wkt">
-    <p>def <span class="ident">to_ogc_wkt</span>(</p><p>self)</p>
-    </div>
-    
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.to_ogc_wkt">to_ogc_wkt</a></code>
-    </p>
-
-    
-  
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.International_Feet.to_proj4">
-    <p>def <span class="ident">to_proj4</span>(</p><p>self)</p>
-    </div>
-    
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.to_proj4">to_proj4</a></code>
-    </p>
-
-    
-  
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-      </div>
-      </div>
-      
-      <div class="item">
-      <p id="pycrs.elements.units.Meter" class="name">class <span class="ident">Meter</span></p>
-      
-  
-  <div class="source_cont">
-</div>
-
-
-      <div class="class">
-          <h3>Ancestors (in MRO)</h3>
-          <ul class="class_list">
-          <li><a href="#pycrs.elements.units.Meter">Meter</a></li>
-          <li><a href="#pycrs.elements.units.Unit">Unit</a></li>
-          </ul>
-          <h3>Methods</h3>
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.Meter.__init__">
-    <p>def <span class="ident">__init__</span>(</p><p>self, **kwargs)</p>
-    </div>
-    
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.__init__">__init__</a></code>
-    </p>
-
-    
-  
-    <div class="desc inherited"><p>Distance unit parameter. </p>
-<p>Args:</p>
-<ul>
-<li><strong>unitname</strong>: A pycrs.elements.units.UnitName instance with the name given by each supported format. </li>
-<li><strong>unitmultiplier</strong>: A pycrs.elements.units.UnitMultiplier instance.</li>
-</ul></div>
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.Meter.to_esri_wkt">
-    <p>def <span class="ident">to_esri_wkt</span>(</p><p>self)</p>
-    </div>
-    
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.to_esri_wkt">to_esri_wkt</a></code>
-    </p>
-
-    
-  
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.Meter.to_ogc_wkt">
-    <p>def <span class="ident">to_ogc_wkt</span>(</p><p>self)</p>
-    </div>
-    
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.to_ogc_wkt">to_ogc_wkt</a></code>
-    </p>
-
-    
-  
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.Meter.to_proj4">
-    <p>def <span class="ident">to_proj4</span>(</p><p>self)</p>
-    </div>
-    
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.to_proj4">to_proj4</a></code>
-    </p>
-
-    
-  
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-      </div>
-      </div>
-      
-      <div class="item">
-      <p id="pycrs.elements.units.US_Feet" class="name">class <span class="ident">US_Feet</span></p>
-      
-  
-  <div class="source_cont">
-</div>
-
-
-      <div class="class">
-          <h3>Ancestors (in MRO)</h3>
-          <ul class="class_list">
-          <li><a href="#pycrs.elements.units.US_Feet">US_Feet</a></li>
-          <li><a href="#pycrs.elements.units.Unit">Unit</a></li>
-          </ul>
-          <h3>Methods</h3>
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.US_Feet.__init__">
-    <p>def <span class="ident">__init__</span>(</p><p>self, **kwargs)</p>
-    </div>
-    
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.__init__">__init__</a></code>
-    </p>
-
-    
-  
-    <div class="desc inherited"><p>Distance unit parameter. </p>
-<p>Args:</p>
-<ul>
-<li><strong>unitname</strong>: A pycrs.elements.units.UnitName instance with the name given by each supported format. </li>
-<li><strong>unitmultiplier</strong>: A pycrs.elements.units.UnitMultiplier instance.</li>
-</ul></div>
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.US_Feet.to_esri_wkt">
-    <p>def <span class="ident">to_esri_wkt</span>(</p><p>self)</p>
-    </div>
-    
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.to_esri_wkt">to_esri_wkt</a></code>
-    </p>
-
-    
-  
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.US_Feet.to_ogc_wkt">
-    <p>def <span class="ident">to_ogc_wkt</span>(</p><p>self)</p>
-    </div>
-    
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.to_ogc_wkt">to_ogc_wkt</a></code>
-    </p>
-
-    
-  
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.US_Feet.to_proj4">
-    <p>def <span class="ident">to_proj4</span>(</p><p>self)</p>
-    </div>
-    
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.to_proj4">to_proj4</a></code>
-    </p>
-
-    
-  
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-      </div>
-      </div>
-      
-      <div class="item">
-      <p id="pycrs.elements.units.Unit" class="name">class <span class="ident">Unit</span></p>
-      
-  
-  <div class="source_cont">
-</div>
-
-
-      <div class="class">
-          <h3>Ancestors (in MRO)</h3>
-          <ul class="class_list">
-          <li><a href="#pycrs.elements.units.Unit">Unit</a></li>
-          </ul>
-          <h3>Methods</h3>
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.Unit.__init__">
-    <p>def <span class="ident">__init__</span>(</p><p>self, **kwargs)</p>
+    <div class="name def" id="pycrs.elements.cs.GeogCS.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, name, datum, prime_mer, angunit, twin_ax=None)</p>
     </div>
     
 
     
   
-    <div class="desc"><p>Distance unit parameter. </p>
-<p>Args:</p>
-<ul>
-<li><strong>unitname</strong>: A pycrs.elements.units.UnitName instance with the name given by each supported format. </li>
-<li><strong>unitmultiplier</strong>: A pycrs.elements.units.UnitMultiplier instance.</li>
-</ul></div>
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.Unit.to_esri_wkt">
-    <p>def <span class="ident">to_esri_wkt</span>(</p><p>self)</p>
-    </div>
-    
-
-    
-  
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.Unit.to_ogc_wkt">
-    <p>def <span class="ident">to_ogc_wkt</span>(</p><p>self)</p>
-    </div>
-    
-
-    
-  
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.Unit.to_proj4">
-    <p>def <span class="ident">to_proj4</span>(</p><p>self)</p>
-    </div>
-    
-
-    
-  
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-      </div>
-      </div>
-      
-      <div class="item">
-      <p id="pycrs.elements.units.UnitMultiplier" class="name">class <span class="ident">UnitMultiplier</span></p>
-      
-  
-  <div class="source_cont">
-</div>
-
-
-      <div class="class">
-          <h3>Ancestors (in MRO)</h3>
-          <ul class="class_list">
-          <li><a href="#pycrs.elements.units.UnitMultiplier">UnitMultiplier</a></li>
-          </ul>
-          <h3>Methods</h3>
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.UnitMultiplier.__init__">
-    <p>def <span class="ident">__init__</span>(</p><p>self, value)</p>
-    </div>
-    
-
-    
-  
-    <div class="desc"><p>The multiplier factor for converting coordinate units to the coordinate system reference unit.
-For linear units this is usually to meters, for angular units usually radians. </p>
+    <div class="desc"><p>A geographic coordinate system where the coordinates are in the latitude-longitude space. </p>
 <p>Arguments:</p>
 <ul>
-<li><strong>value</strong>: the meter multiplier, as a float.</li>
-</ul></div>
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-      </div>
-      </div>
-      
-      <div class="item">
-      <p id="pycrs.elements.units.UnitName" class="name">class <span class="ident">UnitName</span></p>
-      
-  
-  <div class="source_cont">
-</div>
-
-
-      <div class="class">
-          <h3>Ancestors (in MRO)</h3>
-          <ul class="class_list">
-          <li><a href="#pycrs.elements.units.UnitName">UnitName</a></li>
-          </ul>
-          <h3>Methods</h3>
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.UnitName.__init__">
-    <p>def <span class="ident">__init__</span>(</p><p>self, proj4=&#39;&#39;, ogc_wkt=&#39;&#39;, esri_wkt=&#39;&#39;)</p>
-    </div>
-    
-
-    
-  
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-      </div>
-      </div>
-      
-      <div class="item">
-      <p id="pycrs.elements.units.Unknown" class="name">class <span class="ident">Unknown</span></p>
-      
-  
-  <div class="source_cont">
-</div>
-
-
-      <div class="class">
-          <h3>Ancestors (in MRO)</h3>
-          <ul class="class_list">
-          <li><a href="#pycrs.elements.units.Unknown">Unknown</a></li>
-          <li><a href="#pycrs.elements.units.Unit">Unit</a></li>
-          </ul>
-          <h3>Methods</h3>
-            
-  <div class="item">
-    <div class="name def" id="pycrs.elements.units.Unknown.__init__">
-    <p>def <span class="ident">__init__</span>(</p><p>self, **kwargs)</p>
-    </div>
-    
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.__init__">__init__</a></code>
-    </p>
-
-    
-  
-    <div class="desc inherited"><p>Distance unit parameter. </p>
-<p>Args:</p>
-<ul>
-<li><strong>unitname</strong>: A pycrs.elements.units.UnitName instance with the name given by each supported format. </li>
-<li><strong>unitmultiplier</strong>: A pycrs.elements.units.UnitMultiplier instance.</li>
+<li><strong>cs_type</strong>: Type of CRS, always "Geographic".</li>
+<li><strong>name</strong>: An arbitrary name given to this geographic coordinate system, to represent its unique
+            configuration of datum, prime meridian, angular unit, and twin axes. The actual name
+            is just for human readability, and does not actually have any implication. </li>
+<li><strong>datum</strong>: A pycrs.elements.container.Datum instance, representing the shape of the earth.</li>
+<li><strong>prime_mer</strong>: A pycrs.elements.parameters.PrimeMeridian instance, representing the prime meridian
+            coordinate where the longitude is considered to be 0.</li>
+<li><strong>angunit</strong>: A pycrs.elements.parameters.AngularUnit instance, representing the angular unit in which
+            coordinates are measured.</li>
+<li><strong>twin_ax</strong>: A pair of pycrs.elements.directions.North/South/East/West instances, one for each axis,
+            representing the compass direction in which each axis increases. Defaults to East and North.</li>
 </ul></div>
   <div class="source_cont">
 </div>
@@ -1682,14 +1090,10 @@ For linear units this is usually to meters, for angular units usually radians. <
   
             
   <div class="item">
-    <div class="name def" id="pycrs.elements.units.Unknown.to_esri_wkt">
+    <div class="name def" id="pycrs.elements.cs.GeogCS.to_esri_wkt">
     <p>def <span class="ident">to_esri_wkt</span>(</p><p>self)</p>
     </div>
     
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.to_esri_wkt">to_esri_wkt</a></code>
-    </p>
 
     
   
@@ -1700,14 +1104,10 @@ For linear units this is usually to meters, for angular units usually radians. <
   
             
   <div class="item">
-    <div class="name def" id="pycrs.elements.units.Unknown.to_ogc_wkt">
+    <div class="name def" id="pycrs.elements.cs.GeogCS.to_ogc_wkt">
     <p>def <span class="ident">to_ogc_wkt</span>(</p><p>self)</p>
     </div>
     
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.to_ogc_wkt">to_ogc_wkt</a></code>
-    </p>
 
     
   
@@ -1718,14 +1118,97 @@ For linear units this is usually to meters, for angular units usually radians. <
   
             
   <div class="item">
-    <div class="name def" id="pycrs.elements.units.Unknown.to_proj4">
-    <p>def <span class="ident">to_proj4</span>(</p><p>self)</p>
+    <div class="name def" id="pycrs.elements.cs.GeogCS.to_proj4">
+    <p>def <span class="ident">to_proj4</span>(</p><p>self, as_dict=False, toplevel=True)</p>
     </div>
     
-    <p class="inheritance">
-     <strong>Inheritance:</strong>
-       <code><a href="#pycrs.elements.units.Unit">Unit</a></code>.<code><a href="#pycrs.elements.units.Unit.to_proj4">to_proj4</a></code>
-    </p>
+
+    
+  
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="pycrs.elements.cs.ProjCS" class="name">class <span class="ident">ProjCS</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#pycrs.elements.cs.ProjCS">ProjCS</a></li>
+          <li><a href="#pycrs.elements.cs.CS">CS</a></li>
+          </ul>
+          <h3>Methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="pycrs.elements.cs.ProjCS.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, name, geogcs, proj, params, unit, twin_ax=None)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>A projected coordinate system where the coordinates are projected to euclidean x,y space.</p>
+<p>Arguments:</p>
+<ul>
+<li><strong>cs_type</strong>: Type of CRS, always "Projected".</li>
+<li><strong>name</strong>: Arbitrary name of the projected coordinate system.</li>
+<li><strong>geogcs</strong>: A pycrs.elements.containers.GeogCS instance.</li>
+<li><strong>proj</strong>: A pycrs.elements.containers.Projection instance.</li>
+<li><strong>params</strong>: A list of custom parameters from the pycrs.elements.parameters module.</li>
+<li><strong>unit</strong>: A pycrs.elements.parameters.Unit instance, representing the angular unit in which
+            coordinates are measured.</li>
+<li><strong>twin_ax</strong>: A pair of pycrs.elements.directions.North/South/East/West instances, one for each axis,
+            representing the compass direction in which each axis increases. Defaults to East and North.</li>
+</ul></div>
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="pycrs.elements.cs.ProjCS.to_esri_wkt">
+    <p>def <span class="ident">to_esri_wkt</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="pycrs.elements.cs.ProjCS.to_ogc_wkt">
+    <p>def <span class="ident">to_ogc_wkt</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="pycrs.elements.cs.ProjCS.to_proj4">
+    <p>def <span class="ident">to_proj4</span>(</p><p>self, as_dict=False)</p>
+    </div>
+    
 
     
   

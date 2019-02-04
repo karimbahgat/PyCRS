@@ -6,25 +6,20 @@ pipy.define_upload(packpath,
                    author_email="karim.bahgat.norway@gmail.com",
                    license="MIT",
                    name="PyCRS",
-                   changes=["Added more documentation",
-                            "Fix +f interpretation",
-                            "Include reading +rf parameter",
-                            "Fix Python 3 bugs",
-                            "Fix proj4 standard parallels being ignored",
-                            "Allow proj4 as dict"],
+                   changes=[],
                    description="GIS package for reading, writing, and converting between CRS formats.",
                    url="http://github.com/karimbahgat/PyCRS",
-                   keywords="GIS spatial CRS coordinates format",
+                   keywords="GIS spatial CRS projection coordinate system format",
                    classifiers=["License :: OSI Approved",
                                 "Programming Language :: Python",
-                                "Development Status :: 4 - Beta",
+                                "Development Status :: 5 - Production/Stable",
                                 "Intended Audience :: Developers",
                                 "Intended Audience :: Science/Research",
                                 'Intended Audience :: End Users/Desktop',
                                 "Topic :: Scientific/Engineering :: GIS"],
                    )
 
-pipy.generate_docs(packpath)
-#pipy.upload_test(packpath)
+#pipy.generate_docs(packpath)
+pipy.upload_test(packpath)
 #pipy.upload(packpath)
 
