@@ -3,47 +3,20 @@ from . import directions
 from . import datums
 from . import ellipsoids
     
-# the final CRS object which is instantiated with all of the below and parameters
+# CS classes for each different type
 # remember to use +no_defs when outputting to proj4
 # ...
-class CRS:
-    def __init__(self, toplevel):
-        """
-        The main CRS class that defines a coordinate reference system and provides access
-        to all the sub-containers, sub-elements, parameters,
-        and values of the reference system in a nested structure.
 
-        Args:
-
-        - **toplevel**: The type of reference system. Can be either a projected (arbitrary coordinates)
-                        or geographic (latitude-longitude coordinates) reference system.
-        """
-        self.toplevel = toplevel
-        
-    def to_proj4(self, as_dict=False):
-        proj4 = None
-        if isinstance(self.toplevel, ProjCS):
-            proj4 = "%s +no_defs" % self.toplevel.to_proj4()
-        elif isinstance(self.toplevel, GeogCS):
-            proj4 = "+proj=longlat %s +no_defs" % self.toplevel.to_proj4()
-        if proj4:
-            if as_dict:
-                return dict([
-                            entry.lstrip('+').split('=')
-                            for entry in proj4.split()
-                            if entry != "+no_defs"
-                             ])
-            else:
-                return proj4
-
-    def to_ogc_wkt(self):
-        return "%s" % self.toplevel.to_ogc_wkt()
-
-    def to_esri_wkt(self):
-        return "%s" % self.toplevel.to_esri_wkt()
+#BASE
+class CS:
+    """
+    Base class for all CS classes. 
+    Mostly just for basic type checking. 
+    """
+    pass
 
 #GEOGCS
-class GeogCS:
+class GeogCS(CS):
     ogc_wkt = "GEOGCS"
     esri_wkt = "GEOGCS"
 
@@ -53,6 +26,7 @@ class GeogCS:
         
         Arguments:
 
+        - **cs_type**: Type of CRS, always "Geographic".
         - **name**: An arbitrary name given to this geographic coordinate system, to represent its unique
                     configuration of datum, prime meridian, angular unit, and twin axes. The actual name
                     is just for human readability, and does not actually have any implication. 
@@ -64,6 +38,8 @@ class GeogCS:
         - **twin_ax**: A pair of pycrs.elements.directions.North/South/East/West instances, one for each axis,
                     representing the compass direction in which each axis increases. Defaults to East and North. 
         """
+        self.cs_type = "Geographic"
+        
         self.name = name
         self.datum = datum
         self.prime_mer = prime_mer
@@ -73,10 +49,21 @@ class GeogCS:
             twin_ax = directions.East(), directions.North()
         self.twin_ax = twin_ax
 
-    def to_proj4(self):
+    def to_proj4(self, as_dict=False, toplevel=True):
         # dont parse axis to proj4, because in proj4, axis only applies to the cs, ie the projcs (not the geogcs, where wkt can specify with axis)
         # also proj4 cannot specify angular units
-        return "%s %s" % (self.datum.to_proj4(), self.prime_mer.to_proj4()) 
+        if toplevel:
+            string = "+proj=longlat %s %s +nodef" % (self.datum.to_proj4(), self.prime_mer.to_proj4())
+        else:
+            string = "%s %s" % (self.datum.to_proj4(), self.prime_mer.to_proj4())
+        if as_dict:
+            return dict([
+                        entry.lstrip('+').split('=')
+                        for entry in string.split()
+                        if entry != "+no_defs"
+                         ])
+        else:
+            return string
 
     def to_ogc_wkt(self):
         return 'GEOGCS["%s", %s, %s, %s, AXIS["Lon", %s], AXIS["Lat", %s]]' % (self.name, self.datum.to_ogc_wkt(), self.prime_mer.to_ogc_wkt(), self.angunit.to_ogc_wkt(), self.twin_ax[0].ogc_wkt, self.twin_ax[1].ogc_wkt )
@@ -85,14 +72,17 @@ class GeogCS:
         return 'GEOGCS["%s", %s, %s, %s, AXIS["Lon", %s], AXIS["Lat", %s]]' % (self.name, self.datum.to_esri_wkt(), self.prime_mer.to_esri_wkt(), self.angunit.to_esri_wkt(), self.twin_ax[0].esri_wkt, self.twin_ax[1].esri_wkt )
 
 #PROJCS
-class ProjCS:
+class ProjCS(CS):
     ogc_wkt = "PROJCS"
     esri_wkt = "PROJCS"
     
     def __init__(self, name, geogcs, proj, params, unit, twin_ax=None):
         """
+        A projected coordinate system where the coordinates are projected to euclidean x,y space.
+        
         Arguments:
 
+        - **cs_type**: Type of CRS, always "Projected".
         - **name**: Arbitrary name of the projected coordinate system.
         - **geogcs**: A pycrs.elements.containers.GeogCS instance.
         - **proj**: A pycrs.elements.containers.Projection instance.
@@ -102,6 +92,7 @@ class ProjCS:
         - **twin_ax**: A pair of pycrs.elements.directions.North/South/East/West instances, one for each axis,
                     representing the compass direction in which each axis increases. Defaults to East and North. 
         """
+        self.cs_type = "Projected"
         self.name = name
         self.geogcs = geogcs
         self.proj = proj
@@ -112,12 +103,22 @@ class ProjCS:
             twin_ax = directions.East(), directions.North()
         self.twin_ax = twin_ax
 
-    def to_proj4(self):
-        string = "%s %s " % (self.proj.to_proj4(), self.geogcs.to_proj4())
-        string += " ".join(param.to_proj4() for param in self.params)
+    def to_proj4(self, as_dict=False):
+        string = "%s" % self.proj.to_proj4()
+        string += " %s" % self.geogcs.to_proj4(toplevel=False)
+        string += " " + " ".join(param.to_proj4() for param in self.params)
         string += " %s" % self.unit.to_proj4()
         string += " +axis=" + self.twin_ax[0].proj4 + self.twin_ax[1].proj4 + "u" # up set as default because only proj4 can set it I think...
-        return string
+        string += " +no_defs"
+        
+        if as_dict:
+            return dict([
+                        entry.lstrip('+').split('=')
+                        for entry in string.split()
+                        if entry != "+no_defs"
+                         ])
+        else:
+            return string
 
     def to_ogc_wkt(self):
         string = 'PROJCS["%s", %s, %s, ' % (self.name, self.geogcs.to_ogc_wkt(), self.proj.to_ogc_wkt() )

@@ -15,7 +15,7 @@ __version__ = "1.0.0"
 from . import load
 from . import parse
 from . import utils
-from .elements.containers import CRS
+from .elements.cs import CS, GeogCS, ProjCS
 
 
 

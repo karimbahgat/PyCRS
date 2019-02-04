@@ -17,7 +17,7 @@ common coordinate reference system (CRS) string and data source formats.
 - [Installation](#installation)
 - [Documentation](#documentation)
 - [Examples](#examples)
-    - [Creating a CRS instance](#creating-a-crs-instance)
+    - [Creating a CS Instance](#creating-a-cs-instance)
         - [Loading from an external source](#loading-from-an-external-source)
             - [Loading from a Shapefile](#loading-from-a-shapefile)
             - [Loading from a GeoJSON](#loading-from-a-geojson)
@@ -31,15 +31,15 @@ common coordinate reference system (CRS) string and data source formats.
             - [Looking up EPSG codes](#looking-up-epsg-codes)
             - [Looking up ESRI codes](#looking-up-esri-codes)
             - [Looking up SR codes](#looking-up-sr-codes)
-    - [Inspecting the CRS Class](#inspecting-the-crs-class)
-        - [Geographic CRS](#geographic-crs)
-        - [Projected CRS](#projected-crs)
+    - [Inspecting the CS Instance](#inspecting-the-cs-instance)
+        - [Geographic CS](#geographic-crs)
+        - [Projected CS](#projected-crs)
     - [Converting to other CRS formats](#converting-to-other-crs-formats)
         - [Converting to Proj4](#converting-to-proj4)
         - [Converting to ESRI WKT](#converting-to-esri-wkt)
         - [Converting to OGC WKT](#converting-to-ogc-wkt)
 - [Recipes](#recipes)
-	- [Modifying the CRS Class](#modifying-the-crs-class)
+	- [Modifying the CS Instance](#modifying-the-cs-instance)
     - [Coordinate Transformations](#coordinate-transformations)
     - [Writing a Shapefile .prj file](#writing-a-shapefile-.prj-file)
 - [Testing](#testing)
@@ -118,11 +118,12 @@ Begin by importing the pycrs module:
     >>> import pycrs
 
 
-### Creating a CRS instance
+### Creating a CS Instance
 
-PyCRS uses a CRS class to represent and handle all coordinate reference systems.
-To create it you can either load it from a source, parse it from a string,
-look up from a CRS code, or build it from scratch. 
+PyCRS uses different types of CS classes to represent and handle all coordinate reference systems.
+To create one you can either load it from a source, parse it from a string,
+look up from a CRS code, or build it from scratch. Let's review these different ways of creating
+a CS type instance. 
 
 
 #### Loading from an external source
@@ -154,12 +155,12 @@ If your crs is not defined in a file, but rather as plain text on a webpage, the
 
 In many cases however, you may already have the string representation in your code. This could be if you
 are interoperating with other libraries, or you have already read it from some external source.
-In these cases, you can create the CRS instance by using the functions available in the "pycrs.parse"
+In these cases, you can create the CS type instance by using the functions available in the "pycrs.parse"
 module.
 
 ##### Parsing from proj4 string or dict
 
-To create the CRS instance from a proj4 string, you can do like this:
+To create the CS type instance from a proj4 string, you can do like this:
 
     >>> proj4 = "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
     >>> crs = pycrs.parse.from_proj4(proj4)
@@ -221,137 +222,137 @@ To look up codes defined by spatialreference.org:
     
 
 
-### Inspecting the CRS Class
+### Inspecting the CS Instance
 
-Once you have loaded, parsed, looked up, or created a coordinate reference system, you end up with a pycrs.CRS instance. 
-A CRS instance is simply a container that provides access to all the sub-containers, sub-elements, parameters,
-and values of the reference system in a nested structure. The type of reference system is available
-through the CRS class' `toplevel` attribute, and can be either a projected (x-y coordinates)
-or geographic (latitude-longitude coordinates) reference system.
+Once you have loaded, parsed, looked up, or created a coordinate reference system, you end up with one of the 
+CS type instances in the pycrs.cs module. All CS types are subclasses of pycrs.CS:
 
-#### Geographic CRS
+	>>> isinstance(crs, pycrs.CS)
+	True
+	
+PyCRS currently only supports the two most common types of CS, geographic or projected. 
+
+#### Geographic CS
 
 A geographic reference system keeps coordinates in the latitude-longitude space, and the reason we specify
 it is because there are different ways of defining the shape of the earth. As an example, let's load the commonly
 used WGS84 geographic coordinate system:
 
     >>> crs = pycrs.parse.from_epsg_code(4326)
-    >>> isinstance(crs, pycrs.CRS)
-    True
+	
+If it loaded correctly you should now have a pycrs.GeogCS instance, which you can also check through the `cs_type` attribute:
 
-When the CRS is a geographic reference system, the `toplevel` attribute will be a GeogCS instance:
+	>>> isinstance(crs, pycrs.GeogCS)
+	True
+    >>> crs.cs_type
+    'Geographic'
 
-    >>> isinstance(crs.toplevel, pycrs.elements.containers.GeogCS)
-    True
-
-Through the toplevel GeogCRS instance, we can further access its subcomponents and parameters.
+Through the GeogCS instance, we can further access its subcomponents and parameters.
 For instance, if we wanted to check the datum we could do:
 
-    >>> datum = crs.toplevel.datum
+    >>> datum = crs.datum
     >>> isinstance(datum, pycrs.elements.datums.WGS84)
     True
 
 Or the inverse flattening factor of the ellipsoid:
 
-    >>> ellips = crs.toplevel.datum.ellips
+    >>> ellips = crs.datum.ellips
     >>> ellips.inv_flat.value
     298.257223563
 
-For more ideas on how to inspect the CRS instance, the following overview gives an idea of the
-composition and attributes of a geographic CRS:
+For more ideas on how to inspect the GeogCS instance, the following overview gives an idea of the
+composition and attributes of a geographic CS:
 
-- `crs` -> pycrs.CRS
-    - `toplevel` -> pycrs.elements.containers.GeogCS
-        - `name` -> string
-        - `datum` -> a datum from pycrs.elements.datums
-            - `name` -> pycrs.elements.datums.DatumName
+- pycrs.GeogCS
+	- `name` -> string
+	- `datum` -> a datum from pycrs.elements.datums
+		- `name` -> pycrs.elements.datums.DatumName
+			- `proj4` -> string
+			- `esri_wkt` -> string
+			- `ogc_wkt` -> string
+		- `ellips` -> an ellipsoid from pycrs.elements.ellipsoids
+			- `name` -> pycrs.elements.ellipsoids.EllipsoidName
 				- `proj4` -> string
 				- `esri_wkt` -> string
 				- `ogc_wkt` -> string
-            - `ellips` -> an ellipsoid from pycrs.elements.ellipsoids
-                - `name` -> pycrs.elements.ellipsoids.EllipsoidName
-					- `proj4` -> string
-					- `esri_wkt` -> string
-					- `ogc_wkt` -> string
-                - `semimaj_ax` -> pycrs.elements.parameters.SemiMajorRadius
-					- `value` -> float
-				- `semimin_ax` -> (optional) pycrs.elements.parameters.SemiMinorRadius
-					- `value` -> float
-				- `flat` -> (optional) pycrs.elements.parameters.Flattening
-					- `value` -> float
-                - `inv_flat` -> (optional) pycrs.elements.parameters.InverseFlattening
-					- `value` -> float
-            - `datumshift` -> (optional) pycrs.elements.parameters.DatumShift or None
-        - `prime_mer` -> pycrs.elements.parameters.PrimeMeridian
-            - `value` -> float
-        - `angunit` -> an angular unit from pycrs.elements.units, eg Degree
-            - `unitname` -> pycrs.elements.units.UnitName
-				- `proj4` -> string
-				- `esri_wkt` -> string
-				- `ogc_wkt` -> string
-            - `unitmultiplier` -> pycrs.elements.units.UnitMultiplier
-                - `value` -> float
-        - `twin_ax` -> tuple
-            - 1: a named compass direction (east-west) from pycrs.elements.directions
-            - 2: a named compass direction (north-south) from pycrs.elements.directions
+			- `semimaj_ax` -> pycrs.elements.parameters.SemiMajorRadius
+				- `value` -> float
+			- `semimin_ax` -> (optional) pycrs.elements.parameters.SemiMinorRadius
+				- `value` -> float
+			- `flat` -> (optional) pycrs.elements.parameters.Flattening
+				- `value` -> float
+			- `inv_flat` -> (optional) pycrs.elements.parameters.InverseFlattening
+				- `value` -> float
+		- `datumshift` -> (optional) pycrs.elements.parameters.DatumShift or None
+	- `prime_mer` -> pycrs.elements.parameters.PrimeMeridian
+		- `value` -> float
+	- `angunit` -> an angular unit from pycrs.elements.units, eg Degree
+		- `unitname` -> pycrs.elements.units.UnitName
+			- `proj4` -> string
+			- `esri_wkt` -> string
+			- `ogc_wkt` -> string
+		- `unitmultiplier` -> pycrs.elements.units.UnitMultiplier
+			- `value` -> float
+	- `twin_ax` -> tuple
+		- 1: a named compass direction (east-west) from pycrs.elements.directions
+		- 2: a named compass direction (north-south) from pycrs.elements.directions
 
-#### Projected CRS
+#### Projected CS
 
 A projected reference system keeps coordinates in projected x-y space. In addition to
-defining the shape of the earth through a GeogCS, the projected reference system
+defining the shape of the earth through a child GeogCS, the projected reference system
 defines some additional parameters in order to transform the coordinates to a wide
 variety of map types. Let's take the commonly used World Robinson projected coordinate
 system as our example:
 
     >>> crs = pycrs.parse.from_esri_code(54030)
-    >>> isinstance(crs, pycrs.CRS)
-    True
+	
+If it loaded correctly you should now have a pycrs.ProjCS instance, which you can also check through the `cs_type` attribute:
 
-When the CRS is a projected reference system, the `toplevel` attribute will be a ProjCS instance:
+	>>> isinstance(crs, pycrs.ProjCS)
+	True
+    >>> crs.cs_type
+    'Projected'
 
-    >>> isinstance(crs.toplevel, pycrs.elements.containers.ProjCS)
-    True
-
-Through the toplevel ProjCRS instance, we can further access its subcomponents and parameters.
+Through the ProjCS instance, we can further access its subcomponents and parameters.
 For instance, if we wanted to check the named projection we could do:
 
-    >>> proj = crs.toplevel.proj
+    >>> proj = crs.proj
     >>> isinstance(proj, pycrs.elements.projections.Robinson)
     True
 
 Or check the type of coordinate unit:
 
-    >>> unit = crs.toplevel.unit
+    >>> unit = crs.unit
     >>> isinstance(unit, pycrs.elements.units.Meter)
     True
 
-For more ideas on how to inspect the CRS instance, the following overview gives an idea of the
-composition and attributes of a projected CRS:
+For more ideas on how to inspect the ProjCS instance, the following overview gives an idea of the
+composition and attributes of a projected CS:
 
-- `crs` -> pycrs.CRS
-    - `toplevel` -> pycrs.elements.containers.ProjCS
-        - `name` -> string
-        - `geogcs` -> pycrs.elements.containers.GeogCS (See the section on geographic CRS...)
-        - `proj` -> a projection from pycrs.elements.projections
-            - `name` -> pycrs.elements.projections.ProjName
-				- `proj4` -> string
-				- `esri_wkt` -> string
-				- `ogc_wkt` -> string
-        - `params` -> list
-            - 1: named parameters from pycrs.elements.parameters
-            - 2: named parameters from pycrs.elements.parameters
-            - 3: ...
-            - n: named parameters from pycrs.elements.parameters
-        - `unit` -> a unit from pycrs.elements.units
-            - `unitname` -> pycrs.elements.units.UnitName
-				- `proj4` -> string
-				- `esri_wkt` -> string
-				- `ogc_wkt` -> string
-            - `unitmultiplier` -> pycrs.elements.units.UnitMultiplier
-                - `value` -> float
-        - `twin_ax` -> tuple
-            - 1: a named compass direction (east-west) from pycrs.elements.directions
-            - 2: a named compass direction (north-south) from pycrs.elements.directions
+- pycrs.ProjCS
+	- `name` -> string
+	- `geogcs` -> pycrs.GeogCS (See the section on geographic CS...)
+	- `proj` -> a projection from pycrs.elements.projections
+		- `name` -> pycrs.elements.projections.ProjName
+			- `proj4` -> string
+			- `esri_wkt` -> string
+			- `ogc_wkt` -> string
+	- `params` -> list
+		- 1: named parameters from pycrs.elements.parameters
+		- 2: named parameters from pycrs.elements.parameters
+		- 3: ...
+		- n: named parameters from pycrs.elements.parameters
+	- `unit` -> a unit from pycrs.elements.units
+		- `unitname` -> pycrs.elements.units.UnitName
+			- `proj4` -> string
+			- `esri_wkt` -> string
+			- `ogc_wkt` -> string
+		- `unitmultiplier` -> pycrs.elements.units.UnitMultiplier
+			- `value` -> float
+	- `twin_ax` -> tuple
+		- 1: a named compass direction (east-west) from pycrs.elements.directions
+		- 2: a named compass direction (north-south) from pycrs.elements.directions
 
     
 
@@ -386,11 +387,11 @@ PyCRS allows converting to the following CRS formats:
 	
 ## Recipes
 
-### Modifying the CRS Class
+### Modifying the CS Instance
 
 In most case you will only ever need to load a CRS and convert it to some format. 
-Sometimes, however, you may want to tweak the parameters of your CRS instance.
-Knowing the composition of the CRS class, this is as easy as setting/replacing the
+Sometimes, however, you may want to tweak the parameters of your CS type instance.
+Knowing the composition of your CS type instance, this is as easy as setting/replacing the
 desired attributes. 
 
 Let's demonstrate some examples using the World Robinson projection:
@@ -406,14 +407,14 @@ Here is a map of the default Robinson projection:
 Let's say we wanted to switch its datum from WGS84 to NAD83, we could do it
 like so:
 
-    >>> crs.toplevel.geogcs.datum = pycrs.elements.datums.NAD83()
+    >>> crs.geogcs.datum = pycrs.elements.datums.NAD83()
     >>> crs.to_ogc_wkt()
     'PROJCS["Unknown", GEOGCS["Unknown", DATUM["North_American_Datum_1983", SPHEROID["GRS_1980", 6378137.0, 298.257222101]], PRIMEM["Greenwich", 0], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Robinson"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
 
 Or let's say we wanted to switch its prime meridian, so that the longitude axis is centered
 closer to the Pacific instead of over Greenwhich:
 
-    >>> crs.toplevel.geogcs.prime_mer.value = 160.0
+    >>> crs.geogcs.prime_mer.value = 160.0
     >>> crs.to_ogc_wkt()
     'PROJCS["Unknown", GEOGCS["Unknown", DATUM["North_American_Datum_1983", SPHEROID["GRS_1980", 6378137.0, 298.257222101]], PRIMEM["Greenwich", 160.0], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Robinson"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
 
@@ -424,7 +425,7 @@ polygons that cross the meridian):
 
 Or if we just switch the projection type alltogether:
 
-    >>> crs.toplevel.proj = pycrs.elements.projections.Sinusoidal()
+    >>> crs.proj = pycrs.elements.projections.Sinusoidal()
     >>> crs.to_ogc_wkt()
     'PROJCS["Unknown", GEOGCS["Unknown", DATUM["North_American_Datum_1983", SPHEROID["GRS_1980", 6378137.0, 298.257222101]], PRIMEM["Greenwich", 160.0], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Sinusoidal"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
 	

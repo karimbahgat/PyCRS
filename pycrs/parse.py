@@ -11,7 +11,7 @@ The main module containing functions for parsing text strings into crs objects.
 from .elements import datums
 from .elements import ellipsoids
 from .elements import parameters
-from .elements import containers
+from .elements import cs as containers
 from .elements import units
 from .elements import projections
 from . import utils
@@ -27,7 +27,7 @@ def from_epsg_code(code):
 
     Returns:
 
-    - CRS object. 
+    - A CS instance of the indicated type. 
     """
     # must go online (or look up local table) to get crs details
     code = str(code)
@@ -46,7 +46,7 @@ def from_esri_code(code):
 
     Returns:
 
-    - CRS object.
+    - A CS instance of the indicated type. 
     """
     # must go online (or look up local table) to get crs details
     code = str(code)
@@ -65,7 +65,7 @@ def from_sr_code(code):
 
     Returns:
 
-    - CRS object.
+    - A CS instance of the indicated type. 
     """
     # must go online (or look up local table) to get crs details
     code = str(code)
@@ -85,7 +85,7 @@ def from_ogc_wkt(string, strict=False):
 
     Returns:
 
-    - CRS object.
+    - A CS instance of the indicated type. 
     """
     # parse arguments into components
     # use args to create crs
@@ -103,7 +103,7 @@ def from_esri_wkt(string, strict=False):
 
     Returns:
 
-    - CRS object.
+    - A CS instance of the indicated type. 
     """
     # parse arguments into components
     # use args to create crs
@@ -120,7 +120,7 @@ def from_unknown_wkt(string, strict=False):
         exactly with upper and lowercases. Default is not strict (False).
 
     Returns:
-    - CRS object.
+    - A CS instance of the indicated type. 
     """
     # parse arguments into components
     # use args to create crs
@@ -139,7 +139,7 @@ def _from_wkt(string, wkttype=None, strict=False):
 
     Returns:
 
-    - CRS object.
+    - A CS instance of the indicated type. 
     """
     # TODO
     # - Make function for finding next elemt by name, instead of knowing its arg index position
@@ -403,8 +403,7 @@ def _from_wkt(string, wkttype=None, strict=False):
 
     # toplevel collection
     header, content = crstuples[0]
-    toplevel = _parse_top(header, content)
-    crs = containers.CRS(toplevel)
+    crs = _parse_top(header, content)
         
     # use args to create crs
     return crs
@@ -421,7 +420,7 @@ def from_proj4(proj4, strict=False):
 
     Returns:
 
-    - CRS object.
+    - A CS instance of the indicated type. 
     """
     # parse arguments into components
     # use args to create crs
@@ -707,18 +706,11 @@ def from_proj4(proj4, strict=False):
         # PROJCS
 
         projcs = containers.ProjCS("Unknown", geogcs, proj, params, unit)
-
-        # CRS
-
-        crs = containers.CRS(projcs)
+        return projcs
 
     else:
         # means projdef was None, ie unprojected longlat geogcs
-        crs = containers.CRS(geogcs)
-
-    # FINISHED
-
-    return crs
+        return geogcs
 
 
 ##def from_ogc_urn(string, strict=False):
