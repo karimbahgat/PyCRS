@@ -285,7 +285,11 @@ def _from_wkt(string, wkttype=None, strict=False):
             geogcs = _parse_top(subheader, subcontent)
             
             # find projection elem
-            subheader, subcontent = content[2]
+            for part in content:
+                if isinstance(part, tuple):
+                    subheader,subcontent = part
+                    if subheader == "PROJECTION":
+                        break
             projname = subcontent[0].strip('"')
             projclass = projections.find(projname, "%s_wkt" % wkttype, strict)
             if projclass:
