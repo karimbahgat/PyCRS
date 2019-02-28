@@ -16,6 +16,11 @@ from .elements import units
 from .elements import projections
 from . import utils
 
+
+class FormatError(Exception):
+    pass
+
+
 def from_epsg_code(code):
     """
     Load crs object from epsg code, via spatialreference.org.
@@ -295,7 +300,7 @@ def _from_wkt(string, wkttype=None, strict=False):
             if projclass:
                 proj = projclass()
             else:
-                raise Exception("The specified projection name %r could not be found" % projname)
+                raise NotImplementedError("Unsupported projection: The specified projection name %r could not be found in the list of supported projections" % projname)
             
             # find params
             params = []
@@ -536,7 +541,7 @@ def from_proj4(proj4, strict=False):
         # alternatively, semimajor and +rf is also acceptable (the reciprocal/inverse of +f)
         pass
     else:
-        raise Exception("Could not find the required +ellps element, nor a manual specification of the +a with +b or +f/+rf elements: \n\t %s" % partdict)
+        raise FormatError("The format string is missing the required +ellps element, or the alternative manual specification of the +a with +b or +f/+rf elements: \n\t %s" % partdict)
     
     if "+datum" in partdict:
         datum.ellips = ellips
@@ -579,10 +584,10 @@ def from_proj4(proj4, strict=False):
             # proj4 special case, longlat as projection name means unprojected geogcs
             proj = None
         else:
-            raise Exception("The specified projection name %r could not be found" % projname)
+            raise NotImplementedError("Unsupported projection: The specified projection name %r could not be found in the list of supported projections" % projname)
 
     else:
-        raise Exception("Could not find required +proj element")
+        raise FormatError("The format string is missing the required +proj element")
 
     if proj:
 
@@ -684,7 +689,7 @@ def from_proj4(proj4, strict=False):
             if unitclass:
                 unit = unitclass() # takes meter multiplier from name, ignoring any custom meter multiplier
             else:
-                raise Exception("The specified unit name %r could not be found" % unitname)
+                raise FormatError("The specified unit name %r does not appear to be a valid unit name" % unitname)
         elif "+to_meter" in partdict:
             # no unit name specified, only to_meter conversion factor
             unit = units.Unknown()
@@ -761,7 +766,7 @@ def from_unknown_text(text, strict=False):
     elif text.startswith("SR-ORG:"):
         crs = from_sr_code(text.split(":")[1])
 
-    else: raise Exception("Could not detect which type of crs")
+    else: raise FormatError("Could not auto-detect the type of crs format, make sure it is one of the supported formats")
     
     return crs
 

@@ -12,6 +12,9 @@ from . import parse
 
 PY3 = (int(sys.version_info[0]) > 2)
 
+class FormatError(Exception):
+    pass
+
 #################
 # USER FUNCTIONS
 #################
@@ -77,7 +80,7 @@ def from_file(filepath):
                 type = crsinfo["properties"].get("type")
                 return from_url(url, format=type)
                 
-            else: raise Exception("invalid geojson crs type: must be either name or link")
+            else: raise FormatError("Invalid GeoJSON crs type: must be either 'name' or 'link'")
 
         else:
             # assume default wgs84 as per the spec
