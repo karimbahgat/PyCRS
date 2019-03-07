@@ -1,8 +1,11 @@
 
 ## Changes
 
-### 1.0.1 (2019-02-04)
+### 1.0.1 (2019-03-06)
 
+- Misc docstring changes
+- More flexible parsing, in case projection is not the second element
+- More informative exceptions
 
 ### 1.0.0 (2019-02-04)
 
