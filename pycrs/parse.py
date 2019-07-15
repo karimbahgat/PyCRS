@@ -362,7 +362,10 @@ def _from_wkt(string, wkttype=None, strict=False):
             if ellipsclass:
                 ellipsoid = ellipsclass()
             else:
-                ellipsoid = ellipsoids.Unknown()
+                if datum.ellips:
+                    ellipsoid = datum.ellips
+                elif not datum.ellips:
+                    ellipsoid = ellipsoids.Unknown()
 
             ellipsoid.semimaj_ax = parameters.SemiMajorRadius(subsubcontent[1])
             if subsubcontent[2] == 0:
@@ -497,7 +500,10 @@ def from_proj4(proj4, strict=False):
             ellips = ellipsclass()
 
     if not ellips:
-        ellips = ellipsoids.Unknown()
+        if datum.ellips:
+            ellips = datum.ellips
+        elif not datum.ellips:
+            ellips = ellipsoids.Unknown()
 
     # TO WGS 84 COEFFS
     if "+towgs84" in partdict:
