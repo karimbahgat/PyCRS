@@ -693,7 +693,7 @@ def from_proj4(proj4, strict=False):
         elif "+to_meter" in partdict:
             # no unit name specified, only to_meter conversion factor
             unit = units.Unknown()
-            unit.metermultiplier.value = partdict["+to_meter"]
+            unit.unitmultiplier.value = partdict["+to_meter"]
         else:
             # if nothing specified, defaults to meter
             unit = units.Meter()
