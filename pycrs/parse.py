@@ -454,6 +454,7 @@ def from_proj4(proj4, strict=False):
 
         # first, get the default proj4 string of the +init code
         codetype, code = partdict["+init"].split(":")
+        codetype = codetype.upper()
         if codetype == "EPSG":
             initproj4 = utils.crscode_to_string("epsg", code, "proj4")
         elif codetype == "ESRI":
