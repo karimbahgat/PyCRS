@@ -16,6 +16,8 @@ from .elements import units
 from .elements import projections
 from . import utils
 
+import warnings
+
 
 class FormatError(Exception):
     pass
@@ -499,6 +501,8 @@ def from_proj4(proj4, strict=False):
         ellipsclass = ellipsoids.find(ellipsname, "proj4", strict)
         if ellipsclass:
             ellips = ellipsclass()
+        else:
+            warnings.warn('Ellipsoid "{}" could not be found in pycrs.ellipsoids, looking for manual specification instead.'.format(ellipsname))
 
     if not ellips:
         if datum.ellips:
@@ -547,6 +551,8 @@ def from_proj4(proj4, strict=False):
     elif ellips.semimaj_ax and ellips.flat:
         # alternatively, semimajor and +rf is also acceptable (the reciprocal/inverse of +f)
         pass
+    elif isinstance(ellips, ellipsoids.Unknown):
+        raise Exception("Ellipsoid '{}' could not be found in pycrs.ellipsoids, and the format string did not contain the alternative manual specification of the +a with +b or +f/+rf elements".format(ellipsname))
     else:
         raise FormatError("The format string is missing the required +ellps element, or the alternative manual specification of the +a with +b or +f/+rf elements: \n\t %s" % partdict)
     
