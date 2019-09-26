@@ -6,7 +6,12 @@ try:
     import urllib.request as urllib2
 except ImportError:
     import urllib2
+import urllib.parse
 import re
+import json
+
+EPSG_URL = 'http://prj2epsg.org/search.json'
+
 
 def build_crs_table(savepath):
     """
@@ -88,6 +93,20 @@ def crscode_to_string(codetype, code, format):
     if not isinstance(result, str):
         result = result.decode()
     return result
+
+
+def wkt_to_epsg(wkt):
+    """ Get EPSG code from WKT projection """
+    params = dict(mode='wkt', terms=wkt)
+    data = urllib.parse.urlencode(params)
+    data = data.encode('ascii')
+    req = urllib2.Request(EPSG_URL, data)
+    with urllib2.urlopen(req) as response:
+        epsg = response.read()
+    
+    result = json.loads(epsg.decode())
+    return result
+
 
 ##def crsstring_to_string(string, newformat):
 ##    """
