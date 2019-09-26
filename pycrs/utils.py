@@ -4,9 +4,10 @@ Misc utility functions related to crs formats and online services.
 
 try:
     import urllib.request as urllib2
+    from urllib.parse import urlencode
 except ImportError:
     import urllib2
-import urllib.parse
+    from urllib import urlencode
 import re
 import json
 
@@ -98,13 +99,11 @@ def crscode_to_string(codetype, code, format):
 def wkt_to_epsg(wkt):
     """ Get EPSG code from WKT projection """
     params = dict(mode='wkt', terms=wkt)
-    data = urllib.parse.urlencode(params)
+    data = urlencode(params)
     data = data.encode('ascii')
     req = urllib2.Request(EPSG_URL, data)
-    with urllib2.urlopen(req) as response:
-        epsg = response.read()
-    
-    result = json.loads(epsg.decode())
+    resp = urllib2.urlopen(req).read()
+    result = json.loads(resp.decode())
     return result
 
 
