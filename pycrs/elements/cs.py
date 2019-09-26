@@ -6,6 +6,8 @@ from . import directions
 from . import datums
 from . import ellipsoids
 
+from .. import utils
+
 #BASE
 class CS:
     """
@@ -99,6 +101,21 @@ class GeogCS(CS):
         """
         return 'GEOGCS["%s", %s, %s, %s, AXIS["Lon", %s], AXIS["Lat", %s]]' % (self.name, self.datum.to_esri_wkt(), self.prime_mer.to_esri_wkt(), self.angunit.to_esri_wkt(), self.twin_ax[0].esri_wkt, self.twin_ax[1].esri_wkt )
 
+    def to_epsg(self):
+        """
+        Tries to find if this exact CRS is found in the EPSG database.
+        Returns the results dictionary from http://prj2epsg.org:
+
+        - exact: true if the provided WKT could be matched exactly to one entry in the EPSG database, false otherwise
+        - totalHits: total amount of potential results found in the database. The actual codes list is always capped to 20
+        - error: reports WKT parsing errors, if any
+        - codes: a list of EPSG code objects, each one containg:
+            - code: the EPSG code
+            - name: the coordinate reference system name
+            - url: the full url to the EPSG code description page
+        """
+        return utils.wkt_to_epsg(self.to_esri_wkt())
+
 #PROJCS
 class ProjCS(CS):
     """
@@ -187,3 +204,21 @@ class ProjCS(CS):
         string += ', %s' % self.unit.to_esri_wkt()
         string += ', AXIS["X", %s], AXIS["Y", %s]]' % (self.twin_ax[0].esri_wkt, self.twin_ax[1].esri_wkt )
         return string
+
+    def to_epsg(self):
+        """
+        Tries to find if this exact CRS is found in the EPSG database.
+        Returns the results dictionary from http://prj2epsg.org:
+
+        - exact: true if the provided WKT could be matched exactly to one entry in the EPSG database, false otherwise
+        - totalHits: total amount of potential results found in the database. The actual codes list is always capped to 20
+        - error: reports WKT parsing errors, if any
+        - codes: a list of EPSG code objects, each one containg:
+            - code: the EPSG code
+            - name: the coordinate reference system name
+            - url: the full url to the EPSG code description page
+        """
+        return utils.wkt_to_epsg(self.to_esri_wkt())
+
+
+    
