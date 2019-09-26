@@ -187,6 +187,16 @@ class Clarke1866(Ellipsoid):
     semimaj_ax = parameters.SemiMajorRadius(6378206.4)
     inv_flat = parameters.InverseFlattening(294.9786982)
 
+class Clarke1880(Ellipsoid):
+    name = EllipsoidName(
+                proj4 = "clrk80",
+                ogc_wkt = "Clarke 1880 (RGS)",
+                esri_wkt = "Clarke_1880_RGS",
+                )
+
+    semimaj_ax = parameters.SemiMajorRadius(6378249.145)
+    inv_flat = parameters.InverseFlattening(293.465)
+
 class Airy1830(Ellipsoid):
     name = EllipsoidName(
                 proj4 = "airy",
