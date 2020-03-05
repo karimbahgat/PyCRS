@@ -89,7 +89,7 @@ def crscode_to_string(codetype, code, format):
 
     - Crs string in the specified format. 
     """
-    link = 'http://spatialreference.org/ref/%s/%s/%s/' %(codetype,code,format)
+    link = 'https://spatialreference.org/ref/%s/%s/%s/' %(codetype,code,format)
     result = urllib2.urlopen(link).read()
     if not isinstance(result, str):
         result = result.decode()
