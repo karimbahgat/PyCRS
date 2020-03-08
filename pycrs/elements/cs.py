@@ -14,7 +14,27 @@ class CS:
     Base class for all CS classes. 
     Mostly just for basic type checking. 
     """
-    pass
+
+    def to_epsg_code(self):
+        """
+        Looks up the EPSG code for this CS.
+        
+        If an exact match is found, returns the code.
+        If there are no matches, returns None.
+        If there are multiple ambiguous matches, raise warning and return None. 
+        """
+        result = utils.wkt_to_epsg(self.to_esri_wkt())
+        if result['exact']:
+            first = result['codes'][0]
+            return int(first['code'])
+        
+        elif len(result['codes']) > 1:
+            warnings.warn('Matches found, but could not clearly determine which code is correct. To see the possible matches, use instead pycrs.utils.wkt_to_epsg().')
+            return None
+
+        else:
+            return None
+        
 
 #GEOGCS
 class GeogCS(CS):
@@ -100,21 +120,6 @@ class GeogCS(CS):
         Returns the CS as a ESRI WKT formatted string.
         """
         return 'GEOGCS["%s", %s, %s, %s, AXIS["Lon", %s], AXIS["Lat", %s]]' % (self.name, self.datum.to_esri_wkt(), self.prime_mer.to_esri_wkt(), self.angunit.to_esri_wkt(), self.twin_ax[0].esri_wkt, self.twin_ax[1].esri_wkt )
-
-    def to_epsg(self):
-        """
-        Tries to find if this exact CRS is found in the EPSG database.
-        Returns the results dictionary from http://prj2epsg.org:
-
-        - exact: true if the provided WKT could be matched exactly to one entry in the EPSG database, false otherwise
-        - totalHits: total amount of potential results found in the database. The actual codes list is always capped to 20
-        - error: reports WKT parsing errors, if any
-        - codes: a list of EPSG code objects, each one containg:
-            - code: the EPSG code
-            - name: the coordinate reference system name
-            - url: the full url to the EPSG code description page
-        """
-        return utils.wkt_to_epsg(self.to_esri_wkt())
 
 #PROJCS
 class ProjCS(CS):
@@ -204,21 +209,6 @@ class ProjCS(CS):
         string += ', %s' % self.unit.to_esri_wkt()
         string += ', AXIS["X", %s], AXIS["Y", %s]]' % (self.twin_ax[0].esri_wkt, self.twin_ax[1].esri_wkt )
         return string
-
-    def to_epsg(self):
-        """
-        Tries to find if this exact CRS is found in the EPSG database.
-        Returns the results dictionary from http://prj2epsg.org:
-
-        - exact: true if the provided WKT could be matched exactly to one entry in the EPSG database, false otherwise
-        - totalHits: total amount of potential results found in the database. The actual codes list is always capped to 20
-        - error: reports WKT parsing errors, if any
-        - codes: a list of EPSG code objects, each one containg:
-            - code: the EPSG code
-            - name: the coordinate reference system name
-            - url: the full url to the EPSG code description page
-        """
-        return utils.wkt_to_epsg(self.to_esri_wkt())
 
 
     

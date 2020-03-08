@@ -41,7 +41,7 @@ def build_crs_table(savepath):
         page = 1
         while True:
             try:
-                link = 'http://spatialreference.org/ref/%s/?page=%s' %(codetype,page)
+                link = 'https://spatialreference.org/ref/%s/?page=%s' %(codetype,page)
                 html = urllib2.urlopen(link).read()
                 codes = [match.groups()[0] for match in re.finditer(r'/ref/'+codetype+'/(\d+)', html) ]
                 if not codes: break
@@ -55,14 +55,14 @@ def build_crs_table(savepath):
         for i,code in enumerate(codelist):
             
             # check if code exists
-            link = 'http://spatialreference.org/ref/%s/%s/' %(codetype,code)
+            link = 'https://spatialreference.org/ref/%s/%s/' %(codetype,code)
             urllib2.urlopen(link)
             
             # collect each projection format in a table row
             row = [codetype, code]
             for resulttype in ("proj4", "ogcwkt", "esriwkt"):
                 try:
-                    link = 'http://spatialreference.org/ref/%s/%s/%s/' %(codetype,code,resulttype)
+                    link = 'https://spatialreference.org/ref/%s/%s/%s/' %(codetype,code,resulttype)
                     result = urllib2.urlopen(link).read()
                     row.append(result)
                 except:
@@ -97,7 +97,20 @@ def crscode_to_string(codetype, code, format):
 
 
 def wkt_to_epsg(wkt):
-    """ Get EPSG code from WKT projection """
+    """ Search possible EPSG codes from WKT projection.
+
+    Tries to find if this exact WKT is found in the EPSG database.
+    Returns the results dictionary from http://prj2epsg.org, with the
+    following key entries:
+
+    - exact: true if the provided WKT could be matched exactly to one entry in the EPSG database, false otherwise
+    - totalHits: total amount of potential results found in the database. The actual codes list is always capped to 20
+    - error: reports WKT parsing errors, if any
+    - codes: a list of EPSG code objects, each one containg:
+        - code: the EPSG code
+        - name: the coordinate reference system name
+        - url: the full url to the EPSG code description page
+    """
     params = dict(mode='wkt', terms=wkt)
     data = urlencode(params)
     data = data.encode('ascii')

@@ -375,7 +375,30 @@ PyCRS allows converting to the following CRS formats:
 
     >>> crs.to_ogc_wkt()
     'PROJCS["Unknown", GEOGCS["Unknown", DATUM["WGS_1984", SPHEROID["WGS_1984", 6378137.0, 298.257223563]], PRIMEM["Greenwich", 0], UNIT["degree", 0.017453292519943295], AXIS["Lon", EAST], AXIS["Lat", NORTH]], PROJECTION["Robinson"], PARAMETER["Central_Meridian", 0], PARAMETER["false_easting", 0], PARAMETER["false_northing", 0], UNIT["Meters", 1.0], AXIS["X", EAST], AXIS["Y", NORTH]]'
+	
+	
+### Representing as a coordinate system code
 
+Just as it's possible to load the crs from predefined coordinate system codes defined by various authorities, it's also sometimes needed to lookup and represent the crs as a coordinate system code, if it exists. 
+
+#### Representing as an EPSG code
+
+Currently, this is only implemented for looking up the EPSG code. This searches the crs wkt representation on prj2epsg.org and returns the EPSG code of the first result, or None if the wkt does not have an associated EPSG code. 
+
+	# to epsg code
+	>>> pycrs.parse.from_epsg_code(4326).to_epsg_code()
+	4326
+
+	
+Because a crs definition can have many variations, looking up its coordinate system code might yield multiple possible matches. For more control to choose the right match, a search utility is also available that returns all possible matches with metadata: 
+
+	# more flexible utility search for epsg code
+	>>> crs = pycrs.parse.from_sr_code(42)
+	>>> results = pycrs.utils.wkt_to_epsg(crs.to_esri_wkt())
+	
+	# display the top match info
+	>>> results['codes'][0]
+	{'url': 'http://prj2epsg.org/epsg/3857.json', 'code': '3857', 'name': 'WGS 84 / Pseudo-Mercator'}
 
 
 ---
