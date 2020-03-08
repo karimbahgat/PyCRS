@@ -77,7 +77,8 @@ def build_crs_table(savepath):
             
 def crscode_to_string(codetype, code, format):
     """
-    Lookup crscode on spatialreference.org and return in specified format.
+    Lookup crscode and return in specified format.
+    Uses epsg.io for epsg code, or spatialreference.org for esri or sr codes.
 
     Arguments:
 
@@ -89,8 +90,17 @@ def crscode_to_string(codetype, code, format):
 
     - Crs string in the specified format. 
     """
-    link = 'https://spatialreference.org/ref/%s/%s/%s/' %(codetype,code,format)
-    result = urllib2.urlopen(link).read()
+    if codetype == 'epsg':
+        # use epsg.io which is more up-to-date, but can only lookup epsg codes
+        if format == 'ogcwkt':
+            format = 'wkt'
+        link = 'https://epsg.io/{}.{}'.format(code, format)
+        req = urllib2.Request(link, headers={'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'})
+        result = urllib2.urlopen(req).read()
+    else:
+        # use spatialreference.org
+        link = 'https://spatialreference.org/ref/{}/{}/{}/'.format(codetype,code,format)
+        result = urllib2.urlopen(link).read()
     if not isinstance(result, str):
         result = result.decode()
     return result
