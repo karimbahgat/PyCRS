@@ -214,7 +214,33 @@ To look up codes defined by ESRI:
 To look up codes defined by spatialreference.org:
 
     >>> crs = pycrs.parse.from_sr_code(42)
+	
+
+#### Searching for coordinate systems by name or area
+
+Finally, if you don't know the specific code or definition of a particular crs there's also search functions to look it up on the epsg.io website. For instance, if you want to use the Robinson projection but not sure how to load it, you could interactively search and inspect the potential matches: 
+
+	>>> for match in pycrs.utils.search_name('robinson'): 
+	...     # do something
+	... 	pass
+	
+Similarly, if you need to know which projection would be suitable for a particular country, you could search for that as well:
     
+	>>> for match in pycrs.utils.search_area('brazil'): 
+	...     # do something
+	... 	pass
+	
+You could also do a custom search using various specifiers, such as a projection in a particular area (the full list of specifiers is available at https://github.com/maptiler/epsg.io):
+
+	>>> for match in pycrs.utils.search('name:utm area:belgium'): 
+	...		# do something
+	...		pass
+	
+The search match results include the epsg code, proj4, and wkt representations, any of which could be used to load a CS instance: 
+
+	>>> topmatch = next(pycrs.utils.search_name('wgs 84'))
+	>>> crs = pycrs.parse.from_proj4(topmatch['proj4'])
+	
 
 
 ### Inspecting the CS Instance

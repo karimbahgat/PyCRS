@@ -130,6 +130,63 @@ def wkt_to_epsg(wkt):
     return result
 
 
+def search(text):
+    '''Searches epsg.io for a projection name or area of use.
+    Functions as a generator that yields each result dictionary.
+
+    NOTE: a new url request has to be made every 10 results, so be careful looping through
+    all the results if not necessary.
+    
+    Each result dict include the following most relevant key entries (for more, see
+    https://github.com/maptiler/epsg.io):
+    - code
+    - name
+    - kind
+    - bbox
+    - wkt
+    - proj4
+    '''
+    link = 'https://epsg.io?' + urlencode({'format':'json', 'q':text})
+    # load initial results
+    req = urllib2.Request(link, headers={'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'})
+    resp = urllib2.urlopen(req).read()
+    result = json.loads(resp.decode())
+    # keep loading all pages processed
+    page = 1
+    i = 0
+    while i < result['number_result']:
+        # iterate results of current page
+        for item in result['results']:
+            yield item
+            i += 1
+        if i < result['number_result']:
+            # load next page
+            page += 1
+            link = 'https://epsg.io?' + urlencode({'format':'json', 'q':text, 'page':page})
+            req = urllib2.Request(link,
+                                  headers={'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7'})
+            resp = urllib2.urlopen(req).read()
+            result = json.loads(resp.decode())
+            
+
+def search_name(name):
+    '''Searches epsg.io for a crs by name.
+    Functions as a generator that yields each result dictionary.
+    See more details in search() docstring.
+    '''
+    for item in search('name:'+name):
+        yield item
+
+
+def search_area(area):
+    '''Searches epsg.io for a crs by the country or area of use.
+    Functions as a generator that yields each result dictionary.
+    See more details in search() docstring.
+    '''
+    for item in search('area:'+area):
+        yield item
+
+
 ##def crsstring_to_string(string, newformat):
 ##    """
 ##    Search unknown crs string for a match on spatialreference.org.
