@@ -976,6 +976,11 @@ table {
         <li class="mono">
         <span class="class_name"><a href="#pycrs.elements.cs.CS">CS</a></span>
         
+          
+  <ul>
+    <li class="mono"><a href="#pycrs.elements.cs.CS.to_epsg_code">to_epsg_code</a></li>
+  </ul>
+
         </li>
         <li class="mono">
         <span class="class_name"><a href="#pycrs.elements.cs.GeogCS">GeogCS</a></span>
@@ -983,6 +988,7 @@ table {
           
   <ul>
     <li class="mono"><a href="#pycrs.elements.cs.GeogCS.__init__">__init__</a></li>
+    <li class="mono"><a href="#pycrs.elements.cs.GeogCS.to_epsg_code">to_epsg_code</a></li>
     <li class="mono"><a href="#pycrs.elements.cs.GeogCS.to_esri_wkt">to_esri_wkt</a></li>
     <li class="mono"><a href="#pycrs.elements.cs.GeogCS.to_ogc_wkt">to_ogc_wkt</a></li>
     <li class="mono"><a href="#pycrs.elements.cs.GeogCS.to_proj4">to_proj4</a></li>
@@ -995,6 +1001,7 @@ table {
           
   <ul>
     <li class="mono"><a href="#pycrs.elements.cs.ProjCS.__init__">__init__</a></li>
+    <li class="mono"><a href="#pycrs.elements.cs.ProjCS.to_epsg_code">to_epsg_code</a></li>
     <li class="mono"><a href="#pycrs.elements.cs.ProjCS.to_esri_wkt">to_esri_wkt</a></li>
     <li class="mono"><a href="#pycrs.elements.cs.ProjCS.to_ogc_wkt">to_ogc_wkt</a></li>
     <li class="mono"><a href="#pycrs.elements.cs.ProjCS.to_proj4">to_proj4</a></li>
@@ -1041,6 +1048,25 @@ Mostly just for basic type checking.</p></div>
           <ul class="class_list">
           <li><a href="#pycrs.elements.cs.CS">CS</a></li>
           </ul>
+          <h3>Methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="pycrs.elements.cs.CS.to_epsg_code">
+    <p>def <span class="ident">to_epsg_code</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Looks up the EPSG code for this CS.</p>
+<p>If an exact match is found, returns the code.
+If there are multiple ambiguous matches, raise warning and return only the top result. 
+If there are no matches, returns None.</p></div>
+  <div class="source_cont">
+</div>
+
+  </div>
+  
       </div>
       </div>
       
@@ -1095,6 +1121,28 @@ Mostly just for basic type checking.</p></div>
 <li><strong>twin_ax</strong>: A pair of pycrs.elements.directions.North/South/East/West instances, one for each axis,
             representing the compass direction in which each axis increases. Defaults to East and North.</li>
 </ul></div>
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="pycrs.elements.cs.GeogCS.to_epsg_code">
+    <p>def <span class="ident">to_epsg_code</span>(</p><p>self)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#pycrs.elements.cs.CS">CS</a></code>.<code><a href="#pycrs.elements.cs.CS.to_epsg_code">to_epsg_code</a></code>
+    </p>
+
+    
+  
+    <div class="desc inherited"><p>Looks up the EPSG code for this CS.</p>
+<p>If an exact match is found, returns the code.
+If there are multiple ambiguous matches, raise warning and return only the top result. 
+If there are no matches, returns None.</p></div>
   <div class="source_cont">
 </div>
 
@@ -1201,6 +1249,28 @@ Mostly just for basic type checking.</p></div>
 <li><strong>twin_ax</strong>: A pair of pycrs.elements.directions.North/South/East/West instances, one for each axis,
             representing the compass direction in which each axis increases. Defaults to East and North.</li>
 </ul></div>
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="pycrs.elements.cs.ProjCS.to_epsg_code">
+    <p>def <span class="ident">to_epsg_code</span>(</p><p>self)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#pycrs.elements.cs.CS">CS</a></code>.<code><a href="#pycrs.elements.cs.CS.to_epsg_code">to_epsg_code</a></code>
+    </p>
+
+    
+  
+    <div class="desc inherited"><p>Looks up the EPSG code for this CS.</p>
+<p>If an exact match is found, returns the code.
+If there are multiple ambiguous matches, raise warning and return only the top result. 
+If there are no matches, returns None.</p></div>
   <div class="source_cont">
 </div>
 

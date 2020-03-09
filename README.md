@@ -7,7 +7,7 @@ common coordinate reference system (CRS) string and data source formats.
 
 ![](https://github.com/karimbahgat/pycrs/raw/master/testrenders/logo.png "PyCRS")
 
-**Version: 1.0.1**
+**Version: 1.0.2**
 
 - [GitHub Repository](http://github.com/karimbahgat/PyCRS)
 - [API Documentation](https://karimbahgat.github.io/PyCRS/)
@@ -35,6 +35,7 @@ common coordinate reference system (CRS) string and data source formats.
             - [Looking up EPSG codes](#looking-up-epsg-codes)
             - [Looking up ESRI codes](#looking-up-esri-codes)
             - [Looking up SR codes](#looking-up-sr-codes)
+		- [Searching for coordinate systems by name or area](#searching-for-coordinate-systems-by-name-or-area)
     - [Inspecting the CS Instance](#inspecting-the-cs-instance)
         - [Geographic CS](#geographic-crs)
         - [Projected CS](#projected-crs)
@@ -42,6 +43,8 @@ common coordinate reference system (CRS) string and data source formats.
         - [Converting to Proj4](#converting-to-proj4)
         - [Converting to ESRI WKT](#converting-to-esri-wkt)
         - [Converting to OGC WKT](#converting-to-ogc-wkt)
+	- [Representing as a coordinate system code](#representing-as-a-coordinate-system-code)
+		- [Representing as an EPSG code](#representing-as-an-epsg-code)
 - [Recipes](#recipes)
 	- [Modifying the CS Instance](#modifying-the-cs-instance)
     - [Coordinate Transformations](#coordinate-transformations)
@@ -412,11 +415,11 @@ Just as it's possible to load the crs from predefined coordinate system codes de
 Currently, this is only implemented for looking up the EPSG code. This searches the crs wkt representation on prj2epsg.org and returns the EPSG code of the first result, or None if the wkt does not have an associated EPSG code. 
 
 	# to epsg code
-	>>> pycrs.parse.from_epsg_code(4326).to_epsg_code()
+	>>> crs = pycrs.parse.from_epsg_code(4326)
+	>>> crs.to_epsg_code()
 	4326
-
 	
-Because a crs definition can have many variations, looking up its coordinate system code might yield multiple possible matches. For more control to choose the right match, a search utility is also available that returns all possible matches with metadata: 
+Because a crs definition can have many variations, looking up its coordinate system code might yield multiple possible matches, in which case a warning is raised. For more control to choose the right match, a wkt search utility is also available that returns all possible matches with metadata: 
 
 	# more flexible utility search for epsg code
 	>>> crs = pycrs.parse.from_sr_code(42)

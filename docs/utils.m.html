@@ -975,6 +975,10 @@ table {
   <ul>
     <li class="mono"><a href="#pycrs.utils.build_crs_table">build_crs_table</a></li>
     <li class="mono"><a href="#pycrs.utils.crscode_to_string">crscode_to_string</a></li>
+    <li class="mono"><a href="#pycrs.utils.search">search</a></li>
+    <li class="mono"><a href="#pycrs.utils.search_area">search_area</a></li>
+    <li class="mono"><a href="#pycrs.utils.search_name">search_name</a></li>
+    <li class="mono"><a href="#pycrs.utils.wkt_to_epsg">wkt_to_epsg</a></li>
   </ul>
 
     </li>
@@ -1030,7 +1034,8 @@ NOTE: Might take a while.</p>
 
     
   
-    <div class="desc"><p>Lookup crscode on spatialreference.org and return in specified format.</p>
+    <div class="desc"><p>Lookup crscode and return in specified format.
+Uses epsg.io for epsg code, or spatialreference.org for esri or sr codes.</p>
 <p>Arguments:</p>
 <ul>
 <li><em>codetype</em>: "epsg", "esri", or "sr-org".</li>
@@ -1040,6 +1045,94 @@ NOTE: Might take a while.</p>
 <p>Returns:</p>
 <ul>
 <li>Crs string in the specified format.</li>
+</ul></div>
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="pycrs.utils.search">
+    <p>def <span class="ident">search</span>(</p><p>text)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Searches epsg.io for a projection name or area of use.
+Functions as a generator that yields each result dictionary.</p>
+<p>NOTE: a new url request has to be made every 10 results, so be careful looping through
+all the results if not necessary.</p>
+<p>Each result dict include the following most relevant key entries (for more, see
+https://github.com/maptiler/epsg.io):
+- code
+- name
+- kind
+- bbox
+- wkt
+- proj4</p></div>
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="pycrs.utils.search_area">
+    <p>def <span class="ident">search_area</span>(</p><p>area)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Searches epsg.io for a crs by the country or area of use.
+Functions as a generator that yields each result dictionary.
+See more details in search() docstring.</p></div>
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="pycrs.utils.search_name">
+    <p>def <span class="ident">search_name</span>(</p><p>name)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Searches epsg.io for a crs by name.
+Functions as a generator that yields each result dictionary.
+See more details in search() docstring.</p></div>
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="pycrs.utils.wkt_to_epsg">
+    <p>def <span class="ident">wkt_to_epsg</span>(</p><p>wkt)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Lookup the EPSG code of a particular WKT projection.</p>
+<p>Returns the results dictionary from http://prj2epsg.org, with the
+following key entries:</p>
+<ul>
+<li>exact: true if the provided WKT could be matched exactly to one entry in the EPSG database, false otherwise</li>
+<li>totalHits: total amount of potential results found in the database. The actual codes list is always capped to 20</li>
+<li>error: reports WKT parsing errors, if any</li>
+<li>codes: a list of EPSG code objects, each one containg:<ul>
+<li>code: the EPSG code</li>
+<li>name: the coordinate reference system name</li>
+<li>url: the full url to the EPSG code description page</li>
+</ul>
+</li>
 </ul></div>
   <div class="source_cont">
 </div>

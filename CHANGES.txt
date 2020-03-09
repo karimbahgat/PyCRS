@@ -1,6 +1,17 @@
 
 ## Changes
 
+### 1.0.2 (2020-03-09)
+
+- Add search functions to lookup epsg.io
+- Add to_epsg_code() method from, based on prj2epsg.org (#47, @fitoprincipe)
+- Switch to using epsg.io when looking up epsg codes
+- Fix broken spatialreference link by switching to SSL
+- Added Clarke 1880 ellipsoid
+- Use default datum ellipsoid when ellipsoid not specified
+- Better warning and error when proj4 ellipsoid cannot be found
+- Misc bug fixes
+
 ### 1.0.1 (2019-03-07)
 
 - Misc docstring changes

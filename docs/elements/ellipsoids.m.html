@@ -1020,6 +1020,19 @@ table {
 
         </li>
         <li class="mono">
+        <span class="class_name"><a href="#pycrs.elements.ellipsoids.Clarke1880">Clarke1880</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#pycrs.elements.ellipsoids.Clarke1880.__init__">__init__</a></li>
+    <li class="mono"><a href="#pycrs.elements.ellipsoids.Clarke1880.to_esri_wkt">to_esri_wkt</a></li>
+    <li class="mono"><a href="#pycrs.elements.ellipsoids.Clarke1880.to_geotiff">to_geotiff</a></li>
+    <li class="mono"><a href="#pycrs.elements.ellipsoids.Clarke1880.to_ogc_wkt">to_ogc_wkt</a></li>
+    <li class="mono"><a href="#pycrs.elements.ellipsoids.Clarke1880.to_proj4">to_proj4</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
         <span class="class_name"><a href="#pycrs.elements.ellipsoids.Ellipsoid">Ellipsoid</a></span>
         
           
@@ -1521,6 +1534,125 @@ or semimaj_ax + inv_flat. </p>
             
   <div class="item">
     <div class="name def" id="pycrs.elements.ellipsoids.Clarke1866.to_proj4">
+    <p>def <span class="ident">to_proj4</span>(</p><p>self)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#pycrs.elements.ellipsoids.Ellipsoid">Ellipsoid</a></code>.<code><a href="#pycrs.elements.ellipsoids.Ellipsoid.to_proj4">to_proj4</a></code>
+    </p>
+
+    
+  
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="pycrs.elements.ellipsoids.Clarke1880" class="name">class <span class="ident">Clarke1880</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#pycrs.elements.ellipsoids.Clarke1880">Clarke1880</a></li>
+          <li><a href="#pycrs.elements.ellipsoids.Ellipsoid">Ellipsoid</a></li>
+          </ul>
+          <h3>Methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="pycrs.elements.ellipsoids.Clarke1880.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, **kwargs)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#pycrs.elements.ellipsoids.Ellipsoid">Ellipsoid</a></code>.<code><a href="#pycrs.elements.ellipsoids.Ellipsoid.__init__">__init__</a></code>
+    </p>
+
+    
+  
+    <div class="desc inherited"><p>The ellipsoid that defines the shape of the earth.
+To sufficiently define an ellipsoid, either set semimaj_ax + semimin_ax, semimaj_ax + flat,
+or semimaj_ax + inv_flat. </p>
+<p>Arguments:</p>
+<ul>
+<li><strong>name</strong>: A pycrs.ellipsoids.EllipsoidName instance with the name given by each supported format. </li>
+<li><strong>semimaj_ax</strong>: A pycrs.parameters.SemiMajorRadius representing the radius of the semimajor axis.</li>
+<li><strong>semimin_ax</strong>: A pycrs.parameters.SemiMinorRadius representing the radius of the semiminor axis.</li>
+<li><strong>flat</strong>: A pycrs.parameters.Flattening representing the flattening factor. </li>
+<li><strong>inv_flat</strong>: A pycrs.parameters.InverseFlattening representing the inverse flattening factor.</li>
+</ul></div>
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="pycrs.elements.ellipsoids.Clarke1880.to_esri_wkt">
+    <p>def <span class="ident">to_esri_wkt</span>(</p><p>self)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#pycrs.elements.ellipsoids.Ellipsoid">Ellipsoid</a></code>.<code><a href="#pycrs.elements.ellipsoids.Ellipsoid.to_esri_wkt">to_esri_wkt</a></code>
+    </p>
+
+    
+  
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="pycrs.elements.ellipsoids.Clarke1880.to_geotiff">
+    <p>def <span class="ident">to_geotiff</span>(</p><p>self)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#pycrs.elements.ellipsoids.Ellipsoid">Ellipsoid</a></code>.<code><a href="#pycrs.elements.ellipsoids.Ellipsoid.to_geotiff">to_geotiff</a></code>
+    </p>
+
+    
+  
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="pycrs.elements.ellipsoids.Clarke1880.to_ogc_wkt">
+    <p>def <span class="ident">to_ogc_wkt</span>(</p><p>self)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#pycrs.elements.ellipsoids.Ellipsoid">Ellipsoid</a></code>.<code><a href="#pycrs.elements.ellipsoids.Ellipsoid.to_ogc_wkt">to_ogc_wkt</a></code>
+    </p>
+
+    
+  
+  <div class="source_cont">
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="pycrs.elements.ellipsoids.Clarke1880.to_proj4">
     <p>def <span class="ident">to_proj4</span>(</p><p>self)</p>
     </div>
     

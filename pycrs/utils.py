@@ -107,9 +107,8 @@ def crscode_to_string(codetype, code, format):
 
 
 def wkt_to_epsg(wkt):
-    """ Search possible EPSG codes from WKT projection.
+    """ Lookup the EPSG code of a particular WKT projection.
 
-    Tries to find if this exact WKT is found in the EPSG database.
     Returns the results dictionary from http://prj2epsg.org, with the
     following key entries:
 

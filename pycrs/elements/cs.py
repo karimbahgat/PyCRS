@@ -20,8 +20,8 @@ class CS:
         Looks up the EPSG code for this CS.
         
         If an exact match is found, returns the code.
+        If there are multiple ambiguous matches, raise warning and return only the top result. 
         If there are no matches, returns None.
-        If there are multiple ambiguous matches, raise warning and return None. 
         """
         result = utils.wkt_to_epsg(self.to_esri_wkt())
         if result['exact']:
@@ -29,7 +29,7 @@ class CS:
             return int(first['code'])
         
         elif len(result['codes']) > 1:
-            warnings.warn('Matches found, but could not clearly determine which code is correct. To see the possible matches, use instead pycrs.utils.wkt_to_epsg().')
+            warnings.warn('Multiple possible matches found, returning only the top result. To see all the possible matches, use instead pycrs.utils.wkt_to_epsg().')
             return None
 
         else:
