@@ -426,8 +426,11 @@ Because a crs definition can have many variations, looking up its coordinate sys
 	>>> results = pycrs.utils.wkt_to_epsg(crs.to_esri_wkt())
 	
 	# display the top match info
-	>>> results['codes'][0]
-	{'url': 'http://prj2epsg.org/epsg/3857.json', 'code': '3857', 'name': 'WGS 84 / Pseudo-Mercator'}
+	>>> topmatch = results['codes'][0]
+	>>> topmatch['code']
+	'3857'
+	>>> topmatch['name']
+	'WGS 84 / Pseudo-Mercator'
 
 
 ---
