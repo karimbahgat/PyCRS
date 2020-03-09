@@ -277,8 +277,8 @@ Similarly, if you need to know which projection would be suitable for a particul
 You could also do a custom search using various specifiers, such as a projection in a particular area (the full list of specifiers is available at https://github.com/maptiler/epsg.io):
 
 	>>> for match in pycrs.utils.search('name:utm area:belgium'): 
-	...		# do something
-	...		pass
+	... 	# do something
+	... 	pass
 	
 ##### Loading from search results
 	
@@ -599,3 +599,4 @@ and modify according to the MIT license, see license.txt
 - Gregory Halvorsen
 - M Clark
 - David Hoese
+- Rodrigo E. Principe
