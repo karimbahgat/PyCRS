@@ -7,8 +7,6 @@ common coordinate reference system (CRS) string and data source formats.
 
 ![](https://github.com/karimbahgat/pycrs/raw/master/testrenders/logo.png "PyCRS")
 
-**Version: 1.0.2**
-
 - [GitHub Repository](http://github.com/karimbahgat/PyCRS)
 - [API Documentation](https://karimbahgat.github.io/PyCRS/)
 
@@ -17,7 +15,7 @@ common coordinate reference system (CRS) string and data source formats.
 
 - [Introduction](#introduction)
 - [Status](#status)
-- [Platforms](#platforms)
+- [Changes](#changes)
 - [Dependencies](#dependencies)
 - [Installation](#installation)
 - [Examples](#examples)
@@ -36,6 +34,7 @@ common coordinate reference system (CRS) string and data source formats.
             - [Looking up ESRI codes](#looking-up-esri-codes)
             - [Looking up SR codes](#looking-up-sr-codes)
 		- [Searching for coordinate systems by name or area](#searching-for-coordinate-systems-by-name-or-area)
+			- [Loading from search results](#loading-from-search-results)
     - [Inspecting the CS Instance](#inspecting-the-cs-instance)
         - [Geographic CS](#geographic-crs)
         - [Projected CS](#projected-crs)
@@ -89,14 +88,56 @@ are logically equivalent to each other from a mathematical standpoint is somethi
 quality check. 
 
 
-## Platforms
+## Changes
 
-Python 2 and 3. 
+### 1.0.2 (2020-03-09)
+
+- Add search functions to lookup epsg.io
+- Add to_epsg_code() method from, based on prj2epsg.org (#47, @fitoprincipe)
+- Switch to using epsg.io when looking up epsg codes
+- Fix broken spatialreference link by switching to SSL
+- Added Clarke 1880 ellipsoid
+- Use default datum ellipsoid when ellipsoid not specified
+- Better warning and error when proj4 ellipsoid cannot be found
+- Misc bug fixes
+
+### 1.0.1 (2019-03-07)
+
+- Misc docstring changes
+- More flexible parsing, in case projection is not the second element
+- More informative exceptions
+
+### 1.0.0 (2019-02-04)
+
+- API Changes:
+- Dropping CRS wrapper class, instead handling GeogCS or ProjCS directly
+- Change module names to load.py, and parse.py
+- Move Ellipsoid, Datum, and Projection to their respective modules
+- Allow proj4 input and output as dict
+- Fixes:
+- Added more documentation
+- Fix +f interpretation
+- Include reading +rf parameter
+- Better ellipsoid support for +a and +b
+- Fix Python 3 bugs
+- Fix proj4 standard parallels being ignored
+- Parse WKT CS names which were ignored before
+- Support for prime meridian city names
+
+### 0.1.3 (2016-06-25)
+
+- Fixed various bugs
+- Pip install fix for Mac and Linux
+- Python 3 compatability
+
+### 0.1.2 (2015-08-05)
+
+- First official release
 
 
 ## Dependencies
 
-Pure Python, no dependencies. 
+Pure Python, no dependencies. Python 2 and 3 compatible. 
 
 
 ## Installation
@@ -238,6 +279,8 @@ You could also do a custom search using various specifiers, such as a projection
 	>>> for match in pycrs.utils.search('name:utm area:belgium'): 
 	...		# do something
 	...		pass
+	
+##### Loading from search results
 	
 The search match results include the epsg code, proj4, and wkt representations, any of which could be used to load a CS instance: 
 
