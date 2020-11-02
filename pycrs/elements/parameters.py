@@ -134,6 +134,7 @@ class Azimuth:
 ##+k_0       Scaling factor (new name)
 class ScalingFactor:
     proj4 = "+k"
+    esri_wkt = "Scale_Factor"
     ogc_wkt = "scale_factor"
     
     def __init__(self, value):
@@ -146,8 +147,7 @@ class ScalingFactor:
         return 'PARAMETER["scale_factor", %s]' %self.value
 
     def to_esri_wkt(self):
-        # REALLY??
-        raise Exception("Parameter %r not supported by ESRI WKT" % self)
+        return 'PARAMETER["Scale_Factor", %s]' %self.value
 
     def to_geotiff(self):
         pass
